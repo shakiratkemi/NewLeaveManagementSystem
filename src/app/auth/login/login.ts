@@ -36,9 +36,11 @@ export class Login implements OnInit {
       email: ['', Validators.compose([Validators.required, Validators.email])],
       password: [
         '',
-        Validators.required,
-        Validators.minLength(8),
-        Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,15}$'),
+        Validators.compose([
+          Validators.required,
+          Validators.minLength(8),
+          Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,15}$'),
+        ]),
       ],
     });
   }
@@ -49,12 +51,15 @@ export class Login implements OnInit {
       return;
     } else {
       this.authService.login(this.LoginForm.value).subscribe({
-        next: (data: any) => {
-          if (data) {
-            localStorage.setItem('access_token', data.token);
+        next: (res: any) => {
+          console.log('API Response:', res);
+          if (res && res.data) {
+            const responseData = res.data;
+            localStorage.setItem('access_token', responseData.token);
             alert('Login successful');
             const helper = new JwtHelperService();
             this.loggedInUser = helper.decodeToken(localStorage.getItem('access_token')!);
+            console.log('Decoded token:', this.loggedInUser);
             localStorage.setItem('loggedInUser', JSON.stringify(this.loggedInUser));
 
             if (this.loggedInUser.role === 'Manager') {

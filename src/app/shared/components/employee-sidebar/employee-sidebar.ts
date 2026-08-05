@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { LeaveItem } from '../../../core/interface/leave';
 import { CommonModule } from '@angular/common';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
@@ -11,6 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
   styles: ``,
 })
 export class EmployeeSidebar {
+  constructor(private router: Router) {}
   userName: string = 'Jane Doe';
   userRole: string = 'Software Engineer';
   isMobileOpen: boolean = false;
@@ -47,7 +48,7 @@ export class EmployeeSidebar {
     if (this.isCollapsed && menu.children) {
       this.isCollapsed = false;
     }
-    
+
     if (!menu.children) return;
 
     this.menus.forEach((m) => {
@@ -67,5 +68,11 @@ export class EmployeeSidebar {
 
   closeMobile() {
     this.isMobileOpen = false;
+  }
+
+  logout() {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('loggedInUser');
+    this.router.navigateByUrl('/');
   }
 }
