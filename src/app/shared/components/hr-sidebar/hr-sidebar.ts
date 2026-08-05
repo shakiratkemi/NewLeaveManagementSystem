@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { LeaveItem } from '../../../core/interface/leave';
 import { MatIconModule } from '@angular/material/icon';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -11,6 +11,7 @@ import { CommonModule } from '@angular/common';
   styles: ``,
 })
 export class HrSidebar {
+  constructor(private router: Router) {}
   userName: string = 'Jane Doe';
   userRole: string = 'Software Engineer';
   isMobileOpen: boolean = false;
@@ -67,5 +68,11 @@ export class HrSidebar {
 
   closeMobile() {
     this.isMobileOpen = false;
+  }
+
+  logout() {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('loggedInUser');
+    this.router.navigateByUrl('/');
   }
 }
