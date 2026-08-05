@@ -1,0 +1,117 @@
+@if (isOpen && request) {
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/50 p-4 backdrop-blur-sm transition-opacity"
+    (click)="onClose()"
+  >
+    <div
+      class="w-full max-w-sm rounded-xl bg-white p-4 shadow-xl border border-gray-100 transition-all"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="flex items-center justify-between border-b border-gray-100 pb-4">
+        <div>
+          <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider"
+            >Request Details</span
+          >
+          <h3 class="text-lg font-bold text-gray-900">#LR-{{ request.id }}</h3>
+        </div>
+
+        <button
+          type="button"
+          (click)="onClose()"
+          class="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors"
+        >
+          ✕
+        </button>
+      </div>
+
+      <div class="space-y-4 py-4">
+        <div
+          class="flex items-center justify-between rounded-lg bg-gray-50 p-3.5 border border-gray-100"
+        >
+          <div>
+            <p class="text-xs text-gray-500">Leave Type</p>
+            <p class="font-semibold text-gray-900">{{ request.leaveType }} Leave</p>
+          </div>
+          <span
+            class="inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold"
+            [ngClass]="{
+              'bg-emerald-100 text-emerald-800': request.status === 'Approved',
+              'bg-amber-100 text-amber-800': request.status === 'Pending',
+              'bg-rose-100 text-rose-800': request.status === 'Rejected',
+            }"
+          >
+            {{ request.status }}
+          </span>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3 text-sm">
+          <div class="rounded-lg border border-gray-100 p-3 bg-white">
+            <span class="block text-xs text-gray-400">Start Date</span>
+            <span class="font-medium text-gray-800">{{ request.startDate }}</span>
+          </div>
+          <div class="rounded-lg border border-gray-100 p-3 bg-white">
+            <span class="block text-xs text-gray-400">End Date</span>
+            <span class="font-medium text-gray-800">{{ request.endDate }}</span>
+          </div>
+          <div class="rounded-lg border border-gray-100 p-3 bg-white">
+            <span class="block text-xs text-gray-400">Duration</span>
+            <span class="font-medium text-gray-800"
+              >{{ request.duration }} {{ request.duration === 1 ? 'Day' : 'Days' }}</span
+            >
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-gray-500 mb-1">Reason for Leave</label>
+          <div class="rounded-lg bg-gray-50 p-3.5 text-sm text-gray-700 border border-gray-100">
+            {{ request.reason || 'No reason provided.' }}
+          </div>
+        </div>
+
+        <div class="pt-2">
+          <label class="block text-xs font-medium text-gray-500 mb-3">Approval Activity</label>
+          <div class="relative border-l-2 border-gray-200 ml-2 space-y-4 pl-4 text-xs">
+            <div class="relative">
+              <span
+                class="absolute -left-5.25 top-0.5 h-2.5 w-2.5 rounded-full bg-blue-500 ring-4 ring-white"
+              ></span>
+              <p class="font-semibold text-gray-800">Submitted by Employee</p>
+              <p class="text-gray-400">Request logged into the system</p>
+            </div>
+
+            <div class="relative">
+              <span
+                class="absolute -left-5.25 top-0.5 h-2.5 w-2.5 rounded-full ring-4 ring-white"
+                [ngClass]="{
+                  'bg-emerald-500': request.status === 'Approved',
+                  'bg-amber-500': request.status === 'Pending',
+                  'bg-rose-500': request.status === 'Rejected',
+                }"
+              ></span>
+              <p class="font-semibold text-gray-800">Manager Review (Jane Doe)</p>
+              <p class="text-gray-400">
+                @if (request.status === 'Approved') {
+                  Approved application
+                } @else if (request.status === 'Rejected') {
+                  Application declined
+                } @else {
+                  Pending review
+                }
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-end pt-3 border-t border-gray-100">
+        <button
+          type="button"
+          (click)="onClose()"
+          class="rounded-lg bg-gray-100 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-200 transition-colors"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+}

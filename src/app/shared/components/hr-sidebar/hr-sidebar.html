@@ -1,0 +1,153 @@
+@if (isMobileOpen) {
+  <div
+    (click)="closeMobile()"
+    class="fixed inset-0 z-40 bg-slate-900/50 backdrop-blur-sm md:hidden"
+  ></div>
+}
+<section
+  class="fixed inset-y-0 left-0 z-50 flex h-full min-h-screen flex-col justify-between border-r border-navy-200 bg-[#0d1d3e] text-white transition-all duration-300 md:static md:translate-x-0"
+  [ngClass]="{
+    'translate-x-0': isMobileOpen,
+    '-translate-x-full': !isMobileOpen,
+    'w-64': !isCollapsed,
+    'w-25': isCollapsed,
+  }"
+>
+  <div
+    class="flex h-20 items-center justify-between border-b border-[#68a7f5]/30 bg-[#0d1d3e] px-4"
+  >
+    <div class="flex items-center gap-3 overflow-hidden">
+      <div
+        class="flex h-9 w-9 items-center justify-center overflow-hidden rounded-lg text-[#68a7f5]"
+      >
+        <mat-icon class="flex! h-full! w-full! items-center justify-center leading-none"
+          >diversity_2</mat-icon
+        >
+      </div>
+      @if (!isCollapsed) {
+        <div class="flex flex-col truncate">
+          <span class="text-base font-bold tracking-tight text-[#68a7f5]">LeaveFlow</span>
+          <span class="text-[10px] font-semibold uppercase tracking-wider text-[#68a7f5]">
+            Hr Portal
+          </span>
+        </div>
+      }
+    </div>
+
+    <button
+      (click)="toggleDesktopCollapse()"
+      class="hidden rounded-lg p-1.5 text-slate-300 hover:text-white md:block"
+      [title]="isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'"
+    >
+      <mat-icon class="h-5! w-5! text-sm">
+        {{ isCollapsed ? 'chevron_right' : 'chevron_left' }}
+      </mat-icon>
+    </button>
+  </div>
+
+  <ul
+    class="flex-1 overflow-y-auto overflow-x-hidden px-3 py-4 space-y-1 [scrollbar-none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+  >
+    @for (menu of menus; track menu.name) {
+      <li class="group relative">
+        <a
+          [routerLink]="[menu.link]"
+          routerLinkActive="bg-[#68a7f5] text-[#0d1d3e] font-semibold"
+          (click)="toggleMenu(menu); closeMobile()"
+          class="group flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium text-slate-200 transition-colors hover:bg-[#313d5b] hover:text-white"
+          [ngClass]="{ 'justify-between': !isCollapsed, 'justify-center': isCollapsed }"
+        >
+          <div class="flex items-center gap-3">
+            <img
+              [src]="menu.icon"
+              [alt]="menu.name"
+              class="h-5 w-5 object-contain brightness-0 invert"
+            />
+            @if (!isCollapsed) {
+              <span class="truncate">{{ menu.name }}</span>
+            }
+          </div>
+
+          @if (menu.children && !isCollapsed) {
+            <div>
+              @if (menu.open) {
+                <img src="assets/images/svg/open.svg" alt="Chevron Down" class="h-4 w-4" />
+              } @else {
+                <img src="assets/images/svg/close.svg" alt="Chevron Right" class="h-4 w-4" />
+              }
+            </div>
+          }
+        </a>
+
+        @if (isCollapsed) {
+          <div
+            class="pointer-events-none absolute left-full top-1/2 z-50 ml-2 -translate-y-1/2 whitespace-nowrap rounded bg-slate-800 px-2 py-1 text-xs text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100"
+          >
+            {{ menu.name }}
+          </div>
+        }
+
+        @if (menu.children && menu.open && !isCollapsed) {
+          <ul class="mt-1 space-y-1 pl-9">
+            @for (child of menu.children; track child.name) {
+              <li>
+                <a
+                  [routerLink]="[child.link]"
+                  routerLinkActive="text-[#68a7f5] font-semibold"
+                  class="block rounded-md px-2 py-1.5 text-xs text-slate-300 transition-colors hover:text-white"
+                >
+                  {{ child.name }}
+                </a>
+              </li>
+            }
+          </ul>
+        }
+      </li>
+    }
+  </ul>
+
+  <div class="border-t border-[#68a7f5]/30 bg-[#0b1733] p-4 space-y-3">
+    <div class="flex items-center gap-3 px-2 py-1" [ngClass]="{ 'justify-center': isCollapsed }">
+      <div
+        class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#68a7f5] text-sm font-bold text-[#0d1d3e]"
+        [title]="isCollapsed ? userName : ''"
+      >
+        {{ userInitials || 'JD' }}
+      </div>
+
+      @if (!isCollapsed) {
+        <div class="flex flex-col truncate">
+          <span class="truncate text-sm font-semibold text-white">
+            {{ userName || 'Jane Doe' }}
+          </span>
+          <span class="truncate text-xs text-slate-400">
+            {{ userRole || 'Software Engineer' }}
+          </span>
+        </div>
+      }
+    </div>
+    <button
+      class="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-slate-300 transition-colors hover:bg-red-500/10 hover:text-red-400"
+      [ngClass]="{ 'justify-start': !isCollapsed, 'justify-center': isCollapsed }"
+      [title]="isCollapsed ? 'Logout' : ''"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-5"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="1.8"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4m-4-4l4-4m0 0l-4-4m4 4H3"
+        />
+      </svg>
+      @if (!isCollapsed) {
+        <span>Logout</span>
+      }
+    </button>
+  </div>
+</section>
