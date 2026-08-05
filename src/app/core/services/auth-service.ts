@@ -26,7 +26,7 @@ export class AuthService {
       .set('email', email)
       .set('password', password);
     return this.http.post(url, body, {
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      headers: { 'Content-Type': 'application/json' },
     });
   }
 }
