@@ -20,11 +20,6 @@ export class AuthService {
 
   login(LoginForm: any) {
     const url = `${this.baseUrl + routes.login}`;
-    const { email, password } = LoginForm; // destructure the login object
-    // const body = new HttpParams().set('email', email).set('password', password);
-    const body = JSON.stringify({ email, password }); // create a JSON string from the destructured values
-    return this.http.post(url, body, {
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return this.http.post(url, LoginForm);
   }
 }
