@@ -3,6 +3,8 @@ import { LeaveItem } from '../../../core/interface/leave';
 import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { ProfileDetails } from '../../../core/interface/employee';
+import { Employee } from '../../../core/services/data/employee/employee';
 
 @Component({
   selector: 'app-hr-sidebar',
@@ -11,7 +13,12 @@ import { CommonModule } from '@angular/common';
   styles: ``,
 })
 export class HrSidebar {
-  constructor(private router: Router) {}
+  profile!: ProfileDetails;
+
+  constructor(
+    private employeeService: Employee,
+    private router: Router,
+  ) {}
   userName: string = 'Jane Doe';
   userRole: string = 'Software Engineer';
   isMobileOpen: boolean = false;
@@ -56,6 +63,20 @@ export class HrSidebar {
     });
 
     menu.open = !menu.open;
+  }
+
+  loadProfile(): void {
+    this.employeeService.getProfileDetails().subscribe({
+      next: (response) => {
+        console.log('Profile response:', response);
+
+        this.profile = response;
+      },
+
+      error: (error) => {
+        console.error('Profile API error:', error);
+      },
+    });
   }
 
   toggleMobileSidebar() {

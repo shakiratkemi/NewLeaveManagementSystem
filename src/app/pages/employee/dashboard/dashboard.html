@@ -32,7 +32,7 @@
     >
       <div>
         <h3 class="text-green-700 font-bold text-3xl sm:text-4xl mb-2 sm:mb-4">
-          {{ dashboardData.totalLeaveDaysRemaining }}
+          {{ dashboardData?.totalLeaveDaysRemaining }}
         </h3>
         <p class="text-sm sm:text-base font-medium text-gray-800 mb-1">Days Remaining</p>
         <small class="text-[#868C9F] font-medium text-xs">Leave Balance</small>
@@ -60,7 +60,7 @@
     >
       <div>
         <h3 class="text-blue-500 font-bold text-3xl sm:text-4xl mb-2 sm:mb-4">
-          {{ dashboardData.pendingRequestsCount }}
+          {{ dashboardData?.pendingRequestsCount }}
         </h3>
         <p class="text-sm sm:text-base font-medium text-gray-800 mb-1">Pending Approval</p>
         <small class="text-[#868C9F] font-medium text-xs">Awaiting Approval</small>
@@ -85,7 +85,7 @@
     >
       <div>
         <h3 class="text-orange-500 font-bold text-3xl sm:text-4xl mb-2 sm:mb-4">
-          {{ dashboardData.approvedLeavesCount }}
+          {{ dashboardData?.approvedLeavesCount }}
         </h3>
         <p class="text-sm sm:text-base font-medium text-gray-800 mb-1">Approved Leaves</p>
         <small class="text-[#868C9F] font-medium text-xs">This Year</small>
@@ -109,7 +109,7 @@
     >
       <div>
         <h3 class="text-rose-600 font-bold text-3xl sm:text-4xl mb-2 sm:mb-4">
-          {{ dashboardData.approvedLeavesCount }}
+          {{ dashboardData?.rejectedLeavesCount }}
         </h3>
         <p class="text-sm sm:text-base font-medium text-gray-800 mb-1">Rejected Leaves</p>
         <small class="text-[#868C9F] font-medium text-xs">This Year</small>
@@ -240,12 +240,12 @@
     [isOpen]="isModalOpen"
     (close)="closeModal()"
   >
-  </app-leave-history-details>
+  </app-leave-history-details>-->
 
   <app-applyleave
     [isOpen]="isApplyModalOpen"
     (close)="closeApplyModal()"
     (submitLeave)="handleLeaveSubmit($event)"
   >
-  </app-applyleave> -->
+  </app-applyleave>
 </section>
