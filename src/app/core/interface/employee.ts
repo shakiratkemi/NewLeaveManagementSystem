@@ -11,3 +11,11 @@ export interface Employee {
   totalSickLeave: number;
   status: 'Active' | 'On Leave' | 'Inactive';
 }
+
+export interface DashboardData {
+  employeeName: string;
+  pendingRequestsCount: number;
+  approvedLeavesCount: number;
+  rejectedLeavesCount: number;
+  totalLeaveDaysRemaining: number;
+}
