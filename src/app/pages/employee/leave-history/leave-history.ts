@@ -58,6 +58,53 @@ export class LeaveHistory implements OnChanges, AfterViewInit {
     this.loadLeaveRequests();
   }
 
+  loadLeaveRequestById(id: string): void {
+    this.employeeService.getLeaveRequestById(id).subscribe({
+      next: (response) => {
+        console.log(response);
+        const payload = response?.data ?? response;
+        const single = Array.isArray(payload) ? payload[0] : payload;
+        if (!single) {
+          return;
+        }
+        const mapped = this.mapSingleRecord(single);
+        this.selectedRequest = mapped;
+      },
+      error: (err: any) => {
+        console.error('Error fetching leave request by id:', err);
+        this.selectedRequest = null;
+      },
+    });
+  }
+
+  private mapSingleRecord(record: any): LeaveHistoryRow {
+    return {
+      id: record.id || record.id || '',
+      leaveType: this.formatLeaveType(record.leaveType),
+      startDate: record.startDate || record.createdAt || '',
+      endDate: record.endDate || '',
+      duration: record.numberOfDays ?? record.days ?? 0,
+      reason: record.reason || '',
+      status: record.status || 'Pending',
+    } as LeaveHistoryRow;
+  }
+
+  private formatLeaveType(leaveType: any): string {
+    if (!leaveType) {
+      return 'Unknown';
+    }
+
+    if (typeof leaveType === 'string') {
+      return leaveType;
+    }
+
+    if (typeof leaveType === 'object') {
+      return leaveType.name || leaveType.type || 'Unknown';
+    }
+
+    return 'Unknown';
+  }
+
   loadLeaveRequests(): void {
     this.isLoading = true;
     this.usingFallbackData = false;
@@ -102,7 +149,7 @@ export class LeaveHistory implements OnChanges, AfterViewInit {
 
     return {
       id: request.id,
-      leaveType: request.leaveType?.name || 'Leave',
+      leaveType: this.formatLeaveType(request.leaveType),
       startDate: this.formatDate(request.startDate),
       endDate: this.formatDate(request.endDate),
       duration: request.duration ?? duration,
@@ -248,8 +295,16 @@ export class LeaveHistory implements OnChanges, AfterViewInit {
   handleViewDetails(request: LeaveHistoryRow): void {
     console.log('Viewing details for request:', request);
 
-    this.selectedRequest = request;
+    const id = request.id || (request as any).id;
+
+    if (!id) {
+      this.selectedRequest = request;
+      this.isModalOpen = true;
+      return;
+    }
+
     this.isModalOpen = true;
+    this.loadLeaveRequestById(id);
   }
 
   closeModal(): void {

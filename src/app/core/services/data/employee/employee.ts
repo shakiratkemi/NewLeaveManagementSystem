@@ -16,7 +16,7 @@ const routes = {
   leaveTypes: 'LeaveTypes',
   leaveTypeById: 'LeaveTypeById',
   leaveRequests: 'LeaveRequests',
-  leaveRequestById: 'LeaveRequestsById',
+  leaveRequestById: 'LeaveRequests/{id}',
   profile: 'Profile',
 };
 
@@ -48,7 +48,9 @@ export class Employee {
   }
 
   getLeaveRequestById(id: string): Observable<LeaveRequestsResponse> {
-    return this.http.get<LeaveRequestsResponse>(`${this.baseUrl}${routes.leaveRequestById}/${id}`);
+    return this.http.get<LeaveRequestsResponse>(
+      `${this.baseUrl}${routes.leaveRequestById.replace('{id}', id)}`,
+    );
   }
 
   updateLeaveRequestById(id: string, data: any): Observable<any> {
