@@ -1,9 +1,32 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatPaginatorModule, MatPaginator, PageEvent } from '@angular/material/paginator';
-import { Employee } from '../../../core/interface/employee';
 import { AddEmployee } from './add-employee/add-employee';
+import { HrService } from '../../../core/services/data/hr/hr-service';
+
+type EmployeeRecord = {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  department: string;
+  annualLeaveBalance: number;
+  totalAnnualLeave: number;
+  sickLeaveBalance: number;
+  totalSickLeave: number;
+  status: 'Active' | 'On Leave' | 'Inactive';
+};
+
+type EmployeeFormData = {
+  name: string;
+  email: string;
+  role: string;
+  department: string;
+  totalAnnualLeave: number;
+  totalSickLeave: number;
+  status: EmployeeRecord['status'];
+};
 
 @Component({
   selector: 'app-employees',
@@ -15,13 +38,13 @@ import { AddEmployee } from './add-employee/add-employee';
 export class Employees implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  employees: Employee[] = [];
+  employees: EmployeeRecord[] = [];
   searchQuery: string = '';
   selectedDepartment: string = 'All';
   selectedStatus: string = 'All';
-  selectedEmployeeForModal: Employee | null = null;
+  selectedEmployeeForModal: EmployeeRecord | null = null;
   isAddModalOpen: boolean = false;
-  newEmployee: Partial<Employee> = {
+  newEmployee: Partial<EmployeeFormData> = {
     name: '',
     email: '',
     role: '',
@@ -45,8 +68,10 @@ export class Employees implements OnInit, AfterViewInit {
   ];
   readonly statuses: string[] = ['All', 'Active', 'On Leave', 'Inactive'];
 
+  constructor(private hrService: HrService, private cdr: ChangeDetectorRef) {}
+
   ngOnInit(): void {
-    this.loadMockEmployees();
+    this.loadEmployees();
   }
 
   ngAfterViewInit(): void {
@@ -60,7 +85,7 @@ export class Employees implements OnInit, AfterViewInit {
     }
   }
 
-  get filteredEmployees(): Employee[] {
+  get filteredEmployees(): EmployeeRecord[] {
     const query = this.searchQuery.toLowerCase().trim();
     return this.employees.filter((emp) => {
       const matchesSearch =
@@ -78,13 +103,11 @@ export class Employees implements OnInit, AfterViewInit {
     });
   }
 
-  // Slice Filtered Data for MatPaginator Display
-  get pagedEmployees(): Employee[] {
+  get pagedEmployees(): EmployeeRecord[] {
     const startIndex = this.pageIndex * this.pageSize;
     return this.filteredEmployees.slice(startIndex, startIndex + this.pageSize);
   }
 
-  // Filter Change Handlers (Reset to Page 1 on filter update)
   onFilterChange(): void {
     this.pageIndex = 0;
     if (this.paginator) {
@@ -92,8 +115,7 @@ export class Employees implements OnInit, AfterViewInit {
     }
   }
 
-  // View Details Modal State
-  openLeaveModal(employee: Employee): void {
+  openLeaveModal(employee: EmployeeRecord): void {
     this.selectedEmployeeForModal = employee;
   }
 
@@ -101,7 +123,6 @@ export class Employees implements OnInit, AfterViewInit {
     this.selectedEmployeeForModal = null;
   }
 
-  // Add Employee Modal State
   openAddEmployeeModal(): void {
     this.isAddModalOpen = true;
   }
@@ -116,19 +137,18 @@ export class Employees implements OnInit, AfterViewInit {
       return;
     }
 
-    const createdEmployee: Employee = {
+    const createdEmployee: EmployeeRecord = {
       id: `EMP-00${this.employees.length + 1}`,
       name: this.newEmployee.name,
       email: this.newEmployee.email,
-      avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(this.newEmployee.name)}`,
       role: this.newEmployee.role,
       department: this.newEmployee.department || 'Engineering',
       annualLeaveBalance: this.newEmployee.totalAnnualLeave || 20,
       totalAnnualLeave: this.newEmployee.totalAnnualLeave || 20,
       sickLeaveBalance: this.newEmployee.totalSickLeave || 10,
       totalSickLeave: this.newEmployee.totalSickLeave || 10,
-      status: (this.newEmployee.status as Employee['status']) || 'Active',
-    };
+      status: this.newEmployee.status || 'Active',
+    } as EmployeeRecord;
 
     this.employees = [createdEmployee, ...this.employees];
     this.closeAddEmployeeModal();
@@ -146,21 +166,92 @@ export class Employees implements OnInit, AfterViewInit {
     };
   }
 
-  handleSaveEmployee(
-    formData: Omit<Employee, 'id' | 'avatar' | 'annualLeaveBalance' | 'sickLeaveBalance'>,
-  ): void {
-    const createdEmployee: Employee = {
-      ...formData,
+  handleSaveEmployee(formData: EmployeeFormData): void {
+    const createdEmployee: EmployeeRecord = {
       id: `EMP-00${this.employees.length + 1}`,
-      avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(formData.name)}`,
+      name: formData.name,
+      email: formData.email,
+      role: formData.role,
+      department: formData.department || 'Engineering',
       annualLeaveBalance: formData.totalAnnualLeave,
+      totalAnnualLeave: formData.totalAnnualLeave,
       sickLeaveBalance: formData.totalSickLeave,
+      totalSickLeave: formData.totalSickLeave,
+      status: formData.status || 'Active',
     };
 
     this.employees = [createdEmployee, ...this.employees];
   }
 
-  getStatusBadgeClass(status: Employee['status']): string {
+  private loadEmployees(): void {
+    this.hrService.getAllEmployees().subscribe({
+      next: (response: any) => {
+        console.log('getAllEmployees response:', response);
+        let list: any[] = [];
+
+        if (Array.isArray(response)) {
+          list = response;
+        } else if (Array.isArray(response?.data)) {
+          list = response.data;
+        } else if (Array.isArray(response?.data?.data)) {
+          list = response.data.data;
+        } else if (Array.isArray(response?.users)) {
+          list = response.users;
+        } else if (Array.isArray(response?.data?.users)) {
+          list = response.data.users;
+        } else {
+          // Try to find the first array property on the response
+          for (const key of Object.keys(response || {})) {
+            if (Array.isArray(response[key])) {
+              list = response[key];
+              break;
+            }
+          }
+        }
+        if (!Array.isArray(list)) list = [];
+        this.employees = list.map((item: any, index: number) => this.mapEmployee(item, index));
+        console.log('Employees mapped:', this.employees);
+        try {
+          this.cdr.detectChanges();
+        } catch (e) {
+          console.warn('detectChanges failed', e);
+        }
+      },
+      error: (err) => {
+        console.error('Failed to load employees', err);
+        this.employees = [];
+      },
+    });
+  }
+
+  private mapEmployee(item: any, index: number): EmployeeRecord {
+    return {
+      id: item.id ?? item.employeeId ?? item.userId ?? `EMP-00${index + 1}`,
+      name: item.fullName ?? item.name ?? item.employeeName ?? item.userName ?? 'Unknown Employee',
+      email: item.email ?? item.employeeEmail ?? item.userEmail ?? 'N/A',
+      role: item.role ?? item.jobTitle ?? item.designation ?? 'Employee',
+      department: item.department ?? item.designation ?? 'Engineering',
+      annualLeaveBalance: Number(
+        item.annualLeaveBalance ?? item.remainingAnnualLeave ?? item.annualLeave ?? 20,
+      ),
+      totalAnnualLeave: Number(item.totalAnnualLeave ?? item.annualLeaveQuota ?? 20),
+      sickLeaveBalance: Number(
+        item.sickLeaveBalance ?? item.remainingSickLeave ?? item.sickLeave ?? 10,
+      ),
+      totalSickLeave: Number(item.totalSickLeave ?? item.sickLeaveQuota ?? 10),
+      status: this.normalizeStatus(item.status ?? item.employeeStatus),
+    };
+  }
+
+  private normalizeStatus(status: unknown): EmployeeRecord['status'] {
+    if (status === 'Active' || status === 'On Leave' || status === 'Inactive') {
+      return status;
+    }
+
+    return 'Active';
+  }
+
+  getStatusBadgeClass(status: EmployeeRecord['status']): string {
     switch (status) {
       case 'Active':
         return 'bg-emerald-50 text-emerald-700 ring-emerald-600/20';
@@ -169,62 +260,5 @@ export class Employees implements OnInit, AfterViewInit {
       case 'Inactive':
         return 'bg-slate-100 text-slate-600 ring-slate-500/20';
     }
-  }
-
-  private loadMockEmployees(): void {
-    this.employees = [
-      {
-        id: 'EMP-001',
-        name: 'Sarah Jenkins',
-        email: 'sarah.j@company.com',
-        avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
-        role: 'Senior Frontend Engineer',
-        department: 'Engineering',
-        annualLeaveBalance: 12,
-        totalAnnualLeave: 20,
-        sickLeaveBalance: 8,
-        totalSickLeave: 10,
-        status: 'On Leave',
-      },
-      {
-        id: 'EMP-002',
-        name: 'Marcus Chen',
-        email: 'marcus.c@company.com',
-        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
-        role: 'Lead Product Manager',
-        department: 'Product',
-        annualLeaveBalance: 18,
-        totalAnnualLeave: 20,
-        sickLeaveBalance: 10,
-        totalSickLeave: 10,
-        status: 'Active',
-      },
-      {
-        id: 'EMP-003',
-        name: 'Amara Okonjo',
-        email: 'amara.o@company.com',
-        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
-        role: 'Marketing Specialist',
-        department: 'Marketing',
-        annualLeaveBalance: 5,
-        totalAnnualLeave: 18,
-        sickLeaveBalance: 6,
-        totalSickLeave: 10,
-        status: 'Active',
-      },
-      {
-        id: 'EMP-004',
-        name: 'David Miller',
-        email: 'david.m@company.com',
-        avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150',
-        role: 'DevOps Lead',
-        department: 'Engineering',
-        annualLeaveBalance: 15,
-        totalAnnualLeave: 20,
-        sickLeaveBalance: 9,
-        totalSickLeave: 10,
-        status: 'Active',
-      },
-    ];
   }
 }

@@ -3,6 +3,7 @@ import { LeaveItem } from '../../../core/interface/leave';
 import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { HrService } from '../../../core/services/data/hr/hr-service';
 
 import { Employee } from '../../../core/services/data/employee/employee';
 
@@ -13,12 +14,8 @@ import { Employee } from '../../../core/services/data/employee/employee';
   styles: ``,
 })
 export class HrSidebar {
-  constructor(
-    private employeeService: Employee,
-    private router: Router,
-  ) {}
-  userName: string = 'Jane Doe';
-  userRole: string = 'Software Engineer';
+  constructor(private router: Router) {}
+  data!: any;
   isMobileOpen: boolean = false;
   isCollapsed: boolean = false;
   menus: LeaveItem[] = [
@@ -39,10 +36,27 @@ export class HrSidebar {
       link: '/hr/employees',
     },
   ];
-  get userInitials(): string {
-    if (!this.userName) return 'U';
 
-    const names = this.userName.trim().split(' ');
+  ngOnInit(): void {
+    const userData = localStorage.getItem('loggedInUser');
+    if (userData) {
+      this.data = JSON.parse(userData);
+    }
+  }
+
+  get userName(): string {
+    return this.data?.fullName || this.data?.name || this.data?.employeeName || 'Jane Doe';
+  }
+
+  get userRole(): string {
+    return this.data?.designation || 'Software Engineer';
+  }
+
+  get userInitials(): string {
+    const fullName = this.data?.fullName || this.data?.name || this.data?.employeeName;
+    if (!fullName) return 'U';
+
+    const names = String(fullName).trim().split(/\s+/);
     if (names.length >= 2) {
       return `${names[0][0]}${names[names.length - 1][0]}`.toUpperCase();
     }
