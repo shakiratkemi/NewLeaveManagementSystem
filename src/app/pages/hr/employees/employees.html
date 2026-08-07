@@ -95,11 +95,6 @@
               <tr class="hover:bg-slate-50/50 transition">
                 <td class="py-4 px-6 whitespace-nowrap">
                   <div class="flex items-center gap-3">
-                    <img
-                      [src]="emp.avatar"
-                      [alt]="emp.name"
-                      class="w-10 h-10 rounded-full object-cover"
-                    />
                     <div>
                       <div class="font-semibold text-slate-900">{{ emp.name }}</div>
                       <div class="text-xs text-slate-500">{{ emp.email }}</div>
@@ -188,11 +183,6 @@
         <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
-              <img
-                [src]="emp.avatar"
-                [alt]="emp.name"
-                class="w-12 h-12 rounded-full object-cover"
-              />
               <div>
                 <div class="font-semibold text-slate-900">{{ emp.name }}</div>
                 <div class="text-xs text-slate-500">{{ emp.role }}</div>
@@ -271,11 +261,11 @@
       >
         <div class="flex items-center justify-between border-b border-slate-100 pb-4">
           <div class="flex items-center gap-3">
-            <img
+            <!-- <img
               [src]="employee.avatar"
               [alt]="employee.name"
               class="w-10 h-10 rounded-full object-cover"
-            />
+            /> -->
             <div>
               <h3 class="font-bold text-slate-900 text-base">{{ employee.name }}</h3>
               <p class="text-xs text-slate-500">{{ employee.department }} • {{ employee.id }}</p>

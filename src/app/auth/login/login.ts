@@ -58,7 +58,12 @@ export class Login implements OnInit {
             localStorage.setItem('access_token', responseData.token);
             alert('Login successful');
             const helper = new JwtHelperService();
-            this.loggedInUser = helper.decodeToken(localStorage.getItem('access_token')!);
+            const decodedToken = helper.decodeToken(localStorage.getItem('access_token')!);
+            this.loggedInUser = {
+              ...decodedToken,
+              ...responseData,
+              fullName: responseData.fullName || decodedToken.fullName || decodedToken.name || 'User',
+            };
             console.log('Decoded token:', this.loggedInUser);
             localStorage.setItem('loggedInUser', JSON.stringify(this.loggedInUser));
 
