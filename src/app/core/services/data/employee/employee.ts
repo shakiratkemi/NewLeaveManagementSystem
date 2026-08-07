@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../../evironments/environment';
 import { HttpClient } from '@angular/common/http';
+import { map } from 'rxjs/operators';
 
 import { Observable } from 'rxjs';
 import {
@@ -46,8 +47,8 @@ export class Employee {
     return this.http.get<LeaveRequestsResponse>(`${this.baseUrl}${routes.leaveRequests}`);
   }
 
-  getLeaveRequestById(id: string): Observable<LeaveRequestHistory> {
-    return this.http.get<LeaveRequestHistory>(`${this.baseUrl}${routes.leaveRequestById}/${id}`);
+  getLeaveRequestById(id: string): Observable<LeaveRequestsResponse> {
+    return this.http.get<LeaveRequestsResponse>(`${this.baseUrl}${routes.leaveRequestById}/${id}`);
   }
 
   updateLeaveRequestById(id: string, data: any): Observable<any> {
@@ -60,7 +61,9 @@ export class Employee {
 
   // Profile
   getProfileDetails(): Observable<any> {
-    return this.http.get(`${this.baseUrl}${routes.profile}`);
+    return this.http
+      .get(`${this.baseUrl}${routes.profile}`)
+      .pipe(map((response: any) => response?.data ?? response));
   }
 
   updateProfileDetails(id: string, data: any): Observable<any> {

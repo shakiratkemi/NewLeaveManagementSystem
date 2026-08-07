@@ -3,7 +3,7 @@ import { LeaveItem } from '../../../core/interface/leave';
 import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { ProfileDetails } from '../../../core/interface/employee';
+
 import { Employee } from '../../../core/services/data/employee/employee';
 
 @Component({
@@ -13,8 +13,6 @@ import { Employee } from '../../../core/services/data/employee/employee';
   styles: ``,
 })
 export class HrSidebar {
-  profile!: ProfileDetails;
-
   constructor(
     private employeeService: Employee,
     private router: Router,
@@ -63,20 +61,6 @@ export class HrSidebar {
     });
 
     menu.open = !menu.open;
-  }
-
-  loadProfile(): void {
-    this.employeeService.getProfileDetails().subscribe({
-      next: (response) => {
-        console.log('Profile response:', response);
-
-        this.profile = response;
-      },
-
-      error: (error) => {
-        console.error('Profile API error:', error);
-      },
-    });
   }
 
   toggleMobileSidebar() {

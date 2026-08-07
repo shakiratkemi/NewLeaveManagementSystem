@@ -15,12 +15,7 @@ import { LeaveHistoryDetails } from './leave-history-details/leave-history-detai
 import { PageEvent, MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
 
 import { Employee } from '../../../core/services/data/employee/employee';
-import {
-  LeaveHistoryRow,
-  LeaveRequestHistory,
-  LeaveRequestStatus,
-  LeaveTypes,
-} from '../../../core/interface/employee';
+import { LeaveHistoryRow, LeaveRequestHistory } from '../../../core/interface/employee';
 
 @Component({
   selector: 'app-leave-history',

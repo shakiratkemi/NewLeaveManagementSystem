@@ -44,10 +44,10 @@ export class Profile implements OnInit {
 
   loadProfile(): void {
     this.employeeService.getProfileDetails().subscribe({
-      next: (response: any) => {
+      next: (response) => {
         console.log('Profile response:', response);
 
-        this.profile = response.data ?? response;
+        this.profile = response;
       },
 
       error: (error) => {

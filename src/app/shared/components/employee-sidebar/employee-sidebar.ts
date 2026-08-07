@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { LeaveItem } from '../../../core/interface/leave';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
+import { ProfileDetails } from '../../../core/interface/employee';
+import { Employee } from '../../../core/services/data/employee/employee';
 
 @Component({
   selector: 'app-employee-sidebar',
@@ -10,10 +12,14 @@ import { MatIconModule } from '@angular/material/icon';
   templateUrl: './employee-sidebar.html',
   styles: ``,
 })
-export class EmployeeSidebar {
-  constructor(private router: Router) {}
-  userName: string = 'Jane Doe';
-  userRole: string = 'Software Engineer';
+export class EmployeeSidebar implements OnInit {
+  profile!: ProfileDetails;
+
+  constructor(
+    private employeeService: Employee,
+    private router: Router,
+  ) {}
+
   isMobileOpen: boolean = false;
   isCollapsed: boolean = false;
   menus: LeaveItem[] = [
@@ -34,14 +40,35 @@ export class EmployeeSidebar {
     },
   ];
 
-  get userInitials(): string {
-    if (!this.userName) return 'U';
+  ngOnInit(): void {
+    this.loadProfile();
+  }
 
-    const names = this.userName.trim().split(' ');
-    if (names.length >= 2) {
-      return `${names[0][0]}${names[names.length - 1][0]}`.toUpperCase();
-    }
-    return names[0][0].toUpperCase();
+  getFirstTwoCharacters(name: string): string {
+    return name.charAt(0) + name.charAt(1);
+  }
+
+  loadProfile(): void {
+    this.employeeService.getProfileDetails().subscribe({
+      next: (response: any) => {
+        console.log('Profile response:', response);
+
+        const payload = response?.data ?? response;
+        const profileData = payload?.data ?? payload?.profile ?? payload;
+
+        this.profile = {
+          ...profileData,
+          fullName: profileData?.fullName ?? profileData?.name ?? '',
+          leaveBalance: profileData?.leaveBalance ?? profileData?.annualLeaveBalance ?? 0,
+          designation: profileData?.designation ?? profileData?.jobTitle ?? '',
+          createdAt: profileData?.createdAt ?? profileData?.startDate ?? null,
+        } as ProfileDetails;
+      },
+
+      error: (error) => {
+        console.error('Profile API error:', error);
+      },
+    });
   }
 
   toggleMenu(menu: any) {
