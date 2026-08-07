@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { CommonModule, DatePipe } from '@angular/common';
-// import { LeaveHistoryDetails } from '../leave-history/leave-history-details/leave-history-details';
+
 import { Applyleave } from './apply-leave/apply-leave';
 import { Employee } from '../../../core/services/data/employee/employee';
 import { DashboardData } from '../../../core/interface/employee';

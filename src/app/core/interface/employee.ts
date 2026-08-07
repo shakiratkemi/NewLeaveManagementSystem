@@ -21,7 +21,7 @@ export interface DashboardData {
 }
 
 export interface ProfileDetails {
-  id: number;
+  id: string;
   fullName: string;
   email: string;
   role: string;

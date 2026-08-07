@@ -2,9 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { LeaveItem } from '../../../core/interface/leave';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { MatIconModule } from '@angular/material/icon';
-import { ProfileDetails } from '../../../core/interface/employee';
 import { Employee } from '../../../core/services/data/employee/employee';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-employee-sidebar',
@@ -13,11 +12,11 @@ import { Employee } from '../../../core/services/data/employee/employee';
   styles: ``,
 })
 export class EmployeeSidebar implements OnInit {
-  profile!: ProfileDetails;
+  profile!: any;
 
   constructor(
-    private employeeService: Employee,
     private router: Router,
+    private employeeService: Employee,
   ) {}
 
   isMobileOpen: boolean = false;
@@ -41,34 +40,45 @@ export class EmployeeSidebar implements OnInit {
   ];
 
   ngOnInit(): void {
-    this.loadProfile();
-  }
+    const user = localStorage.getItem('loggedInUser');
+    if (user) {
+      this.profile = JSON.parse(user);
+      return;
+    }
 
-  getFirstTwoCharacters(name: string): string {
-    return name.charAt(0) + name.charAt(1);
-  }
-
-  loadProfile(): void {
+    // Fallback: fetch profile from API if not present in localStorage
     this.employeeService.getProfileDetails().subscribe({
       next: (response: any) => {
-        console.log('Profile response:', response);
-
         const payload = response?.data ?? response;
         const profileData = payload?.data ?? payload?.profile ?? payload;
 
         this.profile = {
+          ...this.profile,
           ...profileData,
-          fullName: profileData?.fullName ?? profileData?.name ?? '',
-          leaveBalance: profileData?.leaveBalance ?? profileData?.annualLeaveBalance ?? 0,
-          designation: profileData?.designation ?? profileData?.jobTitle ?? '',
-          createdAt: profileData?.createdAt ?? profileData?.startDate ?? null,
-        } as ProfileDetails;
+        };
       },
-
-      error: (error) => {
-        console.error('Profile API error:', error);
+      error: (err) => {
+        console.error('Sidebar profile API error:', err);
       },
     });
+  }
+
+  get fullName(): string {
+    return this.profile?.fullName || this.profile?.name || this.profile?.employeeName || '';
+  }
+  get email(): string {
+    return this.profile?.email || this.profile?.designation || '';
+  }
+
+  get userInitials(): string {
+    const fullName = this.profile?.fullName || this.profile?.name || this.profile?.employeeName;
+    if (!fullName) return 'U';
+
+    const names = String(fullName).trim().split(/\s+/);
+    if (names.length >= 2) {
+      return `${names[0][0]}${names[names.length - 1][0]}`.toUpperCase();
+    }
+    return names[0][0].toUpperCase();
   }
 
   toggleMenu(menu: any) {

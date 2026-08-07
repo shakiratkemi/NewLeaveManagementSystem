@@ -112,14 +112,14 @@
         class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#68a7f5] text-sm font-bold text-[#0d1d3e]"
         [title]="isCollapsed"
       >
-        {{ profile.fullName.charAt(0) }}{{ profile.fullName.charAt(5) }}
+        {{ userInitials }}
       </div>
       <div class="flex flex-col">
         <span class="truncate text-sm font-semibold text-white">
-          {{ profile.fullName }}
+          {{ fullName }}
         </span>
         <span class="truncate text-xs text-slate-400">
-          {{ profile.designation }}
+          {{ email }}
         </span>
       </div>
     </div>
