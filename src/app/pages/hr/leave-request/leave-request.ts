@@ -2,13 +2,15 @@ import { Component, OnInit, ViewChild, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { Employee as EmployeeService } from '../../../core/services/data/employee/employee';
+import { HrService } from '../../../core/services/data/hr/hr-service';
 
 export interface HrLeaveRecord {
   requestId: string;
   employeeId: string;
   employeeName: string;
   department: string;
-  leaveType: 'Annual' | 'Sick' | 'Casual' | 'Unpaid';
+  leaveType: 'Maternity/Paternity Leave' | 'Sick Leave' | 'Annual Leave';
   startDate: string;
   endDate: string;
   days: number;
@@ -29,10 +31,8 @@ export interface HrLeaveRecord {
 export class LeaveRequest implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  
   allRecords = signal<HrLeaveRecord[]>([]);
 
-  
   searchTerm = signal<string>('');
   selectedStatusFilter = signal<string>('ALL');
   selectedDepartmentFilter = signal<string>('ALL');
@@ -71,66 +71,42 @@ export class LeaveRequest implements OnInit {
   });
 
   ngOnInit(): void {
-    this.allRecords.set([
-      {
-        requestId: 'LV-9041',
-        employeeId: 'EMP-104',
-        employeeName: 'Sarah Jenkins',
-        department: 'Engineering',
-        leaveType: 'Annual',
-        startDate: '2026-08-15',
-        endDate: '2026-08-22',
-        days: 6,
-        reason: 'Summer family vacation trip.',
-        appliedOn: '2026-08-01',
-        status: 'Pending',
-        contactDetails: 'Available via phone (+1 555-0192)',
+    this.loadLeaveRequests();
+  }
+
+  constructor(private hrService: HrService) {}
+
+  // Track processing requests to disable buttons during network calls
+  processing = new Set<string>();
+
+  loadLeaveRequests(): void {
+    this.hrService.getAllLeaveRequests().subscribe({
+      next: (res: any) => {
+        console.log('HR LeaveRequests response:', res);
+        const rawRecords = Array.isArray(res?.data) ? res.data : [];
+        const mappedRecords = rawRecords.map((record: any) => ({
+          requestId: record.id || '',
+          employeeId: record.employeeId || record.employee?.id || '',
+          employeeName: record.employeeName || record.employee?.name || 'Unknown',
+          department: record.department || 'Unknown',
+          leaveType: record.leaveType || 'Unknown',
+          startDate: record.startDate || record.createdAt || '',
+          endDate: record.endDate || '',
+          days: record.numberOfDays ?? 0,
+          reason: record.reason || '',
+          appliedOn: record.createdAt || '',
+          status: record.status || 'Pending',
+          approverName: record.managerComments ? 'Manager' : undefined,
+          approverRemarks: record.managerComments || undefined,
+          contactDetails: record.employee?.email || undefined,
+        }));
+
+        this.allRecords.set(mappedRecords as HrLeaveRecord[]);
       },
-      {
-        requestId: 'LV-8920',
-        employeeId: 'EMP-211',
-        employeeName: 'David Chen',
-        department: 'Product',
-        leaveType: 'Sick',
-        startDate: '2026-07-28',
-        endDate: '2026-07-30',
-        days: 3,
-        reason: 'Recovering from viral infection.',
-        appliedOn: '2026-07-27',
-        status: 'Approved',
-        approverName: 'Marcus Vance',
-        approverRemarks: 'Medical note submitted to HR.',
+      error: (err: any) => {
+        console.error('Error loading leave requests:', err);
       },
-      {
-        requestId: 'LV-8812',
-        employeeId: 'EMP-089',
-        employeeName: 'Amara Okafor',
-        department: 'Human Resources',
-        leaveType: 'Casual',
-        startDate: '2026-07-10',
-        endDate: '2026-07-10',
-        days: 1,
-        reason: 'Personal urgent family business.',
-        appliedOn: '2026-07-05',
-        status: 'Approved',
-        approverName: 'Elena Rostova',
-      },
-      {
-        requestId: 'LV-8701',
-        employeeId: 'EMP-305',
-        employeeName: 'Michael Scott',
-        department: 'Sales',
-        leaveType: 'Annual',
-        startDate: '2026-06-01',
-        endDate: '2026-06-14',
-        days: 10,
-        reason: 'Extended travel.',
-        appliedOn: '2026-05-12',
-        status: 'Rejected',
-        approverName: 'Karen Filippelli',
-        approverRemarks: 'Conflicts with Q2 closing schedule.',
-      },
-    ]);
+    });
   }
 
   handlePageEvent(event: PageEvent): void {
@@ -139,7 +115,6 @@ export class LeaveRequest implements OnInit {
   }
 
   onFilterChange(): void {
-    // Reset to the first page on any filter change
     this.pageIndex.set(0);
     if (this.paginator) {
       this.paginator.firstPage();
@@ -155,11 +130,119 @@ export class LeaveRequest implements OnInit {
   }
 
   openDetailsModal(record: HrLeaveRecord): void {
-    this.selectedRecord.set(record);
+    const id = record.requestId || (record as any).id;
+    if (!id) {
+      this.selectedRecord.set(record);
+      return;
+    }
+
+    this.hrService.getRequestById(id).subscribe({
+      next: (res: any) => {
+        console.log('getLeaveRequestById response:', res);
+        const payload = res?.data ?? res;
+        const single = Array.isArray(payload) ? payload[0] : payload;
+        const mapped = this.mapSingleRecord(single || record);
+        this.selectedRecord.set(mapped);
+      },
+      error: (err: any) => {
+        console.error('Error fetching leave request by id:', err);
+        // fallback to the provided record
+        this.selectedRecord.set(record);
+      },
+    });
+  }
+
+  private mapSingleRecord(record: any): HrLeaveRecord {
+    return {
+      requestId: record.id || record.requestId || '',
+      employeeId: record.employeeId || record.employee?.id || record.employeeId || '',
+      employeeName:
+        record.employeeName || record.employee?.name || record.employeeName || 'Unknown',
+      department: record.department || record.employee?.department || 'Unknown',
+      leaveType: record.leaveType || 'Unknown',
+      startDate: record.startDate || record.createdAt || '',
+      endDate: record.endDate || '',
+      days: record.numberOfDays ?? record.days ?? 0,
+      reason: record.reason || '',
+      appliedOn: record.createdAt || record.appliedOn || '',
+      status: record.status || 'Pending',
+      approverName: record.managerComments ? 'Manager' : record.approverName || undefined,
+      approverRemarks: record.managerComments || record.approverRemarks || undefined,
+      contactDetails: record.employee?.email || record.contactDetails || undefined,
+    } as HrLeaveRecord;
   }
 
   closeDetailsModal(): void {
     this.selectedRecord.set(null);
+  }
+
+  approveRequest(record: HrLeaveRecord): void {
+    const id = record.requestId || (record as any).id;
+    if (!id) return;
+    this.processing.add(id);
+    this.hrService.approveLeaveRequest(id).subscribe({
+      next: (res: any) => {
+        console.log('approveLeaveRequest response:', res);
+        // fetch updated record from server
+        this.hrService.getRequestById(id).subscribe({
+          next: (r: any) => {
+            const payload = r?.data ?? r;
+            const single = Array.isArray(payload) ? payload[0] : payload;
+            const mapped = this.mapSingleRecord(single || record);
+            this.replaceRecord(mapped);
+            this.selectedRecord.set(mapped);
+            this.processing.delete(id);
+          },
+          error: (err: any) => {
+            console.error('Error fetching updated record after approve:', err);
+            // optimistic update fallback
+            this.replaceRecord({ ...record, status: 'Approved' });
+            this.selectedRecord.set({ ...record, status: 'Approved' });
+            this.processing.delete(id);
+          },
+        });
+      },
+      error: (err: any) => {
+        console.error('Error approving request:', err);
+        this.processing.delete(id);
+      },
+    });
+  }
+
+  rejectRequest(record: HrLeaveRecord): void {
+    const id = record.requestId || (record as any).id;
+    if (!id) return;
+    this.processing.add(id);
+    this.hrService.rejectLeaveRequest(id).subscribe({
+      next: (res: any) => {
+        console.log('rejectLeaveRequest response:', res);
+        this.hrService.getRequestById(id).subscribe({
+          next: (r: any) => {
+            const payload = r?.data ?? r;
+            const single = Array.isArray(payload) ? payload[0] : payload;
+            const mapped = this.mapSingleRecord(single || record);
+            this.replaceRecord(mapped);
+            this.selectedRecord.set(mapped);
+            this.processing.delete(id);
+          },
+          error: (err: any) => {
+            console.error('Error fetching updated record after reject:', err);
+            this.replaceRecord({ ...record, status: 'Rejected' });
+            this.selectedRecord.set({ ...record, status: 'Rejected' });
+            this.processing.delete(id);
+          },
+        });
+      },
+      error: (err: any) => {
+        console.error('Error rejecting request:', err);
+        this.processing.delete(id);
+      },
+    });
+  }
+
+  private replaceRecord(updated: HrLeaveRecord): void {
+    const list = this.allRecords().map((r) => (r.requestId === updated.requestId ? updated : r));
+    this.allRecords.set(list);
   }
 
   getStatusBadgeClass(status: string): string {

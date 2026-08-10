@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { LeaveItem } from '../../../core/interface/leave';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { Employee } from '../../../core/services/data/employee/employee';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
@@ -10,10 +11,14 @@ import { MatIconModule } from '@angular/material/icon';
   templateUrl: './employee-sidebar.html',
   styles: ``,
 })
-export class EmployeeSidebar {
-  constructor(private router: Router) {}
-  userName: string = 'Jane Doe';
-  userRole: string = 'Software Engineer';
+export class EmployeeSidebar implements OnInit {
+  profile!: any;
+
+  constructor(
+    private router: Router,
+    private employeeService: Employee,
+  ) {}
+
   isMobileOpen: boolean = false;
   isCollapsed: boolean = false;
   menus: LeaveItem[] = [
@@ -34,10 +39,42 @@ export class EmployeeSidebar {
     },
   ];
 
-  get userInitials(): string {
-    if (!this.userName) return 'U';
+  ngOnInit(): void {
+    const user = localStorage.getItem('loggedInUser');
+    if (user) {
+      this.profile = JSON.parse(user);
+      return;
+    }
 
-    const names = this.userName.trim().split(' ');
+    // Fallback: fetch profile from API if not present in localStorage
+    this.employeeService.getProfileDetails().subscribe({
+      next: (response: any) => {
+        const payload = response?.data ?? response;
+        const profileData = payload?.data ?? payload?.profile ?? payload;
+
+        this.profile = {
+          ...this.profile,
+          ...profileData,
+        };
+      },
+      error: (err) => {
+        console.error('Sidebar profile API error:', err);
+      },
+    });
+  }
+
+  get fullName(): string {
+    return this.profile?.fullName || this.profile?.name || this.profile?.employeeName || '';
+  }
+  get email(): string {
+    return this.profile?.email || this.profile?.designation || '';
+  }
+
+  get userInitials(): string {
+    const fullName = this.profile?.fullName || this.profile?.name || this.profile?.employeeName;
+    if (!fullName) return 'U';
+
+    const names = String(fullName).trim().split(/\s+/);
     if (names.length >= 2) {
       return `${names[0][0]}${names[names.length - 1][0]}`.toUpperCase();
     }

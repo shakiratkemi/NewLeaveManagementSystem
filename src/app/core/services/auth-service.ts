@@ -5,6 +5,8 @@ import { environment } from '../../../evironments/environment';
 
 const routes = {
   login: 'Auth/login',
+  registerEmployee: 'Auth/register',
+  resetPassword: 'Auth/reset-password',
 };
 
 @Injectable({
@@ -20,11 +22,16 @@ export class AuthService {
 
   login(LoginForm: any) {
     const url = `${this.baseUrl + routes.login}`;
-    const { email, password } = LoginForm; // destructure the login object
-    // const body = new HttpParams().set('email', email).set('password', password);
-    const body = JSON.stringify({ email, password }); // create a JSON string from the destructured values
-    return this.http.post(url, body, {
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return this.http.post(url, LoginForm);
+  }
+
+  registerEmployee(registerForm: any) {
+    const url = `${this.baseUrl + routes.registerEmployee}`;
+    return this.http.post(url, registerForm);
+  }
+
+  resetPassword(payload: any) {
+    const url = `${this.baseUrl + routes.resetPassword}`;
+    return this.http.post(url, payload);
   }
 }

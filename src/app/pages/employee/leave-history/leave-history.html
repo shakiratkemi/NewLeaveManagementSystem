@@ -6,6 +6,14 @@
     </div>
   </div>
 
+  @if (usingFallbackData) {
+    <div
+      class="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-700"
+    >
+      The leave history API is currently unavailable. Showing temporary sample data.
+    </div>
+  }
+
   <div class="w-full overflow-x-auto rounded-lg border border-gray-200 bg-white shadow-sm">
     <table class="w-full text-left text-sm text-gray-700">
       <thead
@@ -72,7 +80,7 @@
     </table>
 
     <mat-paginator
-      [length]="data.length || leaveRequests.length"
+      [length]="totalRecords"
       [pageSize]="pageSize"
       [pageSizeOptions]="[5, 10, 25]"
       (page)="onPageChange($event)"
