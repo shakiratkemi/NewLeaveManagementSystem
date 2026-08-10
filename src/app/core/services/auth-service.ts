@@ -28,6 +28,7 @@ export class AuthService {
 
   createEmployee(AddEmployeeForm: any) {
     const url = `${this.baseUrl + routes.registerEmployee}`;
+    console.log('AuthService.createEmployee request', url, AddEmployeeForm);
     return this.http.post(url, AddEmployeeForm);
   }
 

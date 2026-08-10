@@ -167,15 +167,17 @@
           </tbody>
         </table>
       </div>
-
-      <mat-paginator
-        [length]="filteredEmployees.length"
-        [pageSize]="pageSize"
-        [pageSizeOptions]="pageSizeOptions"
-        aria-label="Select page"
-        class="border-t border-slate-200"
-      >
-      </mat-paginator>
+      @if (filteredEmployees.length >= pageSize) {
+        <mat-paginator
+          [length]="filteredEmployees.length"
+          [pageSize]="pageSize"
+          [pageSizeOptions]="pageSizeOptions"
+          aria-label="Select page"
+          showFirstLastButtons
+          class="border-t border-slate-200"
+        >
+        </mat-paginator>
+      }
     </div>
 
     <div class="grid grid-cols-1 gap-4 md:hidden">
