@@ -1,1 +1,133 @@
-<p>register works!</p>
+<div class="min-h-screen flex items-center justify-center bg-stone-100 p-4 sm:p-6">
+  <div
+    class="w-full max-w-5xl rounded-3xl shadow-2xl overflow-hidden bg-white border border-stone-200 grid grid-cols-1 md:grid-cols-2"
+  >
+    <div
+      class="bg-[#EFF6FF] p-8 md:p-10 flex flex-col justify-between text-center md:text-left border-b md:border-b-0 md:border-r border-[#00838F]/20"
+    >
+      <div class="space-y-5">
+        <div class="inline-flex flex-col items-center md:items-start gap-3">
+          <mat-icon class="text-4xl w-auto h-auto text-slate-900">diversity_2_sharp</mat-icon>
+          <h1 class="text-3xl font-extrabold text-slate-950">LeaveFlow</h1>
+        </div>
+
+        <p class="text-base text-blue-700 font-medium italic max-w-lg mx-auto md:mx-0 leading-7">
+          Register HR team members quickly and keep employee profiles ready. Add user details and
+          assign the right role for each new account.
+        </p>
+      </div>
+
+      <div class="mt-8 flex justify-center md:justify-start">
+        <img
+          src="/assets/images/login.png"
+          alt="Employee working at a desk"
+          class="w-full max-w-90 h-auto object-contain"
+        />
+      </div>
+    </div>
+
+    <div class="p-8 sm:p-10 flex items-center justify-center bg-white">
+      <div class="w-full max-w-md">
+        <div class="mb-6 text-center">
+          <h2 class="text-3xl font-bold text-stone-900">Create HR Account</h2>
+          <p class="mt-2 text-sm text-stone-500">
+            Fill in the details below to register a new user.
+          </p>
+        </div>
+
+        <form [formGroup]="registerForm" (ngSubmit)="register()" class="space-y-5">
+          <div class="grid gap-4">
+            <div>
+              <label class="block text-sm font-medium text-stone-700">Full Name</label>
+              <input
+                type="text"
+                formControlName="fullName"
+                placeholder="Enter full name"
+                class="mt-2 w-full rounded-2xl border border-stone-300 bg-stone-50 px-4 py-3 text-stone-900 placeholder-stone-400 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-200 transition"
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-stone-700">Email</label>
+              <input
+                type="email"
+                formControlName="email"
+                placeholder="Enter email"
+                class="mt-2 w-full rounded-2xl border border-stone-300 bg-stone-50 px-4 py-3 text-stone-900 placeholder-stone-400 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-200 transition"
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-stone-700">Password</label>
+              <div class="relative mt-2">
+                <input
+                  [type]="showPassword ? 'text' : 'password'"
+                  formControlName="password"
+                  placeholder="••••••••"
+                  class="w-full rounded-2xl border border-stone-300 bg-stone-50 px-4 py-3 pr-12 text-stone-900 placeholder-stone-400 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-200 transition"
+                />
+                <button
+                  type="button"
+                  class="absolute inset-y-0 right-3 inline-flex items-center text-stone-500"
+                  (click)="showPassword = !showPassword"
+                >
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                    ></path>
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                    ></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-stone-700">Designation</label>
+              <input
+                type="text"
+                formControlName="designation"
+                placeholder="Enter designation"
+                class="mt-2 w-full rounded-2xl border border-stone-300 bg-stone-50 px-4 py-3 text-stone-900 placeholder-stone-400 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-200 transition"
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-stone-700">Department</label>
+              <input
+                type="text"
+                formControlName="department"
+                placeholder="Enter department"
+                class="mt-2 w-full rounded-2xl border border-stone-300 bg-stone-50 px-4 py-3 text-stone-900 placeholder-stone-400 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-200 transition"
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-stone-700">Role</label>
+              <input
+                type="text"
+                formControlName="role"
+                placeholder="Enter role"
+                class="mt-2 w-full rounded-2xl border border-stone-300 bg-stone-50 px-4 py-3 text-stone-900 placeholder-stone-400 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-200 transition"
+              />
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            class="w-full rounded-2xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/20 transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
+          >
+            Register
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

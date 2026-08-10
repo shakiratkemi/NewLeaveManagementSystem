@@ -1,11 +1,19 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Employee } from '../../../../core/interface/employee';
 
+export interface EmployeeFormPayload {
+  fullName: string;
+  email: string;
+  department: string;
+  designation: string;
+  role: string;
+  clientResetUrl?: string;
+}
 
 @Component({
   selector: 'app-add-employee',
+  standalone: true,
   imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './add-employee.html',
   styles: ``,
@@ -13,43 +21,42 @@ import { Employee } from '../../../../core/interface/employee';
 export class AddEmployee {
   @Input() isOpen = false;
   @Input() departments: readonly string[] = [];
-
   @Output() close = new EventEmitter<void>();
-  @Output() save = new EventEmitter<
-    Omit<Employee, 'id' | 'avatar' | 'annualLeaveBalance' | 'sickLeaveBalance'>
-  >();
+  @Output() save = new EventEmitter<EmployeeFormPayload>();
 
-  form: FormGroup;
+  AddEmployeeForm!: FormGroup;
 
   constructor(private fb: FormBuilder) {
-    this.form = this.fb.group({
-      name: ['', Validators.required],
+    this.AddEmployeeForm = this.fb.group({
+      fullName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      role: ['', Validators.required],
       department: ['Engineering', Validators.required],
-      totalAnnualLeave: [20, [Validators.required, Validators.min(0)]],
-      totalSickLeave: [10, [Validators.required, Validators.min(0)]],
-      status: ['Active', Validators.required],
+      designation: ['', Validators.required],
+      role: ['Employee', Validators.required],
+      clientResetUrl: [`${window.location.origin}/auth/reset-password`, Validators.required],
     });
   }
 
   onClose(): void {
-    this.form.reset({
+    this.AddEmployeeForm.reset({
+      fullName: '',
+      email: '',
       department: 'Engineering',
-      totalAnnualLeave: 20,
-      totalSickLeave: 10,
-      status: 'Active',
+      designation: '',
+      role: 'Employee',
+      clientResetUrl: `${window.location.origin}/reset-password`,
     });
     this.close.emit();
   }
 
   onSubmit(): void {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
+    if (this.AddEmployeeForm.invalid) {
+      this.AddEmployeeForm.markAllAsTouched();
       return;
     }
 
-    this.save.emit(this.form.value);
-    this.onClose();
+    const payload = this.AddEmployeeForm.value as EmployeeFormPayload;
+    console.log('AddEmployee onSubmit payload:', payload);
+    this.save.emit(payload);
   }
 }

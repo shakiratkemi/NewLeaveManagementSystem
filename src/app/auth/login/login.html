@@ -1,84 +1,123 @@
-<div class="min-h-screen flex items-center rounded-4xl justify-center bg-stone-100 p-4 sm:p-6">
+<div class="min-h-screen flex items-center justify-center bg-stone-100 p-1 sm:p-6 lg:p-8">
   <div
-    class="w-full max-w-2xl max-h-130 flex md:flex-row rounded-2xl shadow-xl overflow-hidden border border-amber-900/10"
+    class="w-full max-w-4xl flex flex-row rounded-xl sm:rounded-3xl shadow-xl overflow-hidden border border-stone-200/80 bg-white"
   >
     <div
-      class="w-full md:w-1/2 bg-[#EFF6FF] p-8 flex flex-col items-center justify-center text-center border-b md:border-b-0 md:border-r border-[#00838F]/20"
+      class="w-1/2 bg-[#EFF6FF] p-2.5 sm:p-6 lg:p-10 flex flex-col items-center justify-between text-center border-r border-[#00838F]/20"
     >
-      <div class="flex flex-col gap-0">
-        <mat-icon class="text-4xl! w-auto! h-auto!">diversity_2_sharp</mat-icon>
-        <h1 class="text-3xl font-extrabold">LeaveFlow</h1>
+      <div class="flex flex-col items-center gap-0.5 pt-1">
+        <div class="flex items-center gap-1 sm:gap-2 text-blue-700">
+          <mat-icon class="w-6! h-6! sm:w-8! sm:h-8! text-xl! sm:text-3xl!"
+            >diversity_2_sharp</mat-icon
+          >
+          <h1 class="text-sm sm:text-2xl lg:text-3xl font-extrabold text-stone-900 tracking-tight">
+            LeaveFlow
+          </h1>
+        </div>
+        <p
+          class="text-[11px] sm:text-xs lg:text-sm text-blue-700 font-medium italic mt-1 sm:mt-3 leading-tight"
+        >
+          Streamline leave requests and team management in one unified workspace.
+        </p>
       </div>
 
-      <p class="text-sm text-blue-700 font-medium italic max-w-xs mt-7">
-        Streamline leave requests and team management in one unified workspace.
-      </p>
-
-      <div class="w-full flex-1 flex items-center justify-center overflow-hidden">
+      <div class="w-full py-2 flex-1 flex items-center justify-center">
         <img
           src="/assets/images/login.png"
           alt="Employee working at a desk"
-          class="w-[200%] max-w-none h-auto object-contain"
+          class="w-full h-auto max-h-36 sm:max-h-52 md:max-h-64 object-contain drop-shadow-sm"
         />
       </div>
     </div>
 
-    <div class="w-full md:w-1/2 bg-white sm:p-10 flex flex-col justify-center">
-      <form [formGroup]="LoginForm" (ngSubmit)="login()" class="space-y-6">
-        <div class="space-y-1 text-center">
-          <h2 class="text-2xl font-bold text-stone-900">Welcome back</h2>
-          <p class="text-sm text-stone-500">Please enter your details to sign in</p>
+    <div class="w-1/2 p-3 sm:p-6 lg:p-10 flex flex-col justify-center bg-white">
+      <form
+        [formGroup]="LoginForm"
+        (ngSubmit)="login()"
+        class="space-y-3 sm:space-y-5 lg:space-y-6"
+      >
+        <div class="space-y-0.5 text-center md:text-left">
+          <h2 class="text-base sm:text-2xl lg:text-3xl font-bold text-stone-900 tracking-tight">
+            Welcome back
+          </h2>
+          <p class="text-xs sm:text-sm text-stone-500">Please enter your details to sign in</p>
         </div>
 
-        <div class="space-y-4">
-          <div class="space-y-1.5">
-            <label class="block text-sm font-medium text-stone-700">Email</label>
+        <div class="space-y-2.5 sm:space-y-4">
+          <div class="space-y-1">
+            <label
+              class="block text-xs sm:text-sm font-semibold text-stone-700 uppercase tracking-wider"
+              >Email</label
+            >
             <input
-              type="text"
+              type="email"
               formControlName="email"
               placeholder="Enter your Email"
-              class="w-full px-4 py-2.5 rounded-lg border border-stone-300 bg-stone-50 text-stone-900 placeholder-stone-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent transition-all duration-200"
+              class="w-full px-2.5 sm:px-4 py-2 sm:py-2.5 lg:py-3 rounded-lg sm:rounded-xl border border-stone-300 bg-stone-50/50 text-stone-900 text-xs sm:text-sm placeholder-stone-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent transition-all duration-200"
             />
           </div>
 
-          <div class="space-y-1.5">
-            <label class="block text-sm font-medium text-stone-700">Password</label>
+          <div class="space-y-1">
+            <label
+              class="block text-xs sm:text-sm font-semibold text-stone-700 uppercase tracking-wider"
+              >Password</label
+            >
             <div class="relative">
               <input
                 [type]="showPassword ? 'text' : 'password'"
                 formControlName="password"
                 placeholder="••••••••"
-                class="w-full pr-10 px-4 py-2.5 rounded-lg border border-stone-300 bg-stone-50 text-stone-900 placeholder-stone-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent transition-all duration-200"
+                class="w-full pr-8 sm:pr-11 px-2.5 sm:px-4 py-2 sm:py-2.5 lg:py-3 rounded-lg sm:rounded-xl border border-stone-300 bg-stone-50/50 text-stone-900 text-xs sm:text-sm placeholder-stone-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent transition-all duration-200"
               />
-              <span
+              <button
+                type="button"
                 (click)="togglePasswordVisibility()"
-                role="button"
-                tabindex="0"
-                (keydown.enter)="togglePasswordVisibility()"
-                class="absolute inset-y-0 right-3 flex items-center text-stone-400 cursor-pointer"
+                class="absolute inset-y-0 right-0 pr-2 sm:pr-3.5 flex items-center text-stone-400 hover:text-stone-600 focus:outline-none transition"
+                [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
               >
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                  ></path>
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                  ></path>
-                </svg>
-              </span>
+                @if (showPassword) {
+                  <svg
+                    class="w-4 h-4 sm:w-5 sm:h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858-5.908a10.018 10.018 0 013.682-.763c4.478 0 8.268 2.943 9.542 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21f-9-9"
+                    />
+                  </svg>
+                } @else {
+                  <svg
+                    class="w-4 h-4 sm:w-5 sm:h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                    />
+                  </svg>
+                }
+              </button>
             </div>
           </div>
         </div>
 
         <button
-          (click)="login()"
-          class="w-full bg-blue-600 px-6 py-3 text-white rounded-lg hover:bg-blue-700 font-medium text-sm transition-all duration-200 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:ring-offset-2 active:scale-[0.99]"
+          type="submit"
+          class="w-full bg-blue-600 hover:bg-blue-700 px-4 sm:px-6 py-2.5 sm:py-3 text-white rounded-lg sm:rounded-xl font-semibold text-xs sm:text-sm transition-all duration-200 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:ring-offset-2 active:scale-[0.99]"
         >
           Log In
         </button>
