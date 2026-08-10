@@ -5,6 +5,8 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HrService } from '../../../core/services/data/hr/hr-service';
 
+import { Employee } from '../../../core/services/data/employee/employee';
+
 @Component({
   selector: 'app-hr-sidebar',
   imports: [MatIconModule, RouterLink, RouterLinkActive, CommonModule],

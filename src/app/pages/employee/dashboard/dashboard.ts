@@ -1,9 +1,9 @@
 import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { CommonModule } from '@angular/common';
-import { LeaveHistoryDetails } from '../leave-history/leave-history-details/leave-history-details';
-// import { Applyleave } from './apply-leave/apply-leave';
+import { CommonModule, DatePipe } from '@angular/common';
+
+import { Applyleave } from './apply-leave/apply-leave';
 import { Employee } from '../../../core/services/data/employee/employee';
 import { DashboardData } from '../../../core/interface/employee';
 
@@ -12,7 +12,7 @@ export type Status = 'Pending' | 'Approved' | 'Rejected';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [RouterLink, CommonModule, LeaveHistoryDetails],
+  imports: [RouterLink, CommonModule, Applyleave, DatePipe],
   templateUrl: './dashboard.html',
   styles: ``,
 })
@@ -20,6 +20,7 @@ export class Dashboard implements OnInit {
   dashboardData!: DashboardData;
 
   recentRequests: any[] = [];
+  leaveRequests: any[] = [];
 
   isModalOpen: boolean = false;
   isApplyModalOpen = false;
@@ -31,6 +32,7 @@ export class Dashboard implements OnInit {
 
   ngOnInit(): void {
     this.loadDashboard();
+    this.leaveRequest();
   }
 
   loadDashboard(): void {
@@ -45,6 +47,30 @@ export class Dashboard implements OnInit {
 
       error: (error) => {
         console.error('Dashboard API error:', error);
+      },
+    });
+  }
+
+  handleLeaveSubmit(request: any): void {
+    this.employeeService.createLeaveRequest(request).subscribe({
+      next: (response: any) => {
+        console.log('Leave request submitted:', response);
+        this.leaveRequests = response.data;
+        this.closeApplyModal();
+      },
+      error: (error) => {
+        console.error('Leave request submit error:', error);
+      },
+    });
+  }
+
+  leaveRequest(): void {
+    this.employeeService.getLeaveRequests().subscribe({
+      next: (response: any) => {
+        this.recentRequests = response.data;
+      },
+      error: (error) => {
+        console.error('Leave Requests API error:', error);
       },
     });
   }

@@ -27,7 +27,6 @@ export class Login implements OnInit {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-
     private authService: AuthService,
   ) {}
 
@@ -62,7 +61,8 @@ export class Login implements OnInit {
             this.loggedInUser = {
               ...decodedToken,
               ...responseData,
-              fullName: responseData.fullName || decodedToken.fullName || decodedToken.name || 'User',
+              fullName:
+                responseData.fullName || decodedToken.fullName || decodedToken.name || 'User',
             };
             console.log('Decoded token:', this.loggedInUser);
             localStorage.setItem('loggedInUser', JSON.stringify(this.loggedInUser));

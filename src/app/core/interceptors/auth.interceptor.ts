@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 export class AuthInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const token = localStorage.getItem('access_token');
-    console.log(token);
+    console.log('Authorization token attached');
 
     if (!token) {
       return next.handle(req);

@@ -1,15 +1,23 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../../evironments/environment';
 import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { map } from 'rxjs/operators';
+
 import { Observable } from 'rxjs';
+import {
+  LeaveRequest,
+  LeaveRequestHistory,
+  LeaveRequestsResponse,
+  LeaveTypes,
+} from '../../../interface/employee';
 
 const routes = {
   dashboard: 'Dashboard/user-stats',
   leaveTypes: 'LeaveTypes',
   leaveTypeById: 'LeaveTypeById',
   leaveRequests: 'LeaveRequests',
-  leaveRequestById: 'LeaveRequestsById',
+  leaveRequestById: 'LeaveRequests/{id}',
+  profile: 'Profile',
 };
 
 @Injectable({
@@ -26,25 +34,23 @@ export class Employee {
   }
 
   // Leave Types
-  getLeaveTypes(): Observable<any> {
-    return this.http.get(`${this.baseUrl}${routes.leaveTypes}`);
-  }
-
-  getLeaveTypeById(id: string): Observable<any> {
-    return this.http.get(`${this.baseUrl}${routes.leaveTypeById}/${id}`);
+  getLeaveTypes(): Observable<LeaveTypes[]> {
+    return this.http.get<LeaveTypes[]>(`${this.baseUrl}${routes.leaveTypes}`);
   }
 
   // Leave Requests
-  createLeaveRequest(data: any): Observable<any> {
+  createLeaveRequest(data: LeaveRequest): Observable<any> {
     return this.http.post(`${this.baseUrl}${routes.leaveRequests}`, data);
   }
 
-  getLeaveRequests(): Observable<any> {
-    return this.http.get(`${this.baseUrl}${routes.leaveRequests}`);
+  getLeaveRequests(): Observable<LeaveRequestsResponse> {
+    return this.http.get<LeaveRequestsResponse>(`${this.baseUrl}${routes.leaveRequests}`);
   }
 
-  getLeaveRequestById(id: string): Observable<any> {
-    return this.http.get(`${this.baseUrl}${routes.leaveRequestById}/${id}`);
+  getLeaveRequestById(id: string): Observable<LeaveRequestsResponse> {
+    return this.http.get<LeaveRequestsResponse>(
+      `${this.baseUrl}${routes.leaveRequestById.replace('{id}', id)}`,
+    );
   }
 
   updateLeaveRequestById(id: string, data: any): Observable<any> {
@@ -53,5 +59,16 @@ export class Employee {
 
   deleteLeaveRequestById(id: string): Observable<any> {
     return this.http.delete(`${this.baseUrl}${routes.leaveRequestById}/${id}`);
+  }
+
+  // Profile
+  getProfileDetails(): Observable<any> {
+    return this.http
+      .get(`${this.baseUrl}${routes.profile}`)
+      .pipe(map((response: any) => response?.data ?? response));
+  }
+
+  updateProfileDetails(id: string, data: any): Observable<any> {
+    return this.http.put(`${this.baseUrl}${routes.profile}`, data);
   }
 }

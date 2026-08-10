@@ -2,8 +2,9 @@ import { Component, OnInit, ViewChild, AfterViewInit, ChangeDetectorRef } from '
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatPaginatorModule, MatPaginator, PageEvent } from '@angular/material/paginator';
-import { AddEmployee } from './add-employee/add-employee';
+import { AddEmployee, EmployeeFormPayload } from './add-employee/add-employee';
 import { HrService } from '../../../core/services/data/hr/hr-service';
+import { AuthService } from '../../../core/services/auth-service';
 
 type EmployeeRecord = {
   id: string;
@@ -22,7 +23,9 @@ type EmployeeFormData = {
   name: string;
   email: string;
   role: string;
+  password?: string;
   department: string;
+  designation: string;
   totalAnnualLeave: number;
   totalSickLeave: number;
   status: EmployeeRecord['status'];
@@ -44,11 +47,14 @@ export class Employees implements OnInit, AfterViewInit {
   selectedStatus: string = 'All';
   selectedEmployeeForModal: EmployeeRecord | null = null;
   isAddModalOpen: boolean = false;
+  isSubmitting: boolean = false;
   newEmployee: Partial<EmployeeFormData> = {
     name: '',
     email: '',
     role: '',
     department: 'Engineering',
+    designation: '',
+    password: '',
     totalAnnualLeave: 20,
     totalSickLeave: 10,
     status: 'Active',
@@ -68,7 +74,11 @@ export class Employees implements OnInit, AfterViewInit {
   ];
   readonly statuses: string[] = ['All', 'Active', 'On Leave', 'Inactive'];
 
-  constructor(private hrService: HrService, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private hrService: HrService,
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef,
+  ) {}
 
   ngOnInit(): void {
     this.loadEmployees();
@@ -129,7 +139,7 @@ export class Employees implements OnInit, AfterViewInit {
 
   closeAddEmployeeModal(): void {
     this.isAddModalOpen = false;
-    this.resetNewEmployeeForm();
+    // this.resetNewEmployeeForm();
   }
 
   saveNewEmployee(): void {
@@ -142,7 +152,9 @@ export class Employees implements OnInit, AfterViewInit {
       name: this.newEmployee.name,
       email: this.newEmployee.email,
       role: this.newEmployee.role,
+      password: this.newEmployee.password || '',
       department: this.newEmployee.department || 'Engineering',
+      designation: this.newEmployee.designation || 'Employee',
       annualLeaveBalance: this.newEmployee.totalAnnualLeave || 20,
       totalAnnualLeave: this.newEmployee.totalAnnualLeave || 20,
       sickLeaveBalance: this.newEmployee.totalSickLeave || 10,
@@ -154,34 +166,66 @@ export class Employees implements OnInit, AfterViewInit {
     this.closeAddEmployeeModal();
   }
 
+  handleSaveEmployee(formData: EmployeeFormPayload): void {
+    this.isSubmitting = true;
+
+    this.authService.registerEmployee(formData).subscribe({
+      next: (res) => {
+        console.log('Employee registered successfully:', res);
+        this.isSubmitting = false;
+        this.closeAddEmployeeModal();
+        this.loadEmployees();
+      },
+      error: (err) => {
+        console.error('Failed to register employee:', err);
+        this.isSubmitting = false;
+      },
+    });
+  }
+
+  private submitRegistration(payload: Record<string, any>): void {
+    this.isSubmitting = true;
+    this.authService.registerEmployee(payload).subscribe({
+      next: (res) => {
+        console.log('Employee created successfully:', res);
+        this.isSubmitting = false;
+        this.closeAddEmployeeModal();
+        this.loadEmployees(); // Reload list to fetch newly created employee from backend
+      },
+      error: (err) => {
+        console.error('Failed to register employee:', err);
+        this.isSubmitting = false;
+      },
+    });
+  }
+
   private resetNewEmployeeForm(): void {
     this.newEmployee = {
       name: '',
       email: '',
-      role: '',
+      role: 'Employee',
       department: 'Engineering',
+      designation: '',
+      password: '',
       totalAnnualLeave: 20,
       totalSickLeave: 10,
       status: 'Active',
     };
   }
 
-  handleSaveEmployee(formData: EmployeeFormData): void {
-    const createdEmployee: EmployeeRecord = {
-      id: `EMP-00${this.employees.length + 1}`,
-      name: formData.name,
-      email: formData.email,
-      role: formData.role,
-      department: formData.department || 'Engineering',
-      annualLeaveBalance: formData.totalAnnualLeave,
-      totalAnnualLeave: formData.totalAnnualLeave,
-      sickLeaveBalance: formData.totalSickLeave,
-      totalSickLeave: formData.totalSickLeave,
-      status: formData.status || 'Active',
-    };
+  // handleSaveEmployee(formData: EmployeeFormData): void {
+  //   const createdEmployee: EmployeeRecord = {
+  //     id: `EMP-00${this.employees.length + 1}`,
+  //     name: formData.name,
+  //     email: formData.email,
+  //     role: formData.role,
+  //     department: formData.department || 'Engineering',
+  //     designation: formData.designation || 'Employee',
+  //     password: formData.password || '',
+  //   };
 
-    this.employees = [createdEmployee, ...this.employees];
-  }
+  //   this.employees = [createdEmployee, ...this.employees];
+  // }
 
   private loadEmployees(): void {
     this.hrService.getAllEmployees().subscribe({
