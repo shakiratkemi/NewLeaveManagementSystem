@@ -2,8 +2,6 @@ import { Component, OnInit, ViewChild, AfterViewInit, ChangeDetectorRef } from '
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatPaginatorModule, MatPaginator, PageEvent } from '@angular/material/paginator';
-import { AddEmployee } from './add-employee/add-employee';
-import { HrService } from '../../../core/services/data/hr/hr-service';
 import { AddEmployee, EmployeeFormPayload } from './add-employee/add-employee';
 import { HrService } from '../../../core/services/data/hr/hr-service';
 import { AuthService } from '../../../core/services/auth-service';
@@ -25,7 +23,6 @@ type EmployeeFormData = {
   name: string;
   email: string;
   role: string;
-  department: string;
   password?: string;
   department: string;
   designation: string;
@@ -57,7 +54,7 @@ export class Employees implements OnInit, AfterViewInit {
     role: '',
     department: 'Engineering',
     designation: '',
-    password: '',
+
     totalAnnualLeave: 20,
     totalSickLeave: 10,
     status: 'Active',
@@ -77,7 +74,6 @@ export class Employees implements OnInit, AfterViewInit {
   ];
   readonly statuses: string[] = ['All', 'Active', 'On Leave', 'Inactive'];
 
-  constructor(private hrService: HrService, private cdr: ChangeDetectorRef) {}
   constructor(
     private hrService: HrService,
     private authService: AuthService,
@@ -156,7 +152,6 @@ export class Employees implements OnInit, AfterViewInit {
       name: this.newEmployee.name,
       email: this.newEmployee.email,
       role: this.newEmployee.role,
-      password: this.newEmployee.password || '',
       department: this.newEmployee.department || 'Engineering',
       designation: this.newEmployee.designation || 'Employee',
       annualLeaveBalance: this.newEmployee.totalAnnualLeave || 20,
@@ -171,17 +166,18 @@ export class Employees implements OnInit, AfterViewInit {
   }
 
   handleSaveEmployee(formData: EmployeeFormPayload): void {
+    console.log('Employees.handleSaveEmployee called', formData);
     this.isSubmitting = true;
 
-    this.authService.registerEmployee(formData).subscribe({
+    this.authService.createEmployee(formData).subscribe({
       next: (res) => {
-        console.log('Employee registered successfully:', res);
+        console.log('Employee created successfully:', res);
         this.isSubmitting = false;
         this.closeAddEmployeeModal();
         this.loadEmployees();
       },
       error: (err) => {
-        console.error('Failed to register employee:', err);
+        console.error('Failed to create employee:', err);
         this.isSubmitting = false;
       },
     });
@@ -189,7 +185,7 @@ export class Employees implements OnInit, AfterViewInit {
 
   private submitRegistration(payload: Record<string, any>): void {
     this.isSubmitting = true;
-    this.authService.registerEmployee(payload).subscribe({
+    this.authService.createEmployee(payload).subscribe({
       next: (res) => {
         console.log('Employee created successfully:', res);
         this.isSubmitting = false;
@@ -197,7 +193,7 @@ export class Employees implements OnInit, AfterViewInit {
         this.loadEmployees(); // Reload list to fetch newly created employee from backend
       },
       error: (err) => {
-        console.error('Failed to register employee:', err);
+        console.error('Failed to create employee:', err);
         this.isSubmitting = false;
       },
     });
@@ -210,25 +206,12 @@ export class Employees implements OnInit, AfterViewInit {
       role: 'Employee',
       department: 'Engineering',
       designation: '',
-      password: '',
       totalAnnualLeave: 20,
       totalSickLeave: 10,
       status: 'Active',
     };
   }
 
-  handleSaveEmployee(formData: EmployeeFormData): void {
-    const createdEmployee: EmployeeRecord = {
-      id: `EMP-00${this.employees.length + 1}`,
-      name: formData.name,
-      email: formData.email,
-      role: formData.role,
-      department: formData.department || 'Engineering',
-      annualLeaveBalance: formData.totalAnnualLeave,
-      totalAnnualLeave: formData.totalAnnualLeave,
-      sickLeaveBalance: formData.totalSickLeave,
-      totalSickLeave: formData.totalSickLeave,
-      status: formData.status || 'Active',
   // handleSaveEmployee(formData: EmployeeFormData): void {
   //   const createdEmployee: EmployeeRecord = {
   //     id: `EMP-00${this.employees.length + 1}`,
@@ -242,74 +225,6 @@ export class Employees implements OnInit, AfterViewInit {
 
   //   this.employees = [createdEmployee, ...this.employees];
   // }
-
-  private loadEmployees(): void {
-    this.hrService.getAllEmployees().subscribe({
-      next: (response: any) => {
-        console.log('getAllEmployees response:', response);
-        let list: any[] = [];
-
-        if (Array.isArray(response)) {
-          list = response;
-        } else if (Array.isArray(response?.data)) {
-          list = response.data;
-        } else if (Array.isArray(response?.data?.data)) {
-          list = response.data.data;
-        } else if (Array.isArray(response?.users)) {
-          list = response.users;
-        } else if (Array.isArray(response?.data?.users)) {
-          list = response.data.users;
-        } else {
-          // Try to find the first array property on the response
-          for (const key of Object.keys(response || {})) {
-            if (Array.isArray(response[key])) {
-              list = response[key];
-              break;
-            }
-          }
-        }
-        if (!Array.isArray(list)) list = [];
-        this.employees = list.map((item: any, index: number) => this.mapEmployee(item, index));
-        console.log('Employees mapped:', this.employees);
-        try {
-          this.cdr.detectChanges();
-        } catch (e) {
-          console.warn('detectChanges failed', e);
-        }
-      },
-      error: (err) => {
-        console.error('Failed to load employees', err);
-        this.employees = [];
-      },
-    });
-  }
-
-  private mapEmployee(item: any, index: number): EmployeeRecord {
-    return {
-      id: item.id ?? item.employeeId ?? item.userId ?? `EMP-00${index + 1}`,
-      name: item.fullName ?? item.name ?? item.employeeName ?? item.userName ?? 'Unknown Employee',
-      email: item.email ?? item.employeeEmail ?? item.userEmail ?? 'N/A',
-      role: item.role ?? item.jobTitle ?? item.designation ?? 'Employee',
-      department: item.department ?? item.designation ?? 'Engineering',
-      annualLeaveBalance: Number(
-        item.annualLeaveBalance ?? item.remainingAnnualLeave ?? item.annualLeave ?? 20,
-      ),
-      totalAnnualLeave: Number(item.totalAnnualLeave ?? item.annualLeaveQuota ?? 20),
-      sickLeaveBalance: Number(
-        item.sickLeaveBalance ?? item.remainingSickLeave ?? item.sickLeave ?? 10,
-      ),
-      totalSickLeave: Number(item.totalSickLeave ?? item.sickLeaveQuota ?? 10),
-      status: this.normalizeStatus(item.status ?? item.employeeStatus),
-    };
-  }
-
-  private normalizeStatus(status: unknown): EmployeeRecord['status'] {
-    if (status === 'Active' || status === 'On Leave' || status === 'Inactive') {
-      return status;
-    }
-
-    return 'Active';
-  }
 
   private loadEmployees(): void {
     this.hrService.getAllEmployees().subscribe({
