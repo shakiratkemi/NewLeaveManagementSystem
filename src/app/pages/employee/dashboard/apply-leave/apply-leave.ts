@@ -79,8 +79,6 @@ export class Applyleave {
 
         this.successMessage = 'Leave request submitted successfully.';
 
-        this.leaveForm.reset();
-
         this.router.navigateByUrl('/employee/dashboard');
       },
 
