@@ -60,9 +60,9 @@ export class Employees implements OnInit, AfterViewInit {
     status: 'Active',
   };
 
-  pageSize: number = 5;
+  pageSize: number = 10;
   pageIndex: number = 0;
-  pageSizeOptions: number[] = [5, 10, 20];
+  pageSizeOptions: number[] = [5, 10, 20, 30];
 
   readonly departments: string[] = [
     'All',
