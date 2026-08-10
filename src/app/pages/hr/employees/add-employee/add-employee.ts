@@ -5,14 +5,15 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 export interface EmployeeFormPayload {
   fullName: string;
   email: string;
-  password: string;
   department: string;
   designation: string;
   role: string;
+  clientResetUrl?: string;
 }
 
 @Component({
   selector: 'app-add-employee',
+  standalone: true,
   imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './add-employee.html',
   styles: ``,
@@ -20,42 +21,43 @@ export interface EmployeeFormPayload {
 export class AddEmployee {
   @Input() isOpen = false;
   @Input() departments: readonly string[] = [];
-
   @Output() close = new EventEmitter<void>();
   @Output() save = new EventEmitter<EmployeeFormPayload>();
 
-  form: FormGroup;
+  AddEmployeeForm!: FormGroup;
 
   constructor(private fb: FormBuilder) {
-    this.form = this.fb.group({
+    this.AddEmployeeForm = this.fb.group({
       fullName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
       department: ['Engineering', Validators.required],
       designation: ['', Validators.required],
       role: ['Employee', Validators.required],
+      clientResetUrl: [`${window.location.origin}/reset-password`, Validators.required],
     });
   }
 
   onClose(): void {
-    this.form.reset({
+    this.AddEmployeeForm.reset({
       fullName: '',
       email: '',
-      password: '',
       department: 'Engineering',
       designation: '',
       role: 'Employee',
+      clientResetUrl: `${window.location.origin}/reset-password`,
     });
     this.close.emit();
   }
 
   onSubmit(): void {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
+    if (this.AddEmployeeForm.invalid) {
+      this.AddEmployeeForm.markAllAsTouched();
       return;
     }
 
-    this.save.emit(this.form.value as EmployeeFormPayload);
+    const payload = this.AddEmployeeForm.value as EmployeeFormPayload;
+    console.log('AddEmployee onSubmit payload:', payload);
+    this.save.emit(payload);
     this.onClose();
   }
 }

@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 
 import { Applyleave } from './apply-leave/apply-leave';
 import { Employee } from '../../../core/services/data/employee/employee';
@@ -12,7 +12,7 @@ export type Status = 'Pending' | 'Approved' | 'Rejected';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [RouterLink, CommonModule, Applyleave, DatePipe],
+  imports: [RouterLink, CommonModule],
   templateUrl: './dashboard.html',
   styles: ``,
 })

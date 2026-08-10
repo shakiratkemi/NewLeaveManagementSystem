@@ -54,7 +54,7 @@ export class Employees implements OnInit, AfterViewInit {
     role: '',
     department: 'Engineering',
     designation: '',
-    password: '',
+
     totalAnnualLeave: 20,
     totalSickLeave: 10,
     status: 'Active',
@@ -152,7 +152,6 @@ export class Employees implements OnInit, AfterViewInit {
       name: this.newEmployee.name,
       email: this.newEmployee.email,
       role: this.newEmployee.role,
-      password: this.newEmployee.password || '',
       department: this.newEmployee.department || 'Engineering',
       designation: this.newEmployee.designation || 'Employee',
       annualLeaveBalance: this.newEmployee.totalAnnualLeave || 20,
@@ -167,17 +166,18 @@ export class Employees implements OnInit, AfterViewInit {
   }
 
   handleSaveEmployee(formData: EmployeeFormPayload): void {
+    console.log('Employees.handleSaveEmployee called', formData);
     this.isSubmitting = true;
 
-    this.authService.registerEmployee(formData).subscribe({
+    this.authService.createEmployee(formData).subscribe({
       next: (res) => {
-        console.log('Employee registered successfully:', res);
+        console.log('Employee created successfully:', res);
         this.isSubmitting = false;
         this.closeAddEmployeeModal();
         this.loadEmployees();
       },
       error: (err) => {
-        console.error('Failed to register employee:', err);
+        console.error('Failed to create employee:', err);
         this.isSubmitting = false;
       },
     });
@@ -185,7 +185,7 @@ export class Employees implements OnInit, AfterViewInit {
 
   private submitRegistration(payload: Record<string, any>): void {
     this.isSubmitting = true;
-    this.authService.registerEmployee(payload).subscribe({
+    this.authService.createEmployee(payload).subscribe({
       next: (res) => {
         console.log('Employee created successfully:', res);
         this.isSubmitting = false;
@@ -193,7 +193,7 @@ export class Employees implements OnInit, AfterViewInit {
         this.loadEmployees(); // Reload list to fetch newly created employee from backend
       },
       error: (err) => {
-        console.error('Failed to register employee:', err);
+        console.error('Failed to create employee:', err);
         this.isSubmitting = false;
       },
     });
@@ -206,7 +206,6 @@ export class Employees implements OnInit, AfterViewInit {
       role: 'Employee',
       department: 'Engineering',
       designation: '',
-      password: '',
       totalAnnualLeave: 20,
       totalSickLeave: 10,
       status: 'Active',

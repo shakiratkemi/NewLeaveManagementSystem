@@ -5,8 +5,9 @@ import { environment } from '../../../evironments/environment';
 
 const routes = {
   login: 'Auth/login',
-  registerEmployee: 'Auth/register',
+  registerEmployee: 'Users/provision',
   resetPassword: 'Auth/reset-password',
+  getResetToken: 'Users/provision',
 };
 
 @Injectable({
@@ -25,9 +26,14 @@ export class AuthService {
     return this.http.post(url, LoginForm);
   }
 
-  registerEmployee(registerForm: any) {
+  createEmployee(AddEmployeeForm: any) {
     const url = `${this.baseUrl + routes.registerEmployee}`;
-    return this.http.post(url, registerForm);
+    return this.http.post(url, AddEmployeeForm);
+  }
+
+  getResetToken(payload: any) {
+    const url = `${this.baseUrl + routes.getResetToken}`;
+    return this.http.post(url, payload);
   }
 
   resetPassword(payload: any) {
