@@ -33,7 +33,7 @@ export class AddEmployee {
       department: ['Engineering', Validators.required],
       designation: ['', Validators.required],
       role: ['Employee', Validators.required],
-      clientResetUrl: [`${window.location.origin}/reset-password`, Validators.required],
+      clientResetUrl: [`${window.location.origin}/auth/reset-password`, Validators.required],
     });
   }
 
@@ -44,7 +44,7 @@ export class AddEmployee {
       department: 'Engineering',
       designation: '',
       role: 'Employee',
-      clientResetUrl: `${window.location.origin}/reset-password`,
+      clientResetUrl: `${window.location.origin}/auth/reset-password`,
     });
     this.close.emit();
   }
