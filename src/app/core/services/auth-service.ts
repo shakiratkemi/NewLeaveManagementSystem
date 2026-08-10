@@ -7,6 +7,8 @@ import { Observable } from 'rxjs';
 const routes = {
   login: 'Auth/login',
   refresh_token: 'Auth/refresh-token',
+  registerEmployee: 'Auth/register',
+  resetPassword: 'Auth/reset-password',
 };
 
 @Injectable({
@@ -29,5 +31,13 @@ export class AuthService {
   //Refresh-token
   refreshToken(refreshToken: string): Observable<any> {
     return this.http.post(`${this.baseUrl}${routes.refresh_token}`, { refreshToken });
+  registerEmployee(registerForm: any) {
+    const url = `${this.baseUrl + routes.registerEmployee}`;
+    return this.http.post(url, registerForm);
+  }
+
+  resetPassword(payload: any) {
+    const url = `${this.baseUrl + routes.resetPassword}`;
+    return this.http.post(url, payload);
   }
 }

@@ -1,8 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Employee } from '../../../../core/interface/employee';
 
+export interface EmployeeFormPayload {
+  fullName: string;
+  email: string;
+  password: string;
+  department: string;
+  designation: string;
+  role: string;
+}
 
 @Component({
   selector: 'app-add-employee',
@@ -15,30 +22,29 @@ export class AddEmployee {
   @Input() departments: readonly string[] = [];
 
   @Output() close = new EventEmitter<void>();
-  @Output() save = new EventEmitter<
-    Omit<Employee, 'id' | 'avatar' | 'annualLeaveBalance' | 'sickLeaveBalance'>
-  >();
+  @Output() save = new EventEmitter<EmployeeFormPayload>();
 
   form: FormGroup;
 
   constructor(private fb: FormBuilder) {
     this.form = this.fb.group({
-      name: ['', Validators.required],
+      fullName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      role: ['', Validators.required],
+      password: ['', [Validators.required, Validators.minLength(6)]],
       department: ['Engineering', Validators.required],
-      totalAnnualLeave: [20, [Validators.required, Validators.min(0)]],
-      totalSickLeave: [10, [Validators.required, Validators.min(0)]],
-      status: ['Active', Validators.required],
+      designation: ['', Validators.required],
+      role: ['Employee', Validators.required],
     });
   }
 
   onClose(): void {
     this.form.reset({
+      fullName: '',
+      email: '',
+      password: '',
       department: 'Engineering',
-      totalAnnualLeave: 20,
-      totalSickLeave: 10,
-      status: 'Active',
+      designation: '',
+      role: 'Employee',
     });
     this.close.emit();
   }
@@ -49,7 +55,7 @@ export class AddEmployee {
       return;
     }
 
-    this.save.emit(this.form.value);
+    this.save.emit(this.form.value as EmployeeFormPayload);
     this.onClose();
   }
 }

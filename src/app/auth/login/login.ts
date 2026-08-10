@@ -21,7 +21,6 @@ export class Login implements OnInit {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-
     private authService: AuthService,
   ) {}
 
