@@ -1,13 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  FormControl,
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { AuthService } from '../../core/services/auth-service';
@@ -55,6 +49,7 @@ export class Login implements OnInit {
           if (res && res.data) {
             const responseData = res.data;
             localStorage.setItem('access_token', responseData.token);
+            localStorage.setItem('refresh_token', responseData.refreshToken);
             alert('Login successful');
             const helper = new JwtHelperService();
             const decodedToken = helper.decodeToken(localStorage.getItem('access_token')!);
