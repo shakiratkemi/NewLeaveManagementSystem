@@ -3,6 +3,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Employee } from '../../../../core/services/data/employee/employee';
 import { LeaveRequest, LeaveTypes } from '../../../../core/interface/employee';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-applyleave',
@@ -24,6 +25,7 @@ export class Applyleave {
   constructor(
     private fb: FormBuilder,
     private employeeService: Employee,
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -79,9 +81,7 @@ export class Applyleave {
 
         this.leaveForm.reset();
 
-        setTimeout(() => {
-          this.onClose();
-        }, 1500);
+        this.router.navigateByUrl('/employee/dashboard');
       },
 
       error: (error) => {

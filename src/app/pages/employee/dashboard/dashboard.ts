@@ -1,6 +1,5 @@
-import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
-
 import { CommonModule, DatePipe } from '@angular/common';
 
 import { Applyleave } from './apply-leave/apply-leave';
@@ -12,7 +11,7 @@ export type Status = 'Pending' | 'Approved' | 'Rejected';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [RouterLink, CommonModule, Applyleave, DatePipe],
+  imports: [RouterLink, CommonModule, Applyleave],
   templateUrl: './dashboard.html',
   styles: ``,
 })
@@ -22,8 +21,11 @@ export class Dashboard implements OnInit {
   recentRequests: any[] = [];
   leaveRequests: any[] = [];
 
-  isModalOpen: boolean = false;
+  isModalOpen = false;
   isApplyModalOpen = false;
+
+  isLoadingDashboard = false;
+  isLoadingRequests = false;
 
   constructor(
     private employeeService: Employee,
@@ -32,21 +34,57 @@ export class Dashboard implements OnInit {
 
   ngOnInit(): void {
     this.loadDashboard();
-    this.leaveRequest();
+    this.loadRecentRequests();
   }
 
   loadDashboard(): void {
+    this.isLoadingDashboard = true;
+
     this.employeeService.getEmployeeDashboard().subscribe({
-      next: (response) => {
+      next: (response: DashboardData) => {
         console.log('Dashboard response:', response);
 
         this.dashboardData = response;
 
+        this.isLoadingDashboard = false;
         this.cdr.detectChanges();
       },
 
       error: (error) => {
         console.error('Dashboard API error:', error);
+
+        this.isLoadingDashboard = false;
+      },
+    });
+  }
+
+  loadRecentRequests(): void {
+    this.isLoadingRequests = true;
+
+    this.employeeService.getLeaveRequests().subscribe({
+      next: (response: any) => {
+        console.log('Leave Requests response:', response);
+
+        if (response?.success && Array.isArray(response.data)) {
+          this.recentRequests = response.data;
+
+          // this.leaveRequests = response.data;
+        } else {
+          this.recentRequests = [];
+          this.leaveRequests = [];
+        }
+
+        this.isLoadingRequests = false;
+        this.cdr.detectChanges();
+      },
+
+      error: (error) => {
+        console.error('Leave Requests API error:', error);
+
+        this.recentRequests = [];
+        this.leaveRequests = [];
+
+        this.isLoadingRequests = false;
       },
     });
   }
@@ -60,17 +98,6 @@ export class Dashboard implements OnInit {
       },
       error: (error) => {
         console.error('Leave request submit error:', error);
-      },
-    });
-  }
-
-  leaveRequest(): void {
-    this.employeeService.getLeaveRequests().subscribe({
-      next: (response: any) => {
-        this.recentRequests = response.data;
-      },
-      error: (error) => {
-        console.error('Leave Requests API error:', error);
       },
     });
   }

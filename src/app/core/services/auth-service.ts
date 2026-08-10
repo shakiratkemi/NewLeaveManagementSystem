@@ -2,9 +2,11 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { environment } from '../../../evironments/environment';
+import { Observable } from 'rxjs';
 
 const routes = {
   login: 'Auth/login',
+  refresh_token: 'Auth/refresh-token',
 };
 
 @Injectable({
@@ -18,8 +20,14 @@ export class AuthService {
     private router: Router,
   ) {}
 
+  //Login
   login(LoginForm: any) {
     const url = `${this.baseUrl + routes.login}`;
     return this.http.post(url, LoginForm);
+  }
+
+  //Refresh-token
+  refreshToken(refreshToken: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}${routes.refresh_token}`, { refreshToken });
   }
 }
