@@ -54,7 +54,7 @@ export class Employee {
   }
 
   updateLeaveRequestById(id: string, data: any): Observable<any> {
-    return this.http.put(`${this.baseUrl}${routes.leaveRequestById}/${id}`, data);
+    return this.http.put(`${this.baseUrl}${routes.leaveRequestById.replace('{id}', id)}`, data);
   }
 
   deleteLeaveRequestById(id: string): Observable<any> {
