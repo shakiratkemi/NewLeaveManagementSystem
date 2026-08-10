@@ -33,7 +33,7 @@ export class AddEmployee {
       department: ['Engineering', Validators.required],
       designation: ['', Validators.required],
       role: ['Employee', Validators.required],
-      clientResetUrl: [`${window.location.origin}/auth/reset-password`, Validators.required],
+      clientResetUrl: [`${window.location.origin}/reset-password`, Validators.required],
     });
   }
 
