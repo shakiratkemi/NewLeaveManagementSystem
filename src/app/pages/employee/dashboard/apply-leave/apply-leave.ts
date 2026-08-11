@@ -19,6 +19,8 @@ export class Applyleave {
 
   leaveTypes: LeaveTypes[] = [];
 
+  minEndDate = '';
+
   errorMessage = '';
   successMessage = '';
 
@@ -52,6 +54,18 @@ export class Applyleave {
     });
   }
 
+  onStartDateChange(): void {
+    const startDate = this.leaveForm.get('startDate')?.value;
+
+    this.minEndDate = startDate || '';
+
+    const endDate = this.leaveForm.get('endDate')?.value;
+
+    if (endDate && startDate && endDate < startDate) {
+      this.leaveForm.get('endDate')?.setValue('');
+    }
+  }
+
   onSubmit(): void {
     if (this.leaveForm.invalid) {
       this.leaveForm.markAllAsTouched();
@@ -79,7 +93,7 @@ export class Applyleave {
 
         this.successMessage = 'Leave request submitted successfully.';
 
-        this.router.navigateByUrl('/employee/dashboard');
+        this.router.navigateByUrl('/employee/leave-history');
       },
 
       error: (error) => {
