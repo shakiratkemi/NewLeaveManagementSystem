@@ -1,11 +1,11 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 
 import { LeaveHistoryRow } from '../../../../core/interface/employee';
 
 @Component({
   selector: 'app-leave-history-details',
-  imports: [CommonModule],
+  imports: [CommonModule, DatePipe],
   templateUrl: './leave-history-details.html',
   styles: ``,
 })
