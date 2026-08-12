@@ -1,10 +1,12 @@
-import { Component, OnInit, signal, computed, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, signal, computed, ChangeDetectorRef, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HrService } from '../../../core/services/data/hr/hr-service';
+import { ToastrService } from 'ngx-toastr';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [FormsModule],
+  imports: [FormsModule, DatePipe],
   templateUrl: './dashboard.html',
   styles: ``,
 })
@@ -23,6 +25,7 @@ export class Dashboard implements OnInit {
 
   constructor(
     private hrService: HrService,
+    private toastr: ToastrService,
     private cdr: ChangeDetectorRef,
   ) {}
 
@@ -55,7 +58,11 @@ export class Dashboard implements OnInit {
   }
 
   updateStatus(id: string, newStatus: 'Approved' | 'Rejected'): void {
-    if (!id) return;
+    if (!id) {
+      this.toastr.warning('Invalid leave request ID.', 'Warning');
+      return;
+    }
+
     const call =
       newStatus === 'Approved'
         ? this.hrService.approveLeaveRequest(id)
@@ -63,10 +70,16 @@ export class Dashboard implements OnInit {
     call.subscribe({
       next: (res: any) => {
         console.log('Dashboard updateStatus response:', res);
+        this.toastr.success(
+          `Leave request ${newStatus.toLowerCase()} successfully!`,
+          'Status Updated',
+        );
         // hrService will emit leaveRequestUpdated and loadDashboard will handle UI update
       },
       error: (err: any) => {
         console.error('Error updating status from dashboard:', err);
+        const errorMsg = err?.error?.message || `Failed to set status to ${newStatus}.`;
+        this.toastr.error(errorMsg, 'Update Failed');
       },
     });
   }
@@ -101,12 +114,12 @@ export class Dashboard implements OnInit {
               requestId: item.id ?? item.requestId ?? '',
               employeeName: item.employeeName ?? item.employee?.name ?? item.name ?? '',
               department: item.department ?? item.employee?.department ?? '',
-              leaveType: item.leaveType ?? item.type ?? 'Unknown',
+              leaveTypeName: item.leaveTypeName ?? item.type ?? 'Unknown',
               startDate: item.startDate ?? item.createdAt ?? '',
               endDate: item.endDate ?? '',
               days: item.numberOfDays ?? item.days ?? 0,
               reason: item.reason ?? '',
-              status: (item.status || item.state || 'Pending'),
+              status: item.status || item.state || 'Pending',
             }));
 
             console.log('getAllLeaveRequests mapped:', mapped);
@@ -126,8 +139,6 @@ export class Dashboard implements OnInit {
     return this.pendingRequests().slice(0, 5);
   });
 
-
-  
   getStatusClass(status: string): string {
     switch (status) {
       case 'Pending':

@@ -64,7 +64,7 @@ export class Login implements OnInit {
             console.log('Decoded token:', this.loggedInUser);
             localStorage.setItem('loggedInUser', JSON.stringify(this.loggedInUser));
 
-            if (this.loggedInUser.role === 'Manager') {
+            if (this.loggedInUser.role === 'HR') {
               this.toastr.success('Login successful! Redirecting to HR dashboard...', 'Success');
               this.router.navigateByUrl('/hr');
             } else if (this.loggedInUser.role === 'Employee') {
