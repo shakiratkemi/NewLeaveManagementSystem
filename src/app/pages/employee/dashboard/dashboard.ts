@@ -13,7 +13,7 @@ export type Status = 'Pending' | 'Approved' | 'Rejected';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [RouterLink, CommonModule, Applyleave],
+  imports: [RouterLink, CommonModule, Applyleave, DatePipe],
   templateUrl: './dashboard.html',
   styles: ``,
 })

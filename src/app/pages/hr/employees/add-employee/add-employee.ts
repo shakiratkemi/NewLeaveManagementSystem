@@ -44,7 +44,7 @@ export class AddEmployee {
       department: 'Engineering',
       designation: '',
       role: 'Employee',
-      clientResetUrl: `${window.location.origin}/reset-password`,
+      clientResetUrl: `${window.location.origin}/auth/reset-password`,
     });
     this.close.emit();
   }

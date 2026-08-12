@@ -9,12 +9,13 @@ import { provideRouter } from '@angular/router';
 
 import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 import { routes } from './app.routes';
+import { loaderInterceptor } from './core/interceptors/loader-interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
-    provideHttpClient(withInterceptorsFromDi()),
+    provideHttpClient(withInterceptors([loaderInterceptor]), withInterceptorsFromDi()),
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
