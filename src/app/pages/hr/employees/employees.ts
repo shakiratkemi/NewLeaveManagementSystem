@@ -2,39 +2,21 @@ import { Component, OnInit, ViewChild, AfterViewInit, ChangeDetectorRef } from '
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatPaginatorModule, MatPaginator, PageEvent } from '@angular/material/paginator';
-import { AddEmployee, EmployeeFormPayload } from './add-employee/add-employee';
+import { AddEmployee } from './add-employee/add-employee';
 import { HrService } from '../../../core/services/data/hr/hr-service';
 import { AuthService } from '../../../core/services/auth-service';
-
-type EmployeeRecord = {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-  department: string;
-  annualLeaveBalance: number;
-  totalAnnualLeave: number;
-  sickLeaveBalance: number;
-  totalSickLeave: number;
-  status: 'Active' | 'On Leave' | 'Inactive';
-};
-
-type EmployeeFormData = {
-  name: string;
-  email: string;
-  role: string;
-  password?: string;
-  department: string;
-  designation: string;
-  totalAnnualLeave: number;
-  totalSickLeave: number;
-  status: EmployeeRecord['status'];
-};
+import {
+  EditEmployeeProfile,
+  EmployeeFormData,
+  EmployeeFormPayload,
+  EmployeeRecord,
+} from '../../../core/interface/hr';
+import { EditEmployee } from './edit-employee/edit-employee';
 
 @Component({
   selector: 'app-employees',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatPaginatorModule, AddEmployee],
+  imports: [CommonModule, FormsModule, MatPaginatorModule, AddEmployee, EditEmployee],
   templateUrl: './employees.html',
   styles: ``,
 })
@@ -46,7 +28,9 @@ export class Employees implements OnInit, AfterViewInit {
   selectedDepartment: string = 'All';
   selectedStatus: string = 'All';
   selectedEmployeeForModal: EmployeeRecord | null = null;
+  selectedEmployeeForEdit: EditEmployeeProfile | null = null;
   isAddModalOpen: boolean = false;
+  isEditModalOpen: boolean = false;
   isSubmitting: boolean = false;
   newEmployee: Partial<EmployeeFormData> = {
     name: '',
@@ -54,7 +38,6 @@ export class Employees implements OnInit, AfterViewInit {
     role: '',
     department: 'Engineering',
     designation: '',
-
     totalAnnualLeave: 20,
     totalSickLeave: 10,
     status: 'Active',
@@ -140,6 +123,38 @@ export class Employees implements OnInit, AfterViewInit {
   closeAddEmployeeModal(): void {
     this.isAddModalOpen = false;
     // this.resetNewEmployeeForm();
+  }
+
+  openEditProfileModal(emp: EmployeeRecord): void {
+    this.selectedEmployeeForEdit = {
+      email: emp.email,
+      fullName: emp.name,
+      department: emp.department,
+      designation: emp.role,
+    };
+    this.isEditModalOpen = true;
+  }
+
+  closeEditProfileModal(): void {
+    this.isEditModalOpen = false;
+    this.selectedEmployeeForEdit = null;
+  }
+
+  handleUpdateProfile(payload: EditEmployeeProfile): void {
+    this.isSubmitting = true;
+
+    this.hrService.editUserProfile(payload).subscribe({
+      next: (res) => {
+        console.log('Profile updated successfully:', res);
+        this.isSubmitting = false;
+        this.closeEditProfileModal();
+        this.loadEmployees(); // Reload table data
+      },
+      error: (err) => {
+        console.error('Failed to update profile:', err);
+        this.isSubmitting = false;
+      },
+    });
   }
 
   saveNewEmployee(): void {

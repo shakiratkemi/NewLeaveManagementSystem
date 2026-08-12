@@ -1,45 +1,25 @@
 import { Component, OnInit, ViewChild, signal, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
-import { Employee as EmployeeService } from '../../../core/services/data/employee/employee';
 import { HrService } from '../../../core/services/data/hr/hr-service';
-
-export interface HrLeaveRecord {
-  requestId: string;
-  employeeId: string;
-  employeeName: string;
-  department: string;
-  leaveType: 'Maternity/Paternity Leave' | 'Sick Leave' | 'Annual Leave';
-  startDate: string;
-  endDate: string;
-  days: number;
-  reason: string;
-  appliedOn: string;
-  status: 'Pending' | 'Approved' | 'Rejected';
-  approverName?: string;
-  approverRemarks?: string;
-  contactDetails?: string;
-}
+import { HrLeaveRecord } from '../../../core/interface/hr';
 
 @Component({
   selector: 'app-leave-request',
-  imports: [CommonModule, FormsModule, MatPaginatorModule],
+  imports: [CommonModule, FormsModule, MatPaginatorModule, DatePipe],
   templateUrl: './leave-request.html',
   styles: ``,
 })
 export class LeaveRequest implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-
   allRecords = signal<HrLeaveRecord[]>([]);
-
   searchTerm = signal<string>('');
   selectedStatusFilter = signal<string>('ALL');
   selectedDepartmentFilter = signal<string>('ALL');
   selectedTypeFilter = signal<string>('ALL');
   pageSize = signal<number>(10);
   pageIndex = signal<number>(0);
-
   selectedRecord = signal<HrLeaveRecord | null>(null);
 
   filteredRecords = computed(() => {
@@ -58,7 +38,7 @@ export class LeaveRequest implements OnInit {
 
       const matchesStatus = status === 'ALL' || record.status === status;
       const matchesDept = dept === 'ALL' || record.department === dept;
-      const matchesType = type === 'ALL' || record.leaveType === type;
+      const matchesType = type === 'ALL' || record.leaveTypeName === type;
 
       return matchesSearch && matchesStatus && matchesDept && matchesType;
     });
@@ -89,7 +69,7 @@ export class LeaveRequest implements OnInit {
           employeeId: record.employeeId || record.employee?.id || '',
           employeeName: record.employeeName || record.employee?.name || 'Unknown',
           department: record.department || 'Unknown',
-          leaveType: record.leaveType || 'Unknown',
+          leaveTypeName: record.leaveTypeName || 'Unknown',
           startDate: record.startDate || record.createdAt || '',
           endDate: record.endDate || '',
           days: record.numberOfDays ?? 0,
@@ -159,7 +139,7 @@ export class LeaveRequest implements OnInit {
       employeeName:
         record.employeeName || record.employee?.name || record.employeeName || 'Unknown',
       department: record.department || record.employee?.department || 'Unknown',
-      leaveType: record.leaveType || 'Unknown',
+      leaveTypeName: record.leaveTypeName || 'Unknown',
       startDate: record.startDate || record.createdAt || '',
       endDate: record.endDate || '',
       days: record.numberOfDays ?? record.days ?? 0,

@@ -1,0 +1,10 @@
+@if (loaderService.isLoading()) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs">
+    <div class="relative flex items-center justify-center">
+      <div
+        class="h-28 w-28 animate-spin rounded-full border-4 border-blue-200 border-t-blue-600"
+      ></div>
+      <span class="absolute text-sm font-semibold text-blue-600 tracking-wider"> Loading... </span>
+    </div>
+  </div>
+}
