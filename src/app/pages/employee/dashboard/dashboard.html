@@ -170,10 +170,7 @@
                   {{ request.leaveType.name }}
                 </p>
                 <p class="text-xs sm:text-sm text-[#868c9f] mt-0.5">
-                  {{ request.startDate | date }} - {{ request.endDate | date }} ({{
-                    request.duration
-                  }}
-                  {{ request.duration === 1 ? 'day' : 'days' }})
+                  {{ request.startDate | date }} - {{ request.endDate | date }}
                 </p>
               </div>
             </div>
