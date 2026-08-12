@@ -167,11 +167,10 @@
               </div>
               <div>
                 <p class="font-medium text-sm sm:text-base text-gray-900">
-                  {{ request.leaveType }}
+                  {{ request.leaveType.name }}
                 </p>
                 <p class="text-xs sm:text-sm text-[#868c9f] mt-0.5">
-                  {{ request.startDate }} - {{ request.endDate }} ({{ request.duration }}
-                  {{ request.duration === 1 ? 'day' : 'days' }})
+                  {{ request.startDate | date }} - {{ request.endDate | date }}
                 </p>
               </div>
             </div>
@@ -209,7 +208,7 @@
           >
             <div class="text-xs sm:text-sm w-full">
               <p class="font-medium text-gray-800 mb-1 sm:mb-2">
-                Submitted {{ activity.leaveType }} Leave request (#LR-{{ activity.id }})
+                Submitted {{ activity.leaveType.name }} request (#LR-{{ activity.id }})
               </p>
               <p class="text-gray-500 flex flex-wrap items-center gap-1.5">
                 <span>Status is currently</span>

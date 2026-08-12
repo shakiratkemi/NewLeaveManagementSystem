@@ -7,7 +7,7 @@ import { Spinner } from "./shared/components/spinner/spinner";
   selector: 'app-root',
   imports: [RouterOutlet, Spinner],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.css',
 })
 export class App {
   

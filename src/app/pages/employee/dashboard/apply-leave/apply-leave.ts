@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Employee } from '../../../../core/services/data/employee/employee';
 import { LeaveRequest, LeaveTypes } from '../../../../core/interface/employee';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-applyleave',
@@ -19,6 +20,8 @@ export class Applyleave {
 
   leaveTypes: LeaveTypes[] = [];
 
+  minEndDate = '';
+
   errorMessage = '';
   successMessage = '';
 
@@ -26,6 +29,7 @@ export class Applyleave {
     private fb: FormBuilder,
     private employeeService: Employee,
     private router: Router,
+    private toastr: ToastrService,
   ) {}
 
   ngOnInit(): void {
@@ -50,6 +54,18 @@ export class Applyleave {
         console.error('Leave Type API error:', error);
       },
     });
+  }
+
+  onStartDateChange(): void {
+    const startDate = this.leaveForm.get('startDate')?.value;
+
+    this.minEndDate = startDate || '';
+
+    const endDate = this.leaveForm.get('endDate')?.value;
+
+    if (endDate && startDate && endDate < startDate) {
+      this.leaveForm.get('endDate')?.setValue('');
+    }
   }
 
   onSubmit(): void {
@@ -77,11 +93,10 @@ export class Applyleave {
       next: (response) => {
         console.log('Leave request created:', response);
 
-        this.successMessage = 'Leave request submitted successfully.';
+        // this.successMessage = 'Leave request submitted successfully.';
+        this.toastr.success('Leave request submitted successfully.', 'Leave Request');
 
-        this.leaveForm.reset();
-
-        this.router.navigateByUrl('/employee/dashboard');
+        this.router.navigateByUrl('/employee/leave-history');
       },
 
       error: (error) => {
@@ -89,6 +104,7 @@ export class Applyleave {
 
         this.errorMessage =
           error?.error?.message || 'Unable to submit leave request. Please try again.';
+        this.toastr.error(this.errorMessage, 'Leave request API error');
       },
     });
   }
