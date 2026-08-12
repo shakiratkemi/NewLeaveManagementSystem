@@ -6,19 +6,27 @@ import {
   withInterceptorsFromDi,
 } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
-
 import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 import { routes } from './app.routes';
+import { loaderInterceptor } from './core/interceptors/loader-interceptor';
+import { provideToastr } from 'ngx-toastr';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
-    provideHttpClient(withInterceptorsFromDi()),
+    provideHttpClient(withInterceptors([loaderInterceptor]), withInterceptorsFromDi()),
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
       multi: true,
     },
+    provideToastr({
+      closeButton: true,
+      timeOut: 3000,
+      positionClass: 'toast-top-right',
+      preventDuplicates: true,
+      autoDismiss: true,
+    }),
   ],
 };

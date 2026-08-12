@@ -1,15 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-
-export interface EmployeeFormPayload {
-  fullName: string;
-  email: string;
-  department: string;
-  designation: string;
-  role: string;
-  clientResetUrl?: string;
-}
+import { EmployeeFormPayload } from '../../../../core/interface/hr';
 
 @Component({
   selector: 'app-add-employee',
@@ -44,7 +36,7 @@ export class AddEmployee {
       department: 'Engineering',
       designation: '',
       role: 'Employee',
-      clientResetUrl: `${window.location.origin}/reset-password`,
+      clientResetUrl: `${window.location.origin}/auth/reset-password`,
     });
     this.close.emit();
   }

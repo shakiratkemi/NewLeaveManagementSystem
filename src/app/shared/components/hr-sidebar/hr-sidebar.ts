@@ -51,6 +51,9 @@ export class HrSidebar {
   get userRole(): string {
     return this.data?.designation || 'Software Engineer';
   }
+  get userEmail(): string {
+    return this.data?.email || '';
+  }
 
   get userInitials(): string {
     const fullName = this.data?.fullName || this.data?.name || this.data?.employeeName;

@@ -12,6 +12,7 @@ const routes = {
   approveLeaveRequest: 'LeaveRequests/{id}/approve',
   rejectLeaveRequest: 'LeaveRequests/{id}/reject',
   editUser: 'Profile',
+  leaveTpe: 'LeaveTypes',
 };
 
 @Injectable({
@@ -42,22 +43,26 @@ export class HrService {
     return this.http.get(url);
   }
 
+  getLeaveTypes(): Observable<any> {
+    return this.http.get(`${this.baseUrl}${routes.leaveTpe}`);
+  }
+
   approveLeaveRequest(id: string): Observable<any> {
     const url = `${this.baseUrl}${routes.approveLeaveRequest.replace('{id}', id)}`;
-    return this.http.post(url, {}).pipe(
-      tap(() => this.leaveRequestUpdated.next({ id, status: 'Approved' })),
-    );
+    return this.http
+      .post(url, {})
+      .pipe(tap(() => this.leaveRequestUpdated.next({ id, status: 'Approved' })));
   }
 
   rejectLeaveRequest(id: string): Observable<any> {
     const url = `${this.baseUrl}${routes.rejectLeaveRequest.replace('{id}', id)}`;
-    return this.http.post(url, {}).pipe(
-      tap(() => this.leaveRequestUpdated.next({ id, status: 'Rejected' })),
-    );
+    return this.http
+      .post(url, {})
+      .pipe(tap(() => this.leaveRequestUpdated.next({ id, status: 'Rejected' })));
   }
 
-  editUserProfile(userId: string, updatedData: any): Observable<any> {
-    const url = `${this.baseUrl}${routes.editUser}/${userId}`;
+  editUserProfile(updatedData: any): Observable<any> {
+    const url = `${this.baseUrl}${routes.editUser}`;
     return this.http.put(url, updatedData);
   }
 }
