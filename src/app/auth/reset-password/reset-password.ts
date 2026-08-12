@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth-service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-reset-password',
@@ -21,6 +22,7 @@ export class ResetPassword {
     private router: Router,
     private route: ActivatedRoute,
     private authService: AuthService,
+    private toastr: ToastrService,
   ) {}
 
   ngOnInit(): void {
@@ -55,13 +57,13 @@ export class ResetPassword {
 
     this.authService.resetPassword(payload).subscribe({
       next: () => {
-        alert('Password reset successful');
+        this.toastr.success('Password reset successful', 'Success');
         this.router.navigateByUrl('/login');
       },
       error: (err: any) => {
         this.isSubmitting = false;
-        console.error('Reset Password Error:', err);
-        alert(err?.error?.message || 'Failed to reset password');
+        const errorMessage = err?.error?.message || 'Failed to reset password';
+        this.toastr.error(errorMessage, 'Password Reset Failed');
       },
     });
   }
