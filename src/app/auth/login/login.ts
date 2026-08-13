@@ -95,4 +95,12 @@ export class Login implements OnInit {
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
   }
+
+  onForgotPassword(): void {
+    this.router.navigateByUrl('/forgot-password');
+  }
+
+  onContactHr(): void {
+    this.router.navigateByUrl('/contact-hr');
+  }
 }
