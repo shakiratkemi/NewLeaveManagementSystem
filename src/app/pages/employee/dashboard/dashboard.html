@@ -1,223 +1,195 @@
-<section class="flex flex-col gap-6 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+<section class="flex flex-col gap-8 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <!-- Header -->
   <header class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
     <div>
-      <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Dashboard</h1>
-      <p class="text-sm text-gray-500">
+      <span class="text-[11px] font-bold text-slate-400 tracking-wider uppercase">Workspace Overview</span>
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mt-0.5">Dashboard</h1>
+      <p class="text-sm text-slate-500 mt-1">
         Welcome back,
-        <span class="font-medium text-amber-800">{{ dashboardData.employeeName }}! 👋</span>
+        <span class="font-medium text-slate-800">{{ dashboardData.employeeName}}! 👋</span>
       </p>
     </div>
 
     <button
       (click)="openApplyModal()"
-      class="group inline-flex items-center justify-center gap-2.5 bg-[#0d1d3e] text-white rounded-lg px-4 py-2.5 text-sm font-medium transition-all hover:bg-[#00133e] hover:text-[#68a7f5] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shrink-0 self-start sm:self-auto"
+      type="button"
+      class="inline-flex items-center gap-2 bg-slate-950 hover:bg-slate-800 text-white rounded-xl px-4 py-2.5 text-xs sm:text-sm font-semibold shadow-sm transition shrink-0 self-start sm:self-auto cursor-pointer"
     >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-5 w-5 shrink-0"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        stroke-width="1.8"
-      >
-        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-6-6h12" />
-      </svg>
-      <span>Apply Leave</span>
+      <!-- SVG Plus Icon Placeholder -->
+      <span>+ Apply Leave</span>
     </button>
   </header>
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-    <div
-      class="p-4 flex items-start justify-between bg-gray-50 rounded-lg border-t-4 border-t-green-700 border-x border-b border-gray-100 shadow-sm"
-    >
-      <div>
-        <h3 class="text-green-700 font-bold text-3xl sm:text-4xl mb-2 sm:mb-4">
+  <!-- Featured Top Cards (2 Columns) -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6">
+    <!-- Card 1: Days Remaining -->
+    <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1E6BFB] via-[#1D63EA] to-[#1246D6] p-6 sm:p-8 text-white shadow-lg shadow-blue-600/15 flex flex-col justify-between min-h-[190px]">
+      <div class="flex items-start justify-between relative z-10">
+        <div>
+          <span class="text-[11px] font-bold tracking-wider uppercase text-blue-200">Leave Balance</span>
+          <h2 class="text-lg sm:text-xl font-bold text-white mt-0.5">Days Remaining</h2>
+        </div>
+        <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white shrink-0">
+          <img src="/assets/images/people.svg" alt="leave">
+        </div>
+      </div>
+
+      <div class="mt-6 relative z-10">
+        <h3 class="text-4xl sm:text-5xl font-black text-white tracking-tight">
           {{ dashboardData.totalLeaveDaysRemaining }}
         </h3>
-        <p class="text-sm sm:text-base font-medium text-gray-800 mb-1">Days Remaining</p>
-        <small class="text-[#868C9F] font-medium text-xs">Leave Balance</small>
       </div>
-      <div class="bg-green-100 text-green-700 p-2 rounded-full shrink-0">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          stroke-width="1.8"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M8 2v4m8-4v4M3 10h18M5 4h14a2 2 0 012 2v13a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z"
-          />
-        </svg>
+
+      <div class="absolute bottom-0 left-0 w-full pointer-events-none leading-none">
+        <img src="/assets/images/flow2.svg" alt="leave" class="w-full h-auto object-cover block" />
       </div>
     </div>
 
-    <div
-      class="p-4 flex items-start justify-between bg-gray-50 rounded-lg border-t-4 border-t-[#68a7f5] border-x border-b border-gray-100 shadow-sm"
-    >
-      <div>
-        <h3 class="text-blue-500 font-bold text-3xl sm:text-4xl mb-2 sm:mb-4">
+    <!-- Card 2: Pending Approval -->
+    <div class="relative overflow-hidden rounded-3xl bg-[#072418] p-6 sm:p-8 text-white shadow-lg shadow-emerald-950/20 flex flex-col justify-between min-h-[190px] border border-emerald-900/30">
+      <div class="flex items-start justify-between">
+        <div>
+          <span class="text-[11px] font-bold tracking-wider uppercase text-emerald-400">Attention Required</span>
+          <h2 class="text-lg sm:text-xl font-bold text-emerald-400 mt-0.5">Pending Approval</h2>
+        </div>
+        <div class="w-10 h-10 rounded-full bg-emerald-950 border border-emerald-800/50 flex items-center justify-center text-emerald-400 shrink-0">
+           <img src="/assets/images/todo.svg" alt="leave">
+        </div>
+      </div>
+
+      <div class="mt-6 flex items-baseline gap-3">
+        <h3 class="text-4xl sm:text-5xl font-black text-emerald-400 tracking-tight">
           {{ dashboardData.pendingRequestsCount }}
         </h3>
-        <p class="text-sm sm:text-base font-medium text-gray-800 mb-1">Pending Approval</p>
-        <small class="text-[#868C9F] font-medium text-xs">Awaiting Approval</small>
-      </div>
-      <div class="bg-blue-100 text-blue-500 p-2 rounded-full shrink-0">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          stroke-width="1.8"
-        >
-          <circle cx="12" cy="12" r="9" />
-          <path stroke-linecap="round" stroke-linejoin="round" d="M12 7v5l3 2" />
-        </svg>
-      </div>
-    </div>
-
-    <div
-      class="p-4 flex items-start justify-between bg-gray-50 rounded-lg border-t-4 border-t-orange-500 border-x border-b border-gray-100 shadow-sm"
-    >
-      <div>
-        <h3 class="text-orange-500 font-bold text-3xl sm:text-4xl mb-2 sm:mb-4">
-          {{ dashboardData.approvedLeavesCount }}
-        </h3>
-        <p class="text-sm sm:text-base font-medium text-gray-800 mb-1">Approved Leaves</p>
-        <small class="text-[#868C9F] font-medium text-xs">This Year</small>
-      </div>
-      <div class="bg-orange-100 text-orange-500 p-2 rounded-full shrink-0">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          stroke-width="1.8"
-        >
-          <path stroke-linecap="round" stroke-linejoin="round" d="M5 12l4 4L19 6" />
-        </svg>
-      </div>
-    </div>
-
-    <div
-      class="p-4 flex items-start justify-between bg-gray-50 rounded-lg border-t-4 border-t-rose-600 border-x border-b border-gray-100 shadow-sm"
-    >
-      <div>
-        <h3 class="text-rose-600 font-bold text-3xl sm:text-4xl mb-2 sm:mb-4">
-          {{ dashboardData.rejectedLeavesCount }}
-        </h3>
-        <p class="text-sm sm:text-base font-medium text-gray-800 mb-1">Rejected Leaves</p>
-        <small class="text-[#868C9F] font-medium text-xs">This Year</small>
-      </div>
-      <div class="bg-rose-100 text-rose-600 p-2 rounded-full shrink-0">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          stroke-width="1.8"
-        >
-          <path stroke-linecap="round" stroke-linejoin="round" d="M6 6l12 12M18 6L6 18" />
-        </svg>
+        <span class="text-xs text-emerald-300/80 font-medium">Awaiting review</span>
       </div>
     </div>
   </div>
 
-  <section class="flex flex-col xl:flex-row gap-6 w-full">
-    <div class="bg-white rounded-lg p-4 sm:p-5 shadow-sm border border-gray-100 flex-1 w-full">
-      <div class="flex items-center justify-between gap-2">
-        <h2 class="tracking-tight font-semibold text-gray-900 text-base sm:text-lg">
+  <!-- Secondary Stats Row (2 Cards) -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+    <!-- Approved Leaves -->
+    <div class="bg-slate-50/80 border border-slate-200/70 rounded-2xl p-5 sm:p-6 flex flex-col justify-between shadow-2xs hover:shadow-xs transition">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-3xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+            <img src="/assets/images/approved.svg" alt="">
+          </div>
+          <span class="text-xs sm:text-sm font-semibold text-slate-700">Approved Leaves</span>
+        </div>
+        <span class="text-[11px] font-semibold text-slate-600 bg-white px-2.5 py-1 rounded-md border border-slate-200/80 shadow-2xs">
+          This Year
+        </span>
+      </div>
+      <div class="mt-4 flex items-end justify-between">
+        <h4 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+          {{ dashboardData.approvedLeavesCount }}
+        </h4>
+        <div class="w-16 h-6 flex items-center justify-end">
+         <img src="/assets/images/up.svg" alt="uptrend">
+        </div>
+      </div>
+    </div>
+
+    <!-- Rejected Leaves -->
+    <div class="bg-slate-50/80 border border-slate-200/70 rounded-2xl p-5 sm:p-6 flex flex-col justify-between shadow-2xs hover:shadow-xs transition">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-3xl bg-rose-100 text-rose-600 flex items-center justify-center shrink-0">
+            <img src="/assets/images/rejected.svg" alt="">
+          </div>
+          <span class="text-xs sm:text-sm font-semibold text-slate-700">Rejected Leaves</span>
+        </div>
+        <span class="text-[11px] font-semibold text-slate-600 bg-white px-2.5 py-1 rounded-md border border-slate-200/80 shadow-2xs">
+          This Year
+        </span>
+      </div>
+      <div class="mt-4 flex items-end justify-between">
+        <h4 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+          {{ dashboardData.rejectedLeavesCount }}
+        </h4>
+        <div class="w-16 h-6 flex items-center justify-end">
+         <img src="/assets/images/down.svg" alt="downtrend">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Section: My Leave Requests & Recent Activity (2 Columns) -->
+  <section class="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full items-start">
+    <!-- Left Column: My Leave Requests -->
+    <div class="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 sm:p-7 space-y-4">
+      <div class="flex items-center justify-between gap-2 pb-2">
+        <h2 class="font-bold text-slate-900 text-base sm:text-lg tracking-tight">
           My Leave Requests
         </h2>
         <a
           routerLink="/employee/leave-history"
-          class="inline-flex items-center gap-1.5 bg-[#0d1d3e] text-white rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors hover:bg-[#00133e] hover:text-[#68a7f5] shrink-0"
+          class="inline-flex items-center gap-1.5 bg-slate-950 text-white rounded-xl px-3 py-1.5 text-xs font-semibold hover:bg-slate-800 transition shadow-xs cursor-pointer"
         >
-          View All &rarr;
+          <span>View All</span>
+          <span>&rarr;</span>
         </a>
       </div>
 
-      <div class="space-y-3 mt-4">
+      <div class="space-y-3">
         @for (request of recentRequests; track request.id) {
-          <div
-            class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-gray-50 p-3.5 sm:p-4 rounded-lg transition-colors hover:bg-gray-100/80"
-          >
-            <div class="flex items-start gap-3">
-              <div class="p-2 bg-blue-50 text-blue-500 rounded-lg shrink-0 mt-0.5 sm:mt-0">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-5 w-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  stroke-width="1.8"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M8 2v4m8-4v4M3 10h18M5 4h14a2 2 0 012 2v13a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z"
-                  />
-                </svg>
+          <div class="flex items-center justify-between gap-3 bg-slate-50/70 hover:bg-slate-100/80 p-3.5 sm:p-4 rounded-2xl border border-slate-100/80 transition">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 border border-blue-100/60">
+                <img src="/assets/images/date.svg" alt="date">
               </div>
               <div>
-                <p class="font-medium text-sm sm:text-base text-gray-900">
-                  {{ request.leaveType.name }}
+                <p class="font-bold text-slate-900 text-sm">
+                  {{ request?.leaveType?.name || request?.leaveTypeName }}
                 </p>
-                <p class="text-xs sm:text-sm text-[#868c9f] mt-0.5">
-                  {{ request.startDate | date }} - {{ request.endDate | date }}
+                <p class="text-xs text-slate-400 mt-0.5">
+                  {{ request.startDate | date: 'mediumDate' }} - {{ request.endDate | date: 'mediumDate' }}
                 </p>
               </div>
             </div>
 
             <span
-              class="self-start sm:self-center inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium shrink-0"
+              class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold shrink-0"
               [ngClass]="{
-                'bg-emerald-100 text-emerald-800': request.status === 'Approved',
-                'bg-amber-100 text-amber-800': request.status === 'Pending',
-                'bg-rose-100 text-rose-800': request.status === 'Rejected',
+                'bg-emerald-50 text-emerald-700 border border-emerald-200/60': request.status === 'Approved',
+                'bg-amber-50 text-amber-700 border border-amber-200/60': request.status === 'Pending',
+                'bg-rose-50 text-rose-700 border border-rose-200/60': request.status === 'Rejected'
               }"
             >
+              <span class="w-1.5 h-1.5 rounded-full bg-current"></span>
               {{ request.status }}
             </span>
           </div>
         } @empty {
-          <div class="p-6 text-center text-sm text-gray-500 bg-gray-50 rounded-lg">
-            No recent leave requests.
+          <div class="p-8 text-center text-xs sm:text-sm text-slate-400 italic bg-slate-50/50 rounded-2xl">
+            No recent leave requests found.
           </div>
         }
       </div>
     </div>
 
-    <div class="bg-white rounded-lg p-4 sm:p-5 shadow-sm border border-gray-100 flex-1 w-full">
-      <h2 class="tracking-tight font-semibold text-[#68a7f5] text-xs sm:text-sm mb-4 uppercase">
+    <!-- Right Column: My Recent Leave Activity -->
+    <div class="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 sm:p-7 space-y-4">
+      <h2 class="font-bold text-blue-600 text-xs sm:text-[13px] tracking-wider uppercase pb-2">
         My Recent Leave Activity
       </h2>
 
       <div class="space-y-3">
         @for (activity of recentRequests; track activity.id) {
-          <div
-            tabindex="0"
-            role="button"
-            class="flex items-start gap-3 border-l-4 border-blue-500 bg-gray-50 p-3.5 sm:p-4 rounded-lg transition-all hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
-          >
-            <div class="text-xs sm:text-sm w-full">
-              <p class="font-medium text-gray-800 mb-1 sm:mb-2">
-                Submitted {{ activity.leaveType.name }} request (#LR-{{ activity.id }})
+          <div class="flex items-start gap-3 border-l-4 border-blue-500 bg-slate-50/70 hover:bg-slate-100/80 p-3.5 sm:p-4 rounded-r-2xl transition">
+            <div class="text-xs sm:text-sm w-full space-y-1">
+              <p class="font-semibold text-slate-800">
+                Submitted {{ activity?.leaveType?.name || activity?.leaveTypeName }} request 
               </p>
-              <p class="text-gray-500 flex flex-wrap items-center gap-1.5">
+              <p class="text-xs text-slate-400 flex flex-wrap items-center gap-1.5">
                 <span>Status is currently</span>
                 <span
-                  class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold uppercase"
+                  class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide"
                   [ngClass]="{
-                    'text-emerald-700 bg-emerald-50': activity.status === 'Approved',
-                    'text-amber-700 bg-amber-50': activity.status === 'Pending',
-                    'text-rose-700 bg-rose-50': activity.status === 'Rejected',
+                    'text-emerald-700 bg-emerald-100/70': activity.status === 'Approved',
+                    'text-amber-700 bg-amber-100/70': activity.status === 'Pending',
+                    'text-rose-700 bg-rose-100/70': activity.status === 'Rejected'
                   }"
                 >
                   {{ activity.status }}
@@ -226,7 +198,7 @@
             </div>
           </div>
         } @empty {
-          <div class="p-6 text-center text-sm text-gray-500 bg-gray-50 rounded-lg">
+          <div class="p-8 text-center text-xs sm:text-sm text-slate-400 italic bg-slate-50/50 rounded-2xl">
             No recent leave activity found.
           </div>
         }
@@ -234,13 +206,7 @@
     </div>
   </section>
 
-  <!-- <app-leave-history-details
-    [request]="selectedRequest"
-    [isOpen]="isModalOpen"
-    (close)="closeModal()"
-  >
-  </app-leave-history-details>-->
-
+  <!-- Apply Leave Modal -->
   <app-applyleave
     [isOpen]="isApplyModalOpen"
     (close)="closeApplyModal()"
