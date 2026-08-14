@@ -35,6 +35,11 @@ export class HrSidebar {
       icon: 'assets/images/user.svg',
       link: '/hr/employees',
     },
+    {
+      name: 'Settings',
+      icon: 'assets/images/settings.svg',
+      link: '/hr/settings',
+    },
   ];
 
   ngOnInit(): void {
