@@ -3,6 +3,7 @@ import { HrService } from '../../../../core/services/data/hr/hr-service';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { EditEmployeeProfile } from '../../../../core/interface/hr';
 import { CommonModule } from '@angular/common';
+import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-edit-employee',
   imports: [ReactiveFormsModule, CommonModule],
@@ -21,6 +22,7 @@ export class EditEmployee {
   constructor(
     private fb: FormBuilder,
     private hrService: HrService,
+    private toastr: ToastrService,
   ) {
     this.editProfileForm = this.fb.group({
       fullName: ['', Validators.required],

@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { HrService } from '../../../core/services/data/hr/hr-service';
 import { ToastrService } from 'ngx-toastr';
 import { DatePipe } from '@angular/common';
-import { RouterLink } from "@angular/router";
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -20,7 +20,7 @@ export class Dashboard implements OnInit {
   searchQuery = signal<string>('');
   selectedStatusFilter = signal<string>('All');
   selectedDepartmentFilter = signal<string>('All');
-  departments: string[] = ['All', 'Engineering', 'Product', 'Human Resources', 'Sales'];
+  departments: string[] = ['All'];
   statuses: string[] = ['All', 'Pending', 'Approved', 'Rejected'];
   isMobileMenuOpen = false;
 
@@ -30,8 +30,7 @@ export class Dashboard implements OnInit {
         !this.searchQuery() ||
         (req.employeeName &&
           req.employeeName.toLowerCase().includes(this.searchQuery().toLowerCase())) ||
-        (req.department &&
-          req.department.toLowerCase().includes(this.searchQuery().toLowerCase()));
+        (req.department && req.department.toLowerCase().includes(this.searchQuery().toLowerCase()));
       const matchesStatus =
         this.selectedStatusFilter() === 'All' || req.status === this.selectedStatusFilter();
       const matchesDept =
@@ -54,6 +53,7 @@ export class Dashboard implements OnInit {
 
   ngOnInit(): void {
     this.loadDashboard();
+    this.loadDepartments();
     // Subscribe to updates from HrService so dashboard reflects approve/reject actions
     this.hrService.leaveRequestUpdated.subscribe(({ id, status }) => {
       const updated = this.leaveRequests().map((r) =>
@@ -88,6 +88,30 @@ export class Dashboard implements OnInit {
         console.error('Error updating status from dashboard:', err);
         const errorMsg = err?.error?.message || `Failed to set status to ${newStatus}.`;
         this.toastr.error(errorMsg, 'Update Failed');
+      },
+    });
+  }
+
+  loadDepartments(): void {
+    this.hrService.getDepartments().subscribe({
+      next: (res: any) => {
+        let deptList: any[] = [];
+
+        if (Array.isArray(res)) {
+          deptList = res;
+        } else if (Array.isArray(res?.data)) {
+          deptList = res.data;
+        } else if (Array.isArray(res?.departments)) {
+          deptList = res.departments;
+        }
+        const names: string[] = deptList
+          .map((d: any) => (typeof d === 'string' ? d : d.name || d.departmentName || ''))
+          .filter(Boolean);
+        this.departments = ['All', ...Array.from(new Set(names))];
+        this.cdr.detectChanges();
+      },
+      error: (err: any) => {
+        console.error('Error fetching departments:', err);
       },
     });
   }

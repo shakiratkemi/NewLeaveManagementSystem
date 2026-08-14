@@ -36,6 +36,8 @@
           />
           @if (searchTerm()) {
             <button
+              type="text"
+              placeholder="Search employee, ID, or reason..."
               (click)="searchTerm.set(''); onFilterChange()"
               class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
             >
@@ -55,14 +57,14 @@
         <div class="lg:col-span-3">
           <select
             [(ngModel)]="selectedDepartmentFilter"
-            (ngModelChange)="onFilterChange()"
+            (ngModelChange)="selectedDepartmentFilter.set($event)"
             class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition"
           >
-            <option value="ALL">All Departments</option>
-            <option value="Engineering">Engineering</option>
-            <option value="Product">Product</option>
-            <option value="Human Resources">Human Resources</option>
-            <option value="Sales">Sales</option>
+            @for (dept of departments; track dept) {
+              <option [value]="dept">
+                {{ dept === 'ALL' ? 'All Departments' : 'Department: ' + dept }}
+              </option>
+            }
           </select>
         </div>
 
@@ -70,7 +72,7 @@
         <div class="lg:col-span-2">
           <select
             [(ngModel)]="selectedStatusFilter"
-            (ngModelChange)="onFilterChange()"
+            (ngModelChange)="selectedStatusFilter.set($event); onFilterChange()"
             class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition"
           >
             <option value="ALL">All Statuses</option>
@@ -84,13 +86,14 @@
         <div class="lg:col-span-2">
           <select
             [(ngModel)]="selectedTypeFilter"
-            (ngModelChange)="onFilterChange()"
+            (ngModelChange)="selectedTypeFilter.set($event)"
             class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition"
           >
-            <option value="ALL">All Types</option>
-            <option value="Annual Leave">Annual Leave</option>
-            <option value="Sick Leave">Sick Leave</option>
-            <option value="Maternity/Paternity Leave">Maternity/Paternity Leave</option>
+            @for (leaveType of leaveTypes; track leaveType) {
+              <option [value]="leaveType">
+                {{ leaveType === 'ALL' ? 'All Leavetypes' : 'LeaveType: ' + leaveType }}
+              </option>
+            }
           </select>
         </div>
 
@@ -218,7 +221,7 @@
             } @empty {
               <tr>
                 <td colspan="9" class="py-12 text-center text-slate-400 italic">
-                  No employee leave records found matching your filters.
+                  No employee leave records found.
                 </td>
               </tr>
             }
@@ -301,9 +304,9 @@
 
             <div>
               <span class="block uppercase font-bold text-slate-400">Leave Category</span>
-              <span class="font-semibold text-slate-800 text-sm mt-0.5 block"
-                >{{ rec.leaveTypeName }}</span
-              >
+              <span class="font-semibold text-slate-800 text-sm mt-0.5 block">{{
+                rec.leaveTypeName
+              }}</span>
             </div>
 
             <div>

@@ -1,4 +1,11 @@
-import { Component, OnInit, ViewChild, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  AfterViewInit,
+  ChangeDetectorRef,
+  signal,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatPaginatorModule, MatPaginator, PageEvent } from '@angular/material/paginator';
@@ -12,6 +19,7 @@ import {
   EmployeeRecord,
 } from '../../../core/interface/hr';
 import { EditEmployee } from './edit-employee/edit-employee';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-employees',
@@ -25,7 +33,8 @@ export class Employees implements OnInit, AfterViewInit {
 
   employees: EmployeeRecord[] = [];
   searchQuery: string = '';
-  selectedDepartment: string = 'All';
+  selectedDepartmentFilter: string = 'ALL';
+  departments: string[] = ['ALL'];
   selectedStatus: string = 'All';
   selectedEmployeeForModal: EmployeeRecord | null = null;
   selectedEmployeeForEdit: EditEmployeeProfile | null = null;
@@ -36,35 +45,28 @@ export class Employees implements OnInit, AfterViewInit {
     name: '',
     email: '',
     role: '',
-    department: 'Engineering',
+    department: '',
     designation: '',
     totalAnnualLeave: 20,
     totalSickLeave: 10,
     status: 'Active',
   };
-
   pageSize: number = 10;
   pageIndex: number = 0;
   pageSizeOptions: number[] = [5, 10, 20, 30];
 
-  readonly departments: string[] = [
-    'All',
-    'Engineering',
-    'Product',
-    'Marketing',
-    'Human Resources',
-    'Sales',
-  ];
   readonly statuses: string[] = ['All', 'Active', 'On Leave', 'Inactive'];
 
   constructor(
     private hrService: HrService,
     private authService: AuthService,
+    private toastr: ToastrService,
     private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
     this.loadEmployees();
+    this.loadDepartments();
   }
 
   ngAfterViewInit(): void {
@@ -78,19 +80,35 @@ export class Employees implements OnInit, AfterViewInit {
     }
   }
 
+  private normalizeText(value: unknown): string {
+    return String(value ?? '')
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, ' ');
+  }
+
   get filteredEmployees(): EmployeeRecord[] {
-    const query = this.searchQuery.toLowerCase().trim();
+    const query = this.normalizeText(this.searchQuery);
+    const targetDept = this.normalizeText(this.selectedDepartmentFilter || 'ALL');
+    const targetStatus = this.normalizeText(this.selectedStatus || 'All');
+
     return this.employees.filter((emp) => {
       const matchesSearch =
         !query ||
-        emp.name.toLowerCase().includes(query) ||
-        emp.email.toLowerCase().includes(query) ||
-        emp.role.toLowerCase().includes(query);
+        this.normalizeText(emp.name).includes(query) ||
+        this.normalizeText(emp.email).includes(query) ||
+        this.normalizeText(emp.role).includes(query) ||
+        this.normalizeText(emp.department).includes(query);
 
+      const empDept = this.normalizeText(emp.department);
       const matchesDept =
-        this.selectedDepartment === 'All' || emp.department === this.selectedDepartment;
+        targetDept === 'all' ||
+        empDept === targetDept ||
+        empDept.includes(targetDept) ||
+        targetDept.includes(empDept);
 
-      const matchesStatus = this.selectedStatus === 'All' || emp.status === this.selectedStatus;
+      const empStatus = this.normalizeText(emp.status);
+      const matchesStatus = targetStatus === 'all' || empStatus === targetStatus;
 
       return matchesSearch && matchesDept && matchesStatus;
     });
@@ -101,11 +119,51 @@ export class Employees implements OnInit, AfterViewInit {
     return this.filteredEmployees.slice(startIndex, startIndex + this.pageSize);
   }
 
+  loadDepartments(): void {
+    this.hrService.getDepartments().subscribe({
+      next: (res: any) => {
+        let deptList: any[] = [];
+
+        if (Array.isArray(res)) {
+          deptList = res;
+        } else if (Array.isArray(res?.data)) {
+          deptList = res.data;
+        } else if (Array.isArray(res?.departments)) {
+          deptList = res.departments;
+        } else if (Array.isArray(res?.data?.departments)) {
+          deptList = res.data.departments;
+        }
+
+        const names: string[] = deptList
+          .map((d: any) => {
+            if (typeof d === 'string') return d;
+            return d.departmentName || d.name || d.departmentName || d.title || '';
+          })
+          .map((name) => String(name).trim())
+          .filter(Boolean)
+          .map((name) => name.replace(/\s+/g, ' '));
+
+        this.departments = ['ALL', ...Array.from(new Set(names))];
+        this.cdr.detectChanges();
+      },
+      error: (err: any) => {
+        console.error('Failed to load departments:', err);
+      },
+    });
+  }
+
   onFilterChange(): void {
     this.pageIndex = 0;
     if (this.paginator) {
       this.paginator.firstPage();
     }
+  }
+
+  clearFilters(): void {
+    this.searchQuery = '';
+    this.selectedStatus = 'All';
+    this.selectedDepartmentFilter = 'ALL';
+    this.onFilterChange();
   }
 
   openLeaveModal(employee: EmployeeRecord): void {
@@ -145,13 +203,13 @@ export class Employees implements OnInit, AfterViewInit {
 
     this.hrService.editUserProfile(payload).subscribe({
       next: (res) => {
-        console.log('Profile updated successfully:', res);
+        this.toastr.success('Profile updated successfully', 'Success');
         this.isSubmitting = false;
         this.closeEditProfileModal();
         this.loadEmployees(); // Reload table data
       },
       error: (err) => {
-        console.error('Failed to update profile:', err);
+        this.toastr.error('Failed to update profile', 'Error');
         this.isSubmitting = false;
       },
     });
@@ -186,13 +244,14 @@ export class Employees implements OnInit, AfterViewInit {
 
     this.authService.createEmployee(formData).subscribe({
       next: (res) => {
-        console.log('Employee created successfully:', res);
+        this.toastr.success('Employee created successfully.', 'Success');
         this.isSubmitting = false;
         this.closeAddEmployeeModal();
         this.loadEmployees();
       },
-      error: (err) => {
-        console.error('Failed to create employee:', err);
+      error: (err: any) => {
+        const errorMsg = err?.error?.message || 'Failed to create employee.';
+        this.toastr.error(errorMsg, 'Update Failed');
         this.isSubmitting = false;
       },
     });
@@ -207,8 +266,9 @@ export class Employees implements OnInit, AfterViewInit {
         this.closeAddEmployeeModal();
         this.loadEmployees(); // Reload list to fetch newly created employee from backend
       },
-      error: (err) => {
-        console.error('Failed to create employee:', err);
+      error: (err: any) => {
+        const errorMsg = err?.error?.message || 'Failed to create employee.';
+        this.toastr.error(errorMsg, 'Update Failed');
         this.isSubmitting = false;
       },
     });
@@ -275,8 +335,9 @@ export class Employees implements OnInit, AfterViewInit {
           console.warn('detectChanges failed', e);
         }
       },
-      error: (err) => {
-        console.error('Failed to load employees', err);
+      error: (err: any) => {
+        const errorMsg = err?.error?.message || 'Failed to load employee.';
+        this.toastr.error(errorMsg, 'Update Failed');
         this.employees = [];
       },
     });
@@ -287,8 +348,8 @@ export class Employees implements OnInit, AfterViewInit {
       id: item.id ?? item.employeeId ?? item.userId ?? `EMP-00${index + 1}`,
       name: item.fullName ?? item.name ?? item.employeeName ?? item.userName ?? 'Unknown Employee',
       email: item.email ?? item.employeeEmail ?? item.userEmail ?? 'N/A',
-      role: item.role ?? item.jobTitle ?? item.designation ?? 'Employee',
-      department: item.department ?? item.designation ?? 'Engineering',
+      role: item.jobTitle ?? item.designation ?? 'Employee',
+      department: item.departmentName ?? item.name ?? 'Engineering',
       annualLeaveBalance: Number(
         item.annualLeaveBalance ?? item.remainingAnnualLeave ?? item.annualLeave ?? 20,
       ),

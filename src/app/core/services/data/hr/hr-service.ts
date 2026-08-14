@@ -13,6 +13,7 @@ const routes = {
   rejectLeaveRequest: 'LeaveRequests/{id}/reject',
   editUser: 'Profile',
   leaveTpe: 'LeaveTypes',
+  departments: 'Departments',
   Department: 'Departments',
   Users: 'Users',
 };
@@ -61,7 +62,9 @@ export class HrService {
     return this.http.get(`${this.baseUrl}${routes.Department}`);
   }
 
-  createDepartment(payload: { name: string; teamLeadName?: string; teamLeadId?: string } | any): Observable<any> {
+  createDepartment(
+    payload: { name: string; teamLeadName?: string; teamLeadId?: string } | any,
+  ): Observable<any> {
     return this.http.post(`${this.baseUrl}${routes.Department}`, payload);
   }
 
