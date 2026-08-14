@@ -3,6 +3,7 @@ import { Dashboard } from './dashboard/dashboard';
 import { LeaveHistory } from './leave-history/leave-history';
 import { Profile } from './profile/profile';
 import { EmployeeContainer } from './employee-container/employee-container';
+import { LeaveRequests } from './leave-requests/leave-requests';
 
 export const EMPLOYEE_ROUTE: Route[] = [
   {
@@ -16,6 +17,7 @@ export const EMPLOYEE_ROUTE: Route[] = [
       },
       { path: 'dashboard', component: Dashboard },
       { path: 'leave-history', component: LeaveHistory },
+      { path: 'leave-requests', component: LeaveRequests },
       { path: 'profile', component: Profile },
     ],
   },

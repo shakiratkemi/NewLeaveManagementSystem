@@ -80,44 +80,116 @@
 
       <!-- Leave Policy Tab -->
       @if (activeTab === 'leave-policy') {
-        <div class="space-y-6 max-w-3xl">
-          <h3 class="text-lg font-bold text-slate-900">Default Annual Leave Allowances</h3>
+        <div class="space-y-8 max-w-4xl">
+          <div>
+            <h3 class="text-lg font-bold text-slate-900">Leave Policies & Categories</h3>
+            <p class="text-xs text-slate-500 mt-1">
+              Define standard leave types and assign default allotted days for your organization.
+            </p>
+          </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="space-y-1.5">
-              <label class="text-xs font-bold text-slate-700 uppercase tracking-wider">Annual Leave (Days/Year)</label>
-              <input
-                type="number"
-                [(ngModel)]="annualLeaveAllowance"
-                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:bg-white focus:border-blue-500 focus:outline-none transition"
-              />
+          <!-- Create Leave Type Form Card -->
+          <div class="p-6 bg-slate-50 rounded-2xl border border-slate-200/70 space-y-4">
+            <h4 class="text-sm font-bold text-slate-800">Add New Leave Policy</h4>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="space-y-1.5">
+                <label class="text-xs font-bold text-slate-700 uppercase tracking-wider">Leave Type Name</label>
+                <input
+                  type="text"
+                  [(ngModel)]="newLeaveTypeName"
+                  placeholder="e.g. Sleeping leave, Study leave"
+                  class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm text-slate-900 focus:border-blue-500 focus:outline-none transition"
+                />
+              </div>
+
+              <div class="space-y-1.5">
+                <label class="text-xs font-bold text-slate-700 uppercase tracking-wider">Allotted Days (Default Days)</label>
+                <input
+                  type="number"
+                  min="1"
+                  [(ngModel)]="newLeaveTypeDefaultDays"
+                  placeholder="e.g. 5"
+                  class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm text-slate-900 focus:border-blue-500 focus:outline-none transition"
+                />
+              </div>
             </div>
 
-            <div class="space-y-1.5">
-              <label class="text-xs font-bold text-slate-700 uppercase tracking-wider">Sick Leave (Days/Year)</label>
-              <input
-                type="number"
-                [(ngModel)]="sickLeaveAllowance"
-                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:bg-white focus:border-blue-500 focus:outline-none transition"
-              />
+            <div class="flex justify-end">
+              <button
+                type="button"
+                (click)="createLeaveType()"
+                [disabled]="isSubmittingLeaveType || !newLeaveTypeName.trim() || !newLeaveTypeDefaultDays"
+                class="px-5 py-2.5 rounded-xl bg-[#1E6BFB] hover:bg-[#1246D6] disabled:opacity-50 text-white text-xs sm:text-sm font-bold shadow-xs transition cursor-pointer flex items-center gap-2"
+              >
+                @if (isSubmittingLeaveType) {
+                  <div class="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                }
+                <span>Save Leave Type</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Leave Policies Table -->
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <h4 class="text-sm font-bold text-slate-800 uppercase tracking-wider">Configured Leave Policies</h4>
+              <button
+                type="button"
+                (click)="loadLeaveTypes()"
+                class="text-xs font-semibold text-blue-600 hover:text-blue-700 transition cursor-pointer"
+              >
+                Refresh List
+              </button>
             </div>
 
-            <div class="space-y-1.5">
-              <label class="text-xs font-bold text-slate-700 uppercase tracking-wider">Maternity Leave (Days)</label>
-              <input
-                type="number"
-                [(ngModel)]="maternityLeaveAllowance"
-                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:bg-white focus:border-blue-500 focus:outline-none transition"
-              />
-            </div>
-
-            <div class="space-y-1.5">
-              <label class="text-xs font-bold text-slate-700 uppercase tracking-wider">Paternity Leave (Days)</label>
-              <input
-                type="number"
-                [(ngModel)]="paternityLeaveAllowance"
-                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:bg-white focus:border-blue-500 focus:outline-none transition"
-              />
+            <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                  <thead>
+                    <tr class="bg-slate-50/80 border-b border-slate-200/80 text-xs font-semibold uppercase text-slate-500 tracking-wider">
+                      <th class="py-3.5 px-6">Leave Type Name</th>
+                      <th class="py-3.5 px-6 text-center">Allotted Days</th>
+                      <th class="py-3.5 px-6 text-right">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-100 text-sm">
+                    @for (policy of leaveTypesList; track policy.id || policy.name) {
+                      <tr class="hover:bg-slate-50/60 transition">
+                        <td class="py-4 px-6 whitespace-nowrap">
+                          <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 font-bold text-xs flex items-center justify-center border border-blue-100">
+                              {{ policy.name?.slice(0, 2)?.toUpperCase() }}
+                            </div>
+                            <span class="font-bold text-slate-900">{{ policy.name }}</span>
+                          </div>
+                        </td>
+                        <td class="py-4 px-6 text-center whitespace-nowrap">
+                          <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-800">
+                            {{ policy.defaultDays ?? policy.days ?? 0 }} Day(s)
+                          </span>
+                        </td>
+                        <td class="py-4 px-6 text-right whitespace-nowrap">
+                          <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/20">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+                            Active Policy
+                          </span>
+                        </td>
+                      </tr>
+                    } @empty {
+                      <tr>
+                        <td colspan="3" class="py-10 text-center text-slate-400 italic text-sm">
+                          @if (isLoadingLeaveTypes) {
+                            <span>Loading configured leave policies...</span>
+                          } @else {
+                            <span>No leave policies registered yet. Use the form above to add one.</span>
+                          }
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
@@ -180,12 +252,13 @@
 
       <!-- Create Department Tab -->
       @if (activeTab === 'department') {
-        <div class="space-y-6 max-w-3xl">
+        <div class="space-y-8 max-w-4xl">
           <div>
             <h3 class="text-lg font-bold text-slate-900">Department Management</h3>
             <p class="text-xs text-slate-500 mt-1">Create and manage departments within your organization.</p>
           </div>
 
+          <!-- Create Department Form Card -->
           <div class="p-6 bg-slate-50 rounded-2xl border border-slate-200/70 space-y-4">
             <h4 class="text-sm font-bold text-slate-800">Add New Department</h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -194,7 +267,7 @@
                 <input
                   type="text"
                   [(ngModel)]="newDepartmentName"
-                  placeholder="e.g. Finance, Operations"
+                  placeholder="e.g. Finance, Operations, Engineering"
                   class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm text-slate-900 focus:border-blue-500 focus:outline-none transition"
                 />
               </div>
@@ -205,9 +278,9 @@
                   [(ngModel)]="selectedTeamLead"
                   class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm text-slate-900 focus:border-blue-500 focus:outline-none transition cursor-pointer"
                 >
-                  <option value="">Select Team Lead</option>
-                  @for (lead of teamLeads; track lead) {
-                    <option [value]="lead">{{ lead }}</option>
+                  <option value="">Select Team Lead (Optional)</option>
+                  @for (user of usersList; track user.id || user.fullName) {
+                    <option [value]="user.fullName">{{ user.fullName }}</option>
                   }
                 </select>
               </div>
@@ -217,11 +290,75 @@
               <button
                 type="button"
                 (click)="addDepartment()"
-                [disabled]="!newDepartmentName.trim()"
-                class="px-5 py-2 rounded-xl bg-[#1E6BFB] hover:bg-[#1246D6] disabled:opacity-50 text-white text-xs font-bold transition cursor-pointer"
+                [disabled]="isSubmittingDepartment || !newDepartmentName.trim()"
+                class="px-5 py-2.5 rounded-xl bg-[#1E6BFB] hover:bg-[#1246D6] disabled:opacity-50 text-white text-xs sm:text-sm font-bold shadow-xs transition cursor-pointer flex items-center gap-2"
               >
-                Add Department
+                @if (isSubmittingDepartment) {
+                  <div class="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                }
+                <span>Add Department</span>
               </button>
+            </div>
+          </div>
+
+          <!-- Configured Departments Table -->
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <h4 class="text-sm font-bold text-slate-800 uppercase tracking-wider">Configured Departments</h4>
+              <button
+                type="button"
+                (click)="loadDepartments()"
+                class="text-xs font-semibold text-blue-600 hover:text-blue-700 transition cursor-pointer"
+              >
+                Refresh List
+              </button>
+            </div>
+
+            <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                  <thead>
+                    <tr class="bg-slate-50/80 border-b border-slate-200/80 text-xs font-semibold uppercase text-slate-500 tracking-wider">
+                      <th class="py-3.5 px-6">Department Name</th>
+                      <th class="py-3.5 px-6">Assigned Team Lead</th>
+                      <th class="py-3.5 px-6 text-right">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-100 text-sm">
+                    @for (dept of departmentsList; track dept.id || dept.name || dept) {
+                      <tr class="hover:bg-slate-50/60 transition">
+                        <td class="py-4 px-6 whitespace-nowrap">
+                          <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 font-bold text-xs flex items-center justify-center border border-emerald-100">
+                              {{ (dept.name || dept)?.slice(0, 2)?.toUpperCase() }}
+                            </div>
+                            <span class="font-bold text-slate-900">{{ dept.name || dept }}</span>
+                          </div>
+                        </td>
+                        <td class="py-4 px-6 text-slate-600 whitespace-nowrap">
+                          {{ dept.teamLeadName || dept.teamLead || 'Not Assigned' }}
+                        </td>
+                        <td class="py-4 px-6 text-right whitespace-nowrap">
+                          <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/20">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+                            Active
+                          </span>
+                        </td>
+                      </tr>
+                    } @empty {
+                      <tr>
+                        <td colspan="3" class="py-10 text-center text-slate-400 italic text-sm">
+                          @if (isLoadingDepartments) {
+                            <span>Loading departments...</span>
+                          } @else {
+                            <span>No departments configured yet. Use the form above to create one.</span>
+                          }
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
