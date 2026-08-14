@@ -17,7 +17,7 @@ export class EditEmployee {
   @Output() close = new EventEmitter<void>();
   @Output() profileUpdated = new EventEmitter<EditEmployeeProfile>();
 
-  departments: string[] = ['Engineering', 'Design', 'Marketing', 'HR', 'Sales'];
+  departments: string[] = ['All'];
 
   constructor(
     private fb: FormBuilder,
@@ -26,19 +26,61 @@ export class EditEmployee {
   ) {
     this.editProfileForm = this.fb.group({
       fullName: ['', Validators.required],
-      department: ['Engineering', Validators.required],
+      department: ['', Validators.required],
       designation: ['', Validators.required],
     });
+  }
+
+  ngOnInit(): void {
+    this.loadDepartments();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['initialData'] && this.initialData) {
       this.editProfileForm.patchValue({
         fullName: this.initialData.fullName ?? '',
-        department: this.initialData.department ?? 'Engineering',
+        department: this.initialData.department ?? '',
         designation: this.initialData.designation ?? '',
       });
     }
+  }
+
+  loadDepartments(): void {
+    this.hrService.getDepartments().subscribe({
+      next: (res: any) => {
+        let deptList: any[] = [];
+
+        if (Array.isArray(res)) {
+          deptList = res;
+        } else if (Array.isArray(res?.data)) {
+          deptList = res.data;
+        } else if (Array.isArray(res?.departments)) {
+          deptList = res.departments;
+        } else if (Array.isArray(res?.data?.departments)) {
+          deptList = res.data.departments;
+        }
+
+        const names: string[] = deptList
+          .map((d: any) => {
+            if (typeof d === 'string') return d;
+            return d.departmentName || d.name || d.title || '';
+          })
+          .filter(Boolean);
+
+        this.departments = Array.from(new Set(names));
+
+        // If form has no department set yet and we have options, set first as default
+        if (!this.editProfileForm.get('department')?.value && this.departments.length > 0) {
+          this.editProfileForm.patchValue({
+            department: this.departments[0],
+          });
+        }
+      },
+      error: (err: any) => {
+        const errorMsg = err?.error?.message || 'Failed to load departments in edit moda.';
+        this.toastr.error(errorMsg, 'Update Failed');
+      },
+    });
   }
 
   onClose(): void {
