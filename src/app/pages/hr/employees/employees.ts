@@ -12,6 +12,7 @@ import {
   EmployeeRecord,
 } from '../../../core/interface/hr';
 import { EditEmployee } from './edit-employee/edit-employee';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-employees',
@@ -60,6 +61,7 @@ export class Employees implements OnInit, AfterViewInit {
   constructor(
     private hrService: HrService,
     private authService: AuthService,
+    private toastr: ToastrService,
     private cdr: ChangeDetectorRef,
   ) {}
 
@@ -145,13 +147,13 @@ export class Employees implements OnInit, AfterViewInit {
 
     this.hrService.editUserProfile(payload).subscribe({
       next: (res) => {
-        console.log('Profile updated successfully:', res);
+        this.toastr.success('Profile updated successfully', 'Success');
         this.isSubmitting = false;
         this.closeEditProfileModal();
         this.loadEmployees(); // Reload table data
       },
       error: (err) => {
-        console.error('Failed to update profile:', err);
+        this.toastr.error('Failed to update profile', 'Error');
         this.isSubmitting = false;
       },
     });
@@ -186,13 +188,14 @@ export class Employees implements OnInit, AfterViewInit {
 
     this.authService.createEmployee(formData).subscribe({
       next: (res) => {
-        console.log('Employee created successfully:', res);
+        this.toastr.success('Employee created successfully.', 'Success');
         this.isSubmitting = false;
         this.closeAddEmployeeModal();
         this.loadEmployees();
       },
-      error: (err) => {
-        console.error('Failed to create employee:', err);
+      error: (err: any) => {
+        const errorMsg = err?.error?.message || 'Failed to create employee.';
+        this.toastr.error(errorMsg, 'Update Failed');
         this.isSubmitting = false;
       },
     });
@@ -207,8 +210,9 @@ export class Employees implements OnInit, AfterViewInit {
         this.closeAddEmployeeModal();
         this.loadEmployees(); // Reload list to fetch newly created employee from backend
       },
-      error: (err) => {
-        console.error('Failed to create employee:', err);
+      error: (err: any) => {
+        const errorMsg = err?.error?.message || 'Failed to create employee.';
+        this.toastr.error(errorMsg, 'Update Failed');
         this.isSubmitting = false;
       },
     });
@@ -275,8 +279,9 @@ export class Employees implements OnInit, AfterViewInit {
           console.warn('detectChanges failed', e);
         }
       },
-      error: (err) => {
-        console.error('Failed to load employees', err);
+      error: (err: any) => {
+        const errorMsg = err?.error?.message || 'Failed to load employee.';
+        this.toastr.error(errorMsg, 'Update Failed');
         this.employees = [];
       },
     });

@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { HrService } from '../../../core/services/data/hr/hr-service';
 import { HrLeaveRecord } from '../../../core/interface/hr';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-leave-request',
@@ -54,7 +55,10 @@ export class LeaveRequest implements OnInit {
     this.loadLeaveRequests();
   }
 
-  constructor(private hrService: HrService) {}
+  constructor(
+    private hrService: HrService,
+    private toastr: ToastrService,
+  ) {}
 
   // Track processing requests to disable buttons during network calls
   processing = new Set<string>();
@@ -84,7 +88,8 @@ export class LeaveRequest implements OnInit {
         this.allRecords.set(mappedRecords as HrLeaveRecord[]);
       },
       error: (err: any) => {
-        console.error('Error loading leave requests:', err);
+        const errorMsg = err?.error?.message || 'Failed to set status to load request.';
+        this.toastr.error(errorMsg, 'Update Failed');
       },
     });
   }
@@ -125,8 +130,8 @@ export class LeaveRequest implements OnInit {
         this.selectedRecord.set(mapped);
       },
       error: (err: any) => {
-        console.error('Error fetching leave request by id:', err);
-        // fallback to the provided record
+        const errorMsg = err?.error?.message || 'Failed to fetch leave request by id.';
+        this.toastr.error(errorMsg, 'Update Failed');
         this.selectedRecord.set(record);
       },
     });
@@ -174,8 +179,8 @@ export class LeaveRequest implements OnInit {
             this.processing.delete(id);
           },
           error: (err: any) => {
-            console.error('Error fetching updated record after approve:', err);
-            // optimistic update fallback
+            const errorMsg = err?.error?.message || 'Failed fetching updated record after approve.';
+            this.toastr.error(errorMsg, 'Update Failed');
             this.replaceRecord({ ...record, status: 'Approved' });
             this.selectedRecord.set({ ...record, status: 'Approved' });
             this.processing.delete(id);
@@ -183,7 +188,8 @@ export class LeaveRequest implements OnInit {
         });
       },
       error: (err: any) => {
-        console.error('Error approving request:', err);
+        const errorMsg = err?.error?.message || 'Failed to approve request.';
+        this.toastr.error(errorMsg, 'Update Failed');
         this.processing.delete(id);
       },
     });
@@ -206,7 +212,8 @@ export class LeaveRequest implements OnInit {
             this.processing.delete(id);
           },
           error: (err: any) => {
-            console.error('Error fetching updated record after reject:', err);
+            const errorMsg = err?.error?.message || 'Failed to update record after reject';
+            this.toastr.error(errorMsg, 'Update Failed');
             this.replaceRecord({ ...record, status: 'Rejected' });
             this.selectedRecord.set({ ...record, status: 'Rejected' });
             this.processing.delete(id);
@@ -214,7 +221,8 @@ export class LeaveRequest implements OnInit {
         });
       },
       error: (err: any) => {
-        console.error('Error rejecting request:', err);
+        const errorMsg = err?.error?.message || 'Failed to reject request.';
+        this.toastr.error(errorMsg, 'Update Failed');
         this.processing.delete(id);
       },
     });

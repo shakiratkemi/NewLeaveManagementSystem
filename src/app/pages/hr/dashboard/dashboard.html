@@ -2,51 +2,67 @@
   <!-- Header -->
   <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
     <div>
-      <span class="text-[11px] font-bold text-slate-400 tracking-wider uppercase">Workspace Overview</span>
-      <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mt-0.5">HR Dashboard</h1>
+      <span class="text-[11px] font-bold text-slate-400 tracking-wider uppercase"
+        >Workspace Overview</span
+      >
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mt-0.5">
+        HR Dashboard
+      </h1>
       <p class="text-sm text-slate-500 mt-1">
         Manage workforce attendance and leave requests with complete visibility.
       </p>
     </div>
-   
   </div>
 
   <!-- Featured Top Cards (2 Columns) -->
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6">
     <!-- Card 1: Total Employees -->
-    <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1E6BFB] via-[#1D63EA] to-[#1246D6] p-6 sm:p-8 text-white shadow-lg shadow-blue-600/15 flex flex-col justify-between min-h-[190px]">
+    <div
+      class="relative overflow-hidden rounded-3xl bg-linear-to-br from-[#1E6BFB] via-[#1D63EA] to-[#1246D6] p-6 sm:p-8 text-white shadow-lg shadow-blue-600/15 flex flex-col justify-between min-h-47.5"
+    >
       <div class="flex items-start justify-between">
         <div>
-          <span class="text-[11px] font-bold tracking-wider uppercase text-blue-200">Active Workforce</span>
+          <span class="text-[11px] font-bold tracking-wider uppercase text-blue-200"
+            >Active Workforce</span
+          >
           <h2 class="text-lg sm:text-xl font-bold text-white mt-0.5">Total Employees</h2>
         </div>
-        <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white shrink-0">
-              <img src="/assets/images/people.svg" alt="people">
+        <div
+          class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white shrink-0"
+        >
+          <img src="/assets/images/people.svg" alt="people" />
         </div>
       </div>
 
       <div class="flex items-baseline gap-3 mt-6">
-          <h3 class="text-4xl sm:text-5xl font-black text-white tracking-tight">
-            {{ dashboardData?.totalEmployees ?? 0 }}
-          </h3>
-          <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-white/20 text-white backdrop-blur-xs">
-            <!-- SVG Trend Icon Placeholder -->
-            <span>+4%</span>
-          </span>
+        <h3 class="text-4xl sm:text-5xl font-black text-white tracking-tight">
+          {{ dashboardData?.totalEmployees ?? 0 }}
+        </h3>
+        <span
+          class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-white/20 text-white backdrop-blur-xs"
+        >
+          <!-- SVG Trend Icon Placeholder -->
+          <span>+4%</span>
+        </span>
       </div>
-      <img src="/assets/images/flow.svg" alt="people">
+      <img src="/assets/images/flow.svg" alt="people" />
     </div>
 
     <!-- Card 2: Pending Approval -->
-    <div class="relative overflow-hidden rounded-3xl bg-[#072418] p-6 sm:p-8 text-white shadow-lg shadow-emerald-950/20 flex flex-col justify-between min-h-[190px] border border-emerald-900/30">
+    <div
+      class="relative overflow-hidden rounded-3xl bg-[#072418] p-6 sm:p-8 text-white shadow-lg shadow-emerald-950/20 flex flex-col justify-between min-h-47.5 border border-emerald-900/30"
+    >
       <div class="flex items-start justify-between">
         <div>
-          <span class="text-[11px] font-bold tracking-wider uppercase text-emerald-400">Attention Required</span>
+          <span class="text-[11px] font-bold tracking-wider uppercase text-emerald-400"
+            >Attention Required</span
+          >
           <h2 class="text-lg sm:text-xl font-bold text-emerald-400 mt-0.5">Pending Approval</h2>
         </div>
-        <div class="w-10 h-10 rounded-full bg-emerald-950 border border-emerald-800/50 flex items-center justify-center text-emerald-400 shrink-0">
-            <img src="/assets/images/todo.svg" alt="people">
-
+        <div
+          class="w-10 h-10 rounded-full bg-emerald-950 border border-emerald-800/50 flex items-center justify-center text-emerald-400 shrink-0"
+        >
+          <img src="/assets/images/todo.svg" alt="people" />
         </div>
       </div>
 
@@ -64,10 +80,14 @@
   <!-- Secondary Stats Row (4 Cards) -->
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
     <!-- Approved Requests -->
-    <div class="bg-blue-50/50 border border-blue-100/70 rounded-2xl p-5 flex flex-col justify-between shadow-2xs hover:shadow-xs transition">
+    <div
+      class="bg-blue-50/50 border border-blue-100/70 rounded-2xl p-5 flex flex-col justify-between shadow-2xs hover:shadow-xs transition"
+    >
       <div class="flex items-center gap-2.5">
-        <div class="w-9 h-9 rounded-3xl bg-emerald-500 text-white flex items-center justify-center shrink-0">
-            <img src="/assets/images/approved.svg" alt="people">
+        <div
+          class="w-9 h-9 rounded-3xl bg-emerald-500 text-white flex items-center justify-center shrink-0"
+        >
+          <img src="/assets/images/approved.svg" alt="people" />
         </div>
         <span class="text-xs sm:text-sm font-semibold text-slate-700">Approved Requests</span>
       </div>
@@ -76,16 +96,20 @@
           {{ dashboardData?.approvedRequestsCount ?? 0 }}
         </h4>
         <div class="w-16 h-6 flex items-center justify-end">
-         <img src="/assets/images/up.svg" alt="people">
+          <img src="/assets/images/up.svg" alt="people" />
         </div>
       </div>
     </div>
 
     <!-- Total Requests -->
-    <div class="bg-slate-50/80 border border-slate-200/70 rounded-2xl p-5 flex flex-col justify-between shadow-2xs hover:shadow-xs transition">
+    <div
+      class="bg-slate-50/80 border border-slate-200/70 rounded-2xl p-5 flex flex-col justify-between shadow-2xs hover:shadow-xs transition"
+    >
       <div class="flex items-center gap-2.5">
-        <div class="w-9 h-9 rounded-3xl bg-gray-200 text-white flex items-center justify-center shrink-0">
-          <img src="/assets/images/document.svg" alt="document">
+        <div
+          class="w-9 h-9 rounded-3xl bg-gray-200 text-white flex items-center justify-center shrink-0"
+        >
+          <img src="/assets/images/document.svg" alt="document" />
         </div>
         <span class="text-xs sm:text-sm font-semibold text-slate-700">Total Requests</span>
       </div>
@@ -93,17 +117,23 @@
         <h4 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
           {{ dashboardData?.totalRequestsCount ?? 0 }}
         </h4>
-        <span class="text-[11px] font-semibold text-slate-600 bg-white px-2.5 py-1 rounded-md border border-slate-200/80 shadow-2xs">
+        <span
+          class="text-[11px] font-semibold text-slate-600 bg-white px-2.5 py-1 rounded-md border border-slate-200/80 shadow-2xs"
+        >
           This Year
         </span>
       </div>
     </div>
 
     <!-- Employees On Leave -->
-    <div class="bg-slate-50/80 border border-slate-200/70 rounded-2xl p-5 flex flex-col justify-between shadow-2xs hover:shadow-xs transition">
+    <div
+      class="bg-slate-50/80 border border-slate-200/70 rounded-2xl p-5 flex flex-col justify-between shadow-2xs hover:shadow-xs transition"
+    >
       <div class="flex items-center gap-2.5">
-        <div class="w-9 h-9 rounded-3xl bg-gray-200 text-white flex items-center justify-center shrink-0">
-          <img src="/assets/images/date.svg" alt="date">
+        <div
+          class="w-9 h-9 rounded-3xl bg-gray-200 text-white flex items-center justify-center shrink-0"
+        >
+          <img src="/assets/images/date.svg" alt="date" />
         </div>
         <span class="text-xs sm:text-sm font-semibold text-slate-700">Employees On Leave</span>
       </div>
@@ -118,10 +148,14 @@
     </div>
 
     <!-- Rejected Leaves -->
-    <div class="bg-rose-50/40 border border-rose-100/70 rounded-2xl p-5 flex flex-col justify-between shadow-2xs hover:shadow-xs transition">
+    <div
+      class="bg-rose-50/40 border border-rose-100/70 rounded-2xl p-5 flex flex-col justify-between shadow-2xs hover:shadow-xs transition"
+    >
       <div class="flex items-center gap-2.5">
-        <div class="w-9 h-9 rounded-3xl bg-red-200 text-white flex items-center justify-center shrink-0">
-         <img src="/assets/images/rejected.svg" alt="rejected">
+        <div
+          class="w-9 h-9 rounded-3xl bg-red-200 text-white flex items-center justify-center shrink-0"
+        >
+          <img src="/assets/images/rejected.svg" alt="rejected" />
         </div>
         <span class="text-xs sm:text-sm font-semibold text-slate-700">Rejected Leaves</span>
       </div>
@@ -130,7 +164,7 @@
           {{ dashboardData?.rejectedRequestsCount ?? 0 }}
         </h4>
         <div class="w-16 h-6 flex items-center justify-end">
-        <img src="/assets/images/down.svg" alt="rejcted">
+          <img src="/assets/images/down.svg" alt="rejcted" />
         </div>
       </div>
     </div>
@@ -139,10 +173,14 @@
   <!-- Leave Requests Card & Table Section -->
   <div class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
     <!-- Table Header & Filters -->
-    <div class="p-5 sm:p-6 border-b border-slate-100 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+    <div
+      class="p-5 sm:p-6 border-b border-slate-100 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4"
+    >
       <div>
         <h2 class="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">Leave Requests</h2>
-        <p class="text-xs sm:text-sm text-slate-400 mt-0.5">Review and manage recent employee submissions.</p>
+        <p class="text-xs sm:text-sm text-slate-400 mt-0.5">
+          Review and manage recent employee submissions.
+        </p>
       </div>
 
       <div class="flex flex-wrap items-center gap-3">
@@ -192,12 +230,14 @@
     <div class="hidden md:block overflow-x-auto">
       <table class="w-full text-left border-collapse">
         <thead>
-          <tr class="border-b border-slate-100 text-[11px] font-bold text-slate-400 uppercase tracking-wider bg-white">
+          <tr
+            class="border-b border-slate-100 text-[11px] font-bold text-slate-400 uppercase tracking-wider bg-white"
+          >
             <th class="py-4 px-6">Employee</th>
             <th class="py-4 px-6">Leave Details</th>
             <th class="py-4 px-6">Dates & Duration</th>
             <th class="py-4 px-6">Status</th>
-            <th class="py-4 px-6 text-right">Actions</th>
+          
           </tr>
         </thead>
         <tbody class="divide-y divide-slate-100 text-sm">
@@ -206,7 +246,9 @@
               <!-- Employee Info -->
               <td class="py-4 px-6 whitespace-nowrap">
                 <div class="flex items-center gap-3">
-                  <div class="w-10 h-10 rounded-full bg-slate-100 text-slate-700 font-bold text-xs flex items-center justify-center shrink-0 border border-slate-200">
+                  <div
+                    class="w-10 h-10 rounded-full bg-slate-100 text-slate-700 font-bold text-xs flex items-center justify-center shrink-0 border border-slate-200"
+                  >
                     {{ req.employeeName?.slice(0, 2)?.toUpperCase() }}
                   </div>
                   <div>
@@ -277,7 +319,7 @@
           } @empty {
             <tr>
               <td colspan="5" class="py-12 text-center text-slate-400 text-sm">
-                No leave requests found matching your filters.
+                No leave requests found.
               </td>
             </tr>
           }
@@ -291,7 +333,9 @@
         <div class="p-4 space-y-3">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-full bg-slate-100 text-slate-700 font-bold text-xs flex items-center justify-center shrink-0 border border-slate-200">
+              <div
+                class="w-10 h-10 rounded-full bg-slate-100 text-slate-700 font-bold text-xs flex items-center justify-center shrink-0 border border-slate-200"
+              >
                 {{ req.employeeName?.slice(0, 2)?.toUpperCase() }}
               </div>
               <div>
@@ -343,15 +387,17 @@
           }
         </div>
       } @empty {
-        <div class="py-8 text-center text-slate-400 text-sm">
-          No leave requests match your criteria.
-        </div>
+        <div class="py-8 text-center text-slate-400 text-sm">No leave requests found.</div>
       }
     </div>
 
     <!-- Footer View All Link -->
     <div class="p-4 border-t border-slate-100 text-center">
-      <button routerLink="/hr/leave-request" type="button" class="text-xs sm:text-sm font-semibold text-slate-900 hover:text-blue-600 transition cursor-pointer">
+      <button
+        routerLink="/hr/leave-request"
+        type="button"
+        class="text-xs sm:text-sm font-semibold text-slate-900 hover:text-blue-600 transition cursor-pointer"
+      >
         View All Requests
       </button>
     </div>
