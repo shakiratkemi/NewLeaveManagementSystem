@@ -1,12 +1,13 @@
-import { Component, OnInit, signal, computed, ChangeDetectorRef, inject } from '@angular/core';
+import { Component, OnInit, signal, computed, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HrService } from '../../../core/services/data/hr/hr-service';
 import { ToastrService } from 'ngx-toastr';
 import { DatePipe } from '@angular/common';
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-dashboard',
-  imports: [FormsModule, DatePipe],
+  imports: [FormsModule, DatePipe, RouterLink],
   templateUrl: './dashboard.html',
   styles: ``,
 })
@@ -23,26 +24,33 @@ export class Dashboard implements OnInit {
   statuses: string[] = ['All', 'Pending', 'Approved', 'Rejected'];
   isMobileMenuOpen = false;
 
+  filteredRequests = computed(() => {
+    return this.leaveRequests().filter((req) => {
+      const matchesSearch =
+        !this.searchQuery() ||
+        (req.employeeName &&
+          req.employeeName.toLowerCase().includes(this.searchQuery().toLowerCase())) ||
+        (req.department &&
+          req.department.toLowerCase().includes(this.searchQuery().toLowerCase()));
+      const matchesStatus =
+        this.selectedStatusFilter() === 'All' || req.status === this.selectedStatusFilter();
+      const matchesDept =
+        this.selectedDepartmentFilter() === 'All' ||
+        req.department === this.selectedDepartmentFilter();
+
+      return matchesSearch && matchesStatus && matchesDept;
+    });
+  });
+
+  slicedPendingRequests = computed(() => {
+    return this.pendingRequests().slice(0, 5);
+  });
+
   constructor(
     private hrService: HrService,
     private toastr: ToastrService,
     private cdr: ChangeDetectorRef,
   ) {}
-
-  // filteredRequests = computed(() => {
-  //   return this.leaveRequests().filter((req) => {
-  //     const matchesSearch =
-  //       req.employeeName.toLowerCase().includes(this.searchQuery().toLowerCase()) ||
-  //       req.department.toLowerCase().includes(this.searchQuery().toLowerCase());
-  //     const matchesStatus =
-  //       this.selectedStatusFilter() === 'All' || req.status === this.selectedStatusFilter();
-  //     const matchesDept =
-  //       this.selectedDepartmentFilter() === 'All' ||
-  //       req.department === this.selectedDepartmentFilter();
-
-  //     return matchesSearch && matchesStatus && matchesDept;
-  //   });
-  // });
 
   ngOnInit(): void {
     this.loadDashboard();
@@ -83,6 +91,7 @@ export class Dashboard implements OnInit {
       },
     });
   }
+
   loadDashboard(): void {
     this.hrService.getHrDashboard().subscribe({
       next: (response: any) => {
@@ -114,7 +123,7 @@ export class Dashboard implements OnInit {
               requestId: item.id ?? item.requestId ?? '',
               employeeName: item.employeeName ?? item.employee?.name ?? item.name ?? '',
               department: item.department ?? item.employee?.department ?? '',
-              leaveTypeName: item.leaveTypeName ?? item.type ?? 'Unknown',
+              leaveTypeName: item.leaveTypeName ?? item.type ?? '',
               startDate: item.startDate ?? item.createdAt ?? '',
               endDate: item.endDate ?? '',
               days: item.numberOfDays ?? item.days ?? 0,
@@ -135,10 +144,6 @@ export class Dashboard implements OnInit {
     });
   }
 
-  slicedPendingRequests = computed(() => {
-    return this.pendingRequests().slice(0, 5);
-  });
-
   getStatusClass(status: string): string {
     switch (status) {
       case 'Pending':
@@ -151,27 +156,4 @@ export class Dashboard implements OnInit {
         return 'bg-slate-50 text-slate-700 ring-slate-600/20';
     }
   }
-
-  // toggleMobileMenu(): void {
-  //   this.isMobileMenuOpen.update((v) => !v);
-  // }
 }
-
-// updateStatus(id: string, newStatus: 'Approved' | 'Rejected'): void {
-//   this.leaveRequests.update((requests) =>
-//     requests.map((req) => (req.id === id ? { ...req, status: newStatus } : req)),
-//   );
-// }
-
-// getStatusClass(status: string): string {
-//   switch (status) {
-//     case 'Pending':
-//       return 'bg-amber-50 text-amber-700 ring-amber-600/20';
-//     case 'Approved':
-//       return 'bg-emerald-50 text-emerald-700 ring-emerald-600/20';
-//     case 'Rejected':
-//       return 'bg-rose-50 text-rose-700 ring-rose-600/20';
-//     default:
-//       return 'bg-slate-50 text-slate-700 ring-slate-600/20';
-//   }
-// }
