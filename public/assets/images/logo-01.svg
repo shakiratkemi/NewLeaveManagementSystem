@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 595.2755737305 841.889831543">
+  <defs>
+    <style>
+      .cls-1 {
+        letter-spacing: -.0300042442em;
+      }
+
+      .cls-2 {
+        letter-spacing: -.0609880698em;
+      }
+
+      .cls-3 {
+        letter-spacing: -.0179924273em;
+      }
+
+      .cls-4 {
+        font-size: 92.8396224976px;
+      }
+
+      .cls-4, .cls-5 {
+        fill: #fff;
+        font-family: Lato-Black, Lato;
+        font-weight: 800;
+      }
+
+      .cls-6 {
+        letter-spacing: -.0189969738em;
+      }
+
+      .cls-5 {
+        font-size: 23.9712181091px;
+      }
+
+      .cls-7 {
+        letter-spacing: -.0709876381em;
+      }
+
+      .cls-8 {
+        letter-spacing: .0000052594em;
+      }
+
+      .cls-9 {
+        letter-spacing: -.0145030698em;
+      }
+    </style>
+  </defs>
+  <text class="cls-4" transform="translate(12.2082099915 392.12109375)"><tspan x="0" y="0">LE</tspan><tspan class="cls-2" x="101.9370117188" y="0">A</tspan><tspan x="162.2836914062" y="0">VE F</tspan><tspan class="cls-3" x="355.5278320312" y="0">L</tspan><tspan class="cls-6" x="402.59765625" y="0">O</tspan><tspan class="cls-8" x="476.4516601562" y="0">W</tspan></text>
+  <text class="cls-5" transform="translate(18.7526435852 514.8125)"><tspan x="0" y="0">HR PO</tspan><tspan class="cls-9" x="74.693359375" y="0">R</tspan><tspan class="cls-7" x="90.1064453125" y="0">T</tspan><tspan x="103.0029296875" y="0">A</tspan><tspan class="cls-1" x="120.0463867188" y="0">L</tspan></text>
+</svg>

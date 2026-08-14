@@ -5,7 +5,6 @@ import {
   HttpInterceptor,
   HttpRequest,
 } from '@angular/common/http';
-
 import { Injectable } from '@angular/core';
 import { Observable, catchError, switchMap, throwError } from 'rxjs';
 import { Router } from '@angular/router';
@@ -21,15 +20,18 @@ export class AuthInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const token = localStorage.getItem('access_token');
 
-    if (!token) {
+    // Skip attaching token for auth endpoints
+    if (req.url.includes('Auth/login') || req.url.includes('Auth/refresh-token')) {
       return next.handle(req);
     }
 
-    const authReq = req.clone({
-      setHeaders: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const authReq = token
+      ? req.clone({
+          setHeaders: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+      : req;
 
     return next.handle(authReq).pipe(
       catchError((error: HttpErrorResponse) => {
@@ -43,14 +45,19 @@ export class AuthInterceptor implements HttpInterceptor {
 
           return this.authService.getRefreshToken(refreshToken).pipe(
             switchMap((response: any) => {
+              if (!response?.success || !response?.data?.token) {
+                this.logout();
+                return throwError(
+                  () => new Error(response?.message || 'Invalid or expired refresh token.'),
+                );
+              }
+
               const newToken = response.data.token;
-              const newRefreshToken = response.data.refreshToken;
+              const newRefreshToken = response.data.refreshToken || refreshToken;
 
               localStorage.setItem('access_token', newToken);
-
               localStorage.setItem('refresh_token', newRefreshToken);
 
-              // Retry the original request
               const retryRequest = req.clone({
                 setHeaders: {
                   Authorization: `Bearer ${newToken}`,
@@ -59,17 +66,20 @@ export class AuthInterceptor implements HttpInterceptor {
 
               return next.handle(retryRequest);
             }),
-
             catchError((refreshError) => {
-              // Refresh token is also invalid/expired
               this.logout();
-
               return throwError(() => refreshError);
             }),
           );
         }
 
-        // For other errors, don't refresh.
+        if (
+          error.status === 400 &&
+          error.error?.message?.toLowerCase().includes('refresh token')
+        ) {
+          this.logout();
+        }
+
         return throwError(() => error);
       }),
     );
@@ -79,7 +89,6 @@ export class AuthInterceptor implements HttpInterceptor {
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
     localStorage.removeItem('loggedInUser');
-
     this.router.navigateByUrl('/');
   }
 }
