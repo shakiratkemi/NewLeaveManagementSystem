@@ -67,7 +67,10 @@ export class Login implements OnInit {
             if (this.loggedInUser.role === 'HR') {
               this.toastr.success('Login successful! Redirecting to HR dashboard...', 'Success');
               this.router.navigateByUrl('/hr');
-            } else if (this.loggedInUser.role === 'Employee') {
+            } else if (
+              this.loggedInUser.role === 'Employee' ||
+              this.loggedInUser.role === 'TeamLead'
+            ) {
               this.toastr.success(
                 'Login successful! Redirecting to Employee dashboard...',
                 'Success',
