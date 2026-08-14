@@ -13,6 +13,7 @@ const routes = {
   rejectLeaveRequest: 'LeaveRequests/{id}/reject',
   editUser: 'Profile',
   leaveTpe: 'LeaveTypes',
+  departments: 'Departments',
 };
 
 @Injectable({
@@ -45,6 +46,10 @@ export class HrService {
 
   getLeaveTypes(): Observable<any> {
     return this.http.get(`${this.baseUrl}${routes.leaveTpe}`);
+  }
+
+  getDepartments(): Observable<any> {
+    return this.http.get(`${this.baseUrl}${routes.departments}`);
   }
 
   approveLeaveRequest(id: string): Observable<any> {

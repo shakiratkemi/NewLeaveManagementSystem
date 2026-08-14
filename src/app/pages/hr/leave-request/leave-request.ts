@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, signal, computed } from '@angular/core';
+import { Component, OnInit, ViewChild, signal, computed, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
@@ -17,6 +17,8 @@ export class LeaveRequest implements OnInit {
   allRecords = signal<HrLeaveRecord[]>([]);
   searchTerm = signal<string>('');
   selectedStatusFilter = signal<string>('ALL');
+  departments: string[] = ['ALL'];
+  leaveTypes: string[] = ['ALL'];
   selectedDepartmentFilter = signal<string>('ALL');
   selectedTypeFilter = signal<string>('ALL');
   pageSize = signal<number>(10);
@@ -53,11 +55,14 @@ export class LeaveRequest implements OnInit {
 
   ngOnInit(): void {
     this.loadLeaveRequests();
+    this.loadDepartments();
+    this.loadLeaveTypes();
   }
 
   constructor(
     private hrService: HrService,
     private toastr: ToastrService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   // Track processing requests to disable buttons during network calls
@@ -90,6 +95,54 @@ export class LeaveRequest implements OnInit {
       error: (err: any) => {
         const errorMsg = err?.error?.message || 'Failed to set status to load request.';
         this.toastr.error(errorMsg, 'Update Failed');
+      },
+    });
+  }
+
+  loadDepartments(): void {
+    this.hrService.getDepartments().subscribe({
+      next: (res: any) => {
+        let deptList: any[] = [];
+
+        if (Array.isArray(res)) {
+          deptList = res;
+        } else if (Array.isArray(res?.data)) {
+          deptList = res.data;
+        } else if (Array.isArray(res?.departments)) {
+          deptList = res.departments;
+        }
+        const names: string[] = deptList
+          .map((d: any) => (typeof d === 'string' ? d : d.name || d.departmentName || ''))
+          .filter(Boolean);
+        this.departments = ['ALL', ...Array.from(new Set(names))];
+        this.cdr.detectChanges();
+      },
+      error: (err: any) => {
+        console.error('Error fetching departments:', err);
+      },
+    });
+  }
+
+  loadLeaveTypes(): void {
+    this.hrService.getLeaveTypes().subscribe({
+      next: (res: any) => {
+        let leaveTypeList: any[] = [];
+
+        if (Array.isArray(res)) {
+          leaveTypeList = res;
+        } else if (Array.isArray(res?.data)) {
+          leaveTypeList = res.data;
+        } else if (Array.isArray(res?.leaveTypeName)) {
+          leaveTypeList = res.leaveTypeName;
+        }
+        const names: string[] = leaveTypeList
+          .map((d: any) => (typeof d === 'string' ? d : d.name || d.leaveTypeName || ''))
+          .filter(Boolean);
+        this.leaveTypes = ['ALL', ...Array.from(new Set(names))];
+        this.cdr.detectChanges();
+      },
+      error: (err: any) => {
+        console.error('Error fetching leavetypes:', err);
       },
     });
   }

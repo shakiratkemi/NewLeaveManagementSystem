@@ -206,7 +206,9 @@
             class="bg-slate-100/80 hover:bg-slate-100 border-0 text-xs sm:text-sm font-semibold text-slate-700 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-slate-300 transition cursor-pointer"
           >
             @for (dept of departments; track dept) {
-              <option [value]="dept">Department: {{ dept }}</option>
+              <option [value]="dept">
+                {{ dept === 'All' ? 'All Departments' : 'Department: ' + dept }}
+              </option>
             }
           </select>
         </div>
@@ -237,7 +239,6 @@
             <th class="py-4 px-6">Leave Details</th>
             <th class="py-4 px-6">Dates & Duration</th>
             <th class="py-4 px-6">Status</th>
-          
           </tr>
         </thead>
         <tbody class="divide-y divide-slate-100 text-sm">
