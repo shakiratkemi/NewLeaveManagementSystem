@@ -1,0 +1,304 @@
+<div class="min-h-screen bg-slate-50 p-4 sm:p-6 lg:p-8 font-sans text-slate-800">
+  <div class="max-w-7xl mx-auto space-y-6">
+    <!-- Page Header -->
+    <div>
+      <span class="text-[11px] font-bold text-slate-400 tracking-wider uppercase">Team Management</span>
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mt-0.5">
+        Team Leave Requests
+      </h1>
+      <p class="text-sm text-slate-500 mt-1">
+        Review, approve, or reject leave applications submitted by your team members.
+      </p>
+    </div>
+
+    <!-- Filters Bar -->
+    <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3 items-center">
+        <!-- Search Input -->
+        <div class="lg:col-span-4 relative">
+          <svg
+            class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            ></path>
+          </svg>
+          <input
+            type="text"
+            [ngModel]="searchTerm()"
+            (ngModelChange)="searchTerm.set($event)"
+            placeholder="Search employee, ID, or reason..."
+            class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-9 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition"
+          />
+          @if (searchTerm()) {
+            <button
+              (click)="searchTerm.set('')"
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          }
+        </div>
+
+        <!-- Status Filter -->
+        <div class="lg:col-span-3">
+          <select
+            [ngModel]="selectedStatusFilter()"
+            (ngModelChange)="selectedStatusFilter.set($event)"
+            class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition"
+          >
+            <option value="ALL">All Statuses</option>
+            <option value="Pending">Pending</option>
+            <option value="Approved">Approved</option>
+            <option value="Rejected">Rejected</option>
+          </select>
+        </div>
+
+        <!-- Leave Type Filter -->
+        <div class="lg:col-span-3">
+          <select
+            [ngModel]="selectedTypeFilter()"
+            (ngModelChange)="selectedTypeFilter.set($event)"
+            class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition"
+          >
+            <option value="ALL">All Leave Types</option>
+            <option value="Annual Leave">Annual Leave</option>
+            <option value="Sick Leave">Sick Leave</option>
+            <option value="Maternity/Paternity Leave">Maternity/Paternity Leave</option>
+          </select>
+        </div>
+
+        <!-- Reset Button -->
+        <div class="lg:col-span-2">
+          <button
+            (click)="clearFilters()"
+            class="w-full py-2.5 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs rounded-xl transition cursor-pointer"
+          >
+            Reset Filters
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Data Table Card -->
+    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr
+              class="bg-slate-50/80 border-b border-slate-200/80 text-xs font-semibold uppercase text-slate-500 tracking-wider"
+            >
+              <th class="py-3.5 px-4">Employee</th>
+              <th class="py-3.5 px-4">Department</th>
+              <th class="py-3.5 px-4">Type</th>
+              <th class="py-3.5 px-4">Duration</th>
+              <th class="py-3.5 px-4 text-center">Days</th>
+              <th class="py-3.5 px-4">Applied</th>
+              <th class="py-3.5 px-4">Status</th>
+              <th class="py-3.5 px-4 text-center">Action</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 text-sm">
+            @for (row of filteredRecords(); track row.requestId) {
+              <tr class="hover:bg-slate-50/60 transition">
+                <td class="py-3.5 px-4">
+                  <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-full bg-slate-100 text-slate-700 font-bold text-xs flex items-center justify-center shrink-0 border border-slate-200">
+                      {{ getInitials(row.employeeName) }}
+                    </div>
+                    <div class="flex flex-col">
+                      <span class="font-semibold text-slate-900">{{ row.employeeName }}</span>
+                      <!-- <span class="text-xs text-slate-400">{{ row.employeeId }}</span> -->
+                    </div>
+                  </div>
+                </td>
+                <td class="py-3.5 px-4 text-slate-600">{{ row.department }}</td>
+                <td class="py-3.5 px-4 text-slate-700 font-medium">{{ row.leaveTypeName }}</td>
+                <td class="py-3.5 px-4 text-slate-600 whitespace-nowrap">
+                  {{ row.startDate | date: 'mediumDate' }} &ndash; {{ row.endDate | date: 'mediumDate' }}
+                </td>
+                <td class="py-3.5 px-4 text-center font-semibold text-slate-900">{{ row.days }}</td>
+                <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">
+                  {{ row.appliedOn | date: 'mediumDate' }}
+                </td>
+                <td class="py-3.5 px-4">
+                  <span
+                    [class]="getStatusBadgeClass(row.status)"
+                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ring-1 ring-inset"
+                  >
+                    {{ row.status }}
+                  </span>
+                </td>
+                <td class="py-3.5 px-4 text-center">
+                  @if (row.status === 'Pending') {
+                    <div class="flex items-center justify-center gap-2">
+                      <button
+                        (click)="approveRequest(row)"
+                        [disabled]="processing.has(row.requestId)"
+                        class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold shadow-xs transition cursor-pointer disabled:opacity-50"
+                        title="Approve"
+                      >
+                        Approve
+                      </button>
+                      <button
+                        (click)="rejectRequest(row)"
+                        [disabled]="processing.has(row.requestId)"
+                        class="px-3 py-1.5 bg-rose-50 border border-rose-200 text-rose-600 hover:bg-rose-100 rounded-lg text-xs font-semibold transition cursor-pointer disabled:opacity-50"
+                        title="Reject"
+                      >
+                        Reject
+                      </button>
+                      <button
+                        (click)="openDetailsModal(row)"
+                        class="p-2 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition cursor-pointer"
+                        title="View Details"
+                      >
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                        </svg>
+                      </button>
+                    </div>
+                  } @else {
+                    <button
+                      (click)="openDetailsModal(row)"
+                      class="p-2 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition cursor-pointer"
+                      title="View Details"
+                    >
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                      </svg>
+                    </button>
+                  }
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="8" class="py-12 text-center text-slate-400 italic">
+                  No team leave requests found matching your filters.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Read-Only View Details Modal -->
+  @if (selectedRecord(); as rec) {
+    <div
+      class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4 animate-in fade-in duration-200"
+    >
+      <div
+        class="bg-white rounded-2xl shadow-xl max-w-lg w-full overflow-hidden border border-slate-200/80"
+      >
+        <!-- Modal Header -->
+        <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+          <div>
+            <h3 class="text-base font-bold text-slate-900">Leave Request Details</h3>
+            <span class="text-xs text-slate-400 font-mono">{{ rec.requestId }}</span>
+          </div>
+          <button
+            (click)="closeDetailsModal()"
+            class="text-slate-400 hover:text-slate-600 p-1 rounded-lg cursor-pointer"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              ></path>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="p-5 space-y-4">
+          <div class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200/60">
+            <div
+              class="w-10 h-10 rounded-full bg-[#0d1d3e] text-white font-bold flex items-center justify-center text-sm"
+            >
+              {{ getInitials(rec.employeeName) }}
+            </div>
+            <div>
+              <div class="font-bold text-slate-900 text-sm">{{ rec.employeeName }}</div>
+              <div class="text-xs text-slate-500">
+                {{ rec.employeeId }} &bull; {{ rec.department }} Department
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4 text-xs">
+            <div>
+              <span class="block uppercase font-bold text-slate-400">Status</span>
+              <span
+                [class]="getStatusBadgeClass(rec.status)"
+                class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ring-1 ring-inset mt-1"
+              >
+                {{ rec.status }}
+              </span>
+            </div>
+
+            <div>
+              <span class="block uppercase font-bold text-slate-400">Leave Category</span>
+              <span class="font-semibold text-slate-800 text-sm mt-0.5 block">{{ rec.leaveTypeName }}</span>
+            </div>
+
+            <div>
+              <span class="block uppercase font-bold text-slate-400">Total Duration</span>
+              <span class="font-semibold text-slate-800 text-sm mt-0.5 block">{{ rec.days }} Working Day(s)</span>
+            </div>
+
+            <div>
+              <span class="block uppercase font-bold text-slate-400">Date Span</span>
+              <span class="font-semibold text-slate-800 text-sm mt-0.5 block">
+                {{ rec.startDate | date: 'mediumDate' }} to {{ rec.endDate | date: 'mediumDate' }}
+              </span>
+            </div>
+          </div>
+
+          <div class="space-y-1">
+            <span class="block uppercase font-bold text-slate-400 text-xs">Reason Provided</span>
+            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/60 text-xs text-slate-700">
+              {{ rec.reason }}
+            </div>
+          </div>
+        </div>
+
+        <div class="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-2">
+          @if (rec.status === 'Pending') {
+            <button
+              (click)="rejectRequest(rec); closeDetailsModal()"
+              class="px-4 py-2 bg-rose-50 border border-rose-200 text-rose-600 hover:bg-rose-100 font-semibold text-xs rounded-xl transition cursor-pointer"
+            >
+              Reject
+            </button>
+            <button
+              (click)="approveRequest(rec); closeDetailsModal()"
+              class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs rounded-xl shadow-xs transition cursor-pointer"
+            >
+              Approve
+            </button>
+          }
+          <button
+            (click)="closeDetailsModal()"
+            class="px-4 py-2 bg-[#0d1d3e] hover:bg-[#68a7f5] text-white font-semibold text-xs rounded-xl shadow-sm transition cursor-pointer"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

@@ -13,7 +13,8 @@ const routes = {
   rejectLeaveRequest: 'LeaveRequests/{id}/reject',
   editUser: 'Profile',
   leaveTpe: 'LeaveTypes',
-  departments: 'Departments',
+  Department: 'Departments',
+  Users: 'Users',
 };
 
 @Injectable({
@@ -39,6 +40,10 @@ export class HrService {
     return this.http.get(`${this.baseUrl}${routes.employees}`);
   }
 
+  getUsers(): Observable<any> {
+    return this.http.get(`${this.baseUrl}${routes.Users}`);
+  }
+
   getRequestById(id: string): Observable<any> {
     const url = `${this.baseUrl}${routes.requestById.replace('{id}', id)}`;
     return this.http.get(url);
@@ -48,8 +53,16 @@ export class HrService {
     return this.http.get(`${this.baseUrl}${routes.leaveTpe}`);
   }
 
+  createLeaveType(payload: { name: string; defaultDays: number }): Observable<any> {
+    return this.http.post(`${this.baseUrl}${routes.leaveTpe}`, payload);
+  }
+
   getDepartments(): Observable<any> {
-    return this.http.get(`${this.baseUrl}${routes.departments}`);
+    return this.http.get(`${this.baseUrl}${routes.Department}`);
+  }
+
+  createDepartment(payload: { name: string; teamLeadName?: string; teamLeadId?: string } | any): Observable<any> {
+    return this.http.post(`${this.baseUrl}${routes.Department}`, payload);
   }
 
   approveLeaveRequest(id: string): Observable<any> {
