@@ -147,7 +147,8 @@ export class Employees implements OnInit, AfterViewInit {
         this.cdr.detectChanges();
       },
       error: (err: any) => {
-        console.error('Failed to load departments:', err);
+        const errorMsg = err?.error?.message || 'Failed to load departments';
+        this.toastr.error(errorMsg, 'Update Failed');
       },
     });
   }
