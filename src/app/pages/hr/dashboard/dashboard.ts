@@ -97,7 +97,7 @@ export class Dashboard implements OnInit {
       next: (response: any) => {
         console.log('HR Dashboard response:', response);
         // Extract the inner 'data' property where backend stats reside
-        this.dashboardData = response?.data || response || {};
+        this.dashboardData = response?.data;
         this.leaveRequests.set(response?.leaveRequests || response?.data?.leaveRequests || []);
         this.cdr.detectChanges();
 
