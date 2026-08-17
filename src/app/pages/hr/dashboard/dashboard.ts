@@ -96,9 +96,11 @@ export class Dashboard implements OnInit {
     this.hrService.getHrDashboard().subscribe({
       next: (response: any) => {
         console.log('HR Dashboard response:', response);
-        this.dashboardData = response || {};
-        this.leaveRequests.set(response?.leaveRequests || []);
+        // Extract the inner 'data' property where backend stats reside
+        this.dashboardData = response?.data || response || {};
+        this.leaveRequests.set(response?.leaveRequests || response?.data?.leaveRequests || []);
         this.cdr.detectChanges();
+
         // Also fetch full leave requests list (separate endpoint) to ensure table data is available
         this.hrService.getAllLeaveRequests().subscribe({
           next: (lr: any) => {
