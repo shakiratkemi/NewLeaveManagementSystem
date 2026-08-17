@@ -43,6 +43,7 @@ export class EmployeeSidebar implements OnInit {
     const user = localStorage.getItem('loggedInUser');
     if (user) {
       this.profile = JSON.parse(user);
+      this.buildMenus();
       return;
     }
 
@@ -56,11 +57,48 @@ export class EmployeeSidebar implements OnInit {
           ...this.profile,
           ...profileData,
         };
+        this.buildMenus();
       },
       error: (err) => {
         console.error('Sidebar profile API error:', err);
       },
     });
+  }
+
+  get isTeamLead(): boolean {
+    const role = (this.profile?.role || '').toLowerCase();
+    return role === 'teamlead' || role === 'team_lead' || role === 'team lead';
+  }
+
+  buildMenus(): void {
+    const items: LeaveItem[] = [
+      {
+        name: 'Dashboard',
+        icon: 'assets/images/apps.svg',
+        link: '/employee/dashboard',
+      },
+      {
+        name: 'Leave History',
+        icon: 'assets/images/calendar.svg',
+        link: '/employee/leave-history',
+      },
+    ];
+
+    if (this.isTeamLead) {
+      items.push({
+        name: 'Leave Requests',
+        icon: 'assets/images/todo.svg',
+        link: '/employee/leave-requests',
+      });
+    }
+
+    items.push({
+      name: 'Profile',
+      icon: 'assets/images/user.svg',
+      link: '/employee/profile',
+    });
+
+    this.menus = items;
   }
 
   get fullName(): string {

@@ -1,5 +1,6 @@
 <div class="min-h-screen bg-slate-50 text-slate-800 p-4 sm:p-6 lg:p-8 font-sans">
   <div class="max-w-7xl mx-auto space-y-6">
+    <!-- Header Section -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
       <div>
         <h1 class="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
@@ -19,61 +20,90 @@
       </div>
     </div>
 
-    <div
-      class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4"
-    >
-      <div class="relative w-full md:max-w-md">
-        <svg
-          class="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-          ></path>
-        </svg>
-        <input
-          type="text"
-          [(ngModel)]="searchQuery"
-          (ngModelChange)="onFilterChange()"
-          placeholder="Search by name, email, or role..."
-          class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition"
-        />
-      </div>
-
-      <div class="flex flex-wrap items-center w-full md:w-auto gap-3">
-        <div class="flex items-center gap-2 flex-1 sm:flex-initial">
-          <label class="text-xs font-semibold text-slate-500 uppercase">Dept:</label>
-          <select
-            [(ngModel)]="selectedDepartment"
+    <!-- Filter Bar Section -->
+    <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-sm">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3 items-center">
+        <!-- Search Input -->
+        <div class="sm:col-span-2 lg:col-span-5 relative">
+          <svg
+            class="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            ></path>
+          </svg>
+          <input
+            type="text"
+            [(ngModel)]="searchQuery"
             (ngModelChange)="onFilterChange()"
-            class="w-full bg-slate-50 border border-slate-200 text-sm font-medium rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            placeholder="Search by name, email, or role..."
+            class="w-full pl-10 pr-9 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition"
+          />
+          @if (searchQuery) {
+            <button
+              type="button"
+              (click)="searchQuery = ''; onFilterChange()"
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                ></path>
+              </svg>
+            </button>
+          }
+        </div>
+
+        <!-- Department Filter -->
+        <div class="lg:col-span-3">
+          <select
+            [(ngModel)]="selectedDepartmentFilter"
+            (ngModelChange)="onFilterChange()"
+            class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition"
           >
             @for (dept of departments; track dept) {
-              <option [value]="dept">{{ dept }}</option>
+              <option [value]="dept">
+                {{ dept === 'ALL' ? 'All Departments' : 'Department: ' + dept }}
+              </option>
             }
           </select>
         </div>
 
-        <div class="flex items-center gap-2 flex-1 sm:flex-initial">
-          <label class="text-xs font-semibold text-slate-500 uppercase">Status:</label>
+        <!-- Status Filter -->
+        <div class="lg:col-span-2">
           <select
             [(ngModel)]="selectedStatus"
             (ngModelChange)="onFilterChange()"
-            class="w-full bg-slate-50 border border-slate-200 text-sm font-medium rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            class="w-full bg-slate-50 border border-slate-200 text-sm font-medium rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition"
           >
             @for (st of statuses; track st) {
-              <option [value]="st">{{ st }}</option>
+              <option [value]="st">{{ st === 'All' ? 'All Statuses' : st }}</option>
             }
           </select>
+        </div>
+
+        <!-- Reset Button -->
+        <div class="lg:col-span-2">
+          <button
+            (click)="clearFilters()"
+            class="w-full py-2.5 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs rounded-xl transition"
+          >
+            Reset
+          </button>
         </div>
       </div>
     </div>
 
+    <!-- Desktop Table View -->
     <div
       class="hidden md:block bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden"
     >
@@ -94,11 +124,9 @@
             @for (emp of pagedEmployees; track emp.id) {
               <tr class="hover:bg-slate-50/50 transition">
                 <td class="py-4 px-6 whitespace-nowrap">
-                  <div class="flex items-center gap-3">
-                    <div>
-                      <div class="font-semibold text-slate-900">{{ emp.name }}</div>
-                      <div class="text-xs text-slate-500">{{ emp.email }}</div>
-                    </div>
+                  <div>
+                    <div class="font-semibold text-slate-900">{{ emp.name }}</div>
+                    <div class="text-xs text-slate-500">{{ emp.email }}</div>
                   </div>
                 </td>
 
@@ -150,7 +178,6 @@
 
                 <td class="py-4 px-6 whitespace-nowrap text-right">
                   <div class="flex items-center justify-end gap-1">
-                    <!-- View Details Button -->
                     <button
                       (click)="openLeaveModal(emp)"
                       class="p-2 text-blue-700 hover:text-[#68a7f5] hover:bg-[#68a7f5]/10 rounded-lg transition"
@@ -173,7 +200,6 @@
                       </svg>
                     </button>
 
-                    <!-- Edit Profile Button -->
                     <button
                       (click)="openEditProfileModal(emp)"
                       class="p-2 text-amber-600 hover:text-amber-700 hover:bg-amber-50 rounded-lg transition"
@@ -202,6 +228,7 @@
           </tbody>
         </table>
       </div>
+
       @if (filteredEmployees.length >= pageSize) {
         <mat-paginator
           [length]="filteredEmployees.length"
@@ -215,15 +242,14 @@
       }
     </div>
 
+    <!-- Mobile Card View -->
     <div class="grid grid-cols-1 gap-4 md:hidden">
       @for (emp of pagedEmployees; track emp.id) {
         <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
           <div class="flex items-center justify-between">
-            <div class="flex items-center gap-3">
-              <div>
-                <div class="font-semibold text-slate-900">{{ emp.name }}</div>
-                <div class="text-xs text-slate-500">{{ emp.role }}</div>
-              </div>
+            <div>
+              <div class="font-semibold text-slate-900">{{ emp.name }}</div>
+              <div class="text-xs text-slate-500">{{ emp.role }}</div>
             </div>
             <span
               [class]="getStatusBadgeClass(emp.status)"
@@ -287,96 +313,91 @@
         </div>
       }
     </div>
-  </div>
 
-  @if (selectedEmployeeForModal; as employee) {
-    <div
-      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm"
-    >
+    <!-- Leave Modal -->
+    @if (selectedEmployeeForModal; as employee) {
       <div
-        class="bg-white max-w-md w-full rounded-2xl shadow-xl border border-slate-200 p-6 space-y-5 animate-in fade-in zoom-in duration-150"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm"
       >
-        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
-          <div class="flex items-center gap-3">
-            <!-- <img
-              [src]="employee.avatar"
-              [alt]="employee.name"
-              class="w-10 h-10 rounded-full object-cover"
-            /> -->
+        <div
+          class="bg-white max-w-md w-full rounded-2xl shadow-xl border border-slate-200 p-6 space-y-5 animate-in fade-in zoom-in duration-150"
+        >
+          <div class="flex items-center justify-between border-b border-slate-100 pb-4">
             <div>
               <h3 class="font-bold text-slate-900 text-base">{{ employee.name }}</h3>
               <p class="text-xs text-slate-500">{{ employee.department }} • {{ employee.id }}</p>
             </div>
+            <button (click)="closeLeaveModal()" class="text-slate-400 hover:text-slate-600 p-1">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                ></path>
+              </svg>
+            </button>
           </div>
-          <button (click)="closeLeaveModal()" class="text-slate-400 hover:text-slate-600 p-1">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M6 18L18 6M6 6l12 12"
-              ></path>
-            </svg>
-          </button>
-        </div>
 
-        <div class="space-y-3">
-          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400">
-            Current Leave Breakdown
-          </h4>
+          <div class="space-y-3">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400">
+              Current Leave Breakdown
+            </h4>
 
-          <div class="grid grid-cols-2 gap-3">
-            <div class="bg-indigo-50/60 border border-indigo-100 p-3 rounded-xl">
-              <div class="text-xs text-indigo-600 font-medium">Annual Leave</div>
-              <div class="text-xl font-bold text-indigo-950 mt-1">
-                {{ employee.annualLeaveBalance }} Days
+            <div class="grid grid-cols-2 gap-3">
+              <div class="bg-indigo-50/60 border border-indigo-100 p-3 rounded-xl">
+                <div class="text-xs text-indigo-600 font-medium">Annual Leave</div>
+                <div class="text-xl font-bold text-indigo-950 mt-1">
+                  {{ employee.annualLeaveBalance }} Days
+                </div>
+                <div class="text-[10px] text-indigo-500">
+                  of {{ employee.totalAnnualLeave }} Total Days
+                </div>
               </div>
-              <div class="text-[10px] text-indigo-500">
-                of {{ employee.totalAnnualLeave }} Total Days
+
+              <div class="bg-emerald-50/60 border border-emerald-100 p-3 rounded-xl">
+                <div class="text-xs text-emerald-600 font-medium">Sick Leave</div>
+                <div class="text-xl font-bold text-emerald-950 mt-1">
+                  {{ employee.sickLeaveBalance }} Days
+                </div>
+                <div class="text-[10px] text-emerald-500">
+                  of {{ employee.totalSickLeave }} Total Days
+                </div>
               </div>
             </div>
-
-            <div class="bg-emerald-50/60 border border-emerald-100 p-3 rounded-xl">
-              <div class="text-xs text-emerald-600 font-medium">Sick Leave</div>
-              <div class="text-xl font-bold text-emerald-950 mt-1">
-                {{ employee.sickLeaveBalance }} Days
-              </div>
-              <div class="text-[10px] text-emerald-500">
-                of {{ employee.totalSickLeave }} Total Days
-              </div>
-            </div>
           </div>
-        </div>
 
-        <div class="pt-2 flex gap-3">
-          <button
-            (click)="closeLeaveModal()"
-            class="flex-1 py-2.5 border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-xl text-xs font-semibold transition"
-          >
-            Close
-          </button>
-          <button
-            (click)="closeLeaveModal()"
-            class="flex-1 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold shadow-sm transition"
-          >
-            Adjust Balance
-          </button>
+          <div class="pt-2 flex gap-3">
+            <button
+              (click)="closeLeaveModal()"
+              class="flex-1 py-2.5 border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-xl text-xs font-semibold transition"
+            >
+              Close
+            </button>
+            <button
+              (click)="closeLeaveModal()"
+              class="flex-1 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold shadow-sm transition"
+            >
+              Adjust Balance
+            </button>
+          </div>
         </div>
       </div>
-    </div>
-  }
+    }
 
-  <app-add-employee
-    [isOpen]="isAddModalOpen"
-    [departments]="departments"
-    (close)="closeAddEmployeeModal()"
-    (save)="handleSaveEmployee($event)"
-  ></app-add-employee>
+    <!-- External App Modals -->
+    <app-add-employee
+      [isOpen]="isAddModalOpen"
+      [departments]="departments"
+      (close)="closeAddEmployeeModal()"
+      (save)="handleSaveEmployee($event)"
+    ></app-add-employee>
 
-  <app-edit-employee
-    [isOpen]="isEditModalOpen"
-    [initialData]="selectedEmployeeForEdit"
-    (close)="closeEditProfileModal()"
-    (profileUpdated)="handleUpdateProfile($event)"
-  ></app-edit-employee>
+    <app-edit-employee
+      [isOpen]="isEditModalOpen"
+      [initialData]="selectedEmployeeForEdit"
+      (close)="closeEditProfileModal()"
+      (profileUpdated)="handleUpdateProfile($event)"
+    ></app-edit-employee>
+  </div>
 </div>
