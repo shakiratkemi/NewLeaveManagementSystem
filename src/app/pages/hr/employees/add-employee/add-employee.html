@@ -10,7 +10,7 @@
           <h3 class="font-bold text-slate-900 text-lg">Add New Employee</h3>
           <p class="text-xs text-slate-500">Fill in the details to register a new employee.</p>
         </div>
-        <button (click)="onClose()" class="text-slate-400 hover:text-slate-600 p-1">
+        <!-- <button (click)="onClose()" class="text-slate-400 hover:text-slate-600 p-1">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               stroke-linecap="round"
@@ -19,7 +19,35 @@
               d="M6 18L18 6M6 6l12 12"
             ></path>
           </svg>
+        </button> -->
+
+        <button
+          type="button"
+          (click)="csvInput.click()"
+          class="group flex items-center gap-2 rounded-xl border border-blue-200 bg-white px-1.5 py-1.5 sm:px-4 sm:py-2.5 text-xs font-semibold text-blue-700 shadow-sm transition-all duration-200 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-600 hover:shadow-md"
+        >
+          <span
+            class="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-50 text-blue-600 transition-colors duration-200 group-hover:bg-blue-600 group-hover:text-white"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              stroke="currentColor"
+              class="h-4 w-4"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 16.5V3.75m0 0L7.5 8.25M12 3.75l4.5 4.5M4.5 15.75v2.25A2.25 2.25 0 006.75 20.25h10.5a2.25 2.25 0 002.25-2.25v-2.25"
+              />
+            </svg>
+          </span>
+
+          <span class="hidden sm:block">Import CSV</span>
         </button>
+        <input #csvInput type="file" accept=".csv" class="hidden" (change)="importCSV($event)" />
       </div>
 
       <form [formGroup]="AddEmployeeForm" (ngSubmit)="onSubmit()" class="space-y-4">
@@ -124,7 +152,7 @@
             Cancel
           </button>
           <button
-            (click)="onSubmit()"
+            type="submit"
             class="flex-1 py-2.5 bg-[#0d1d3e] text-[#68a7f5] hover:bg-[#68a7f5] hover:text-white rounded-xl text-xs font-semibold shadow-sm transition"
           >
             Save Employee

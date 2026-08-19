@@ -50,8 +50,8 @@ export class Profile implements OnInit {
   //   return name.charAt(0) + name.charAt(1);
   // }
 
-   get userInitials(): string {
-    const fullName = this.profile?.fullName ||'';
+  get userInitials(): string {
+    const fullName = this.profile?.fullName || '';
     if (!fullName) return 'U';
 
     const names = String(fullName).trim().split(/\s+/);
