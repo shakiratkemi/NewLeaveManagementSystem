@@ -159,11 +159,20 @@ export class LeaveRequest implements OnInit {
           leaveTypeList = res;
         } else if (Array.isArray(res?.data)) {
           leaveTypeList = res.data;
+        } else if (Array.isArray(res?.leaveTypes)) {
+          leaveTypeList = res.leaveTypes;
         } else if (Array.isArray(res?.leaveTypeName)) {
           leaveTypeList = res.leaveTypeName;
+        } else if (res?.data && typeof res.data === 'object') {
+          for (const key of Object.keys(res.data)) {
+            if (Array.isArray(res.data[key])) {
+              leaveTypeList = res.data[key];
+              break;
+            }
+          }
         }
         const names: string[] = leaveTypeList
-          .map((d: any) => (typeof d === 'string' ? d : d.name || d.leaveTypeName || ''))
+          .map((d: any) => (typeof d === 'string' ? d : d.name || d.leaveTypeName || d.type || ''))
           .filter(Boolean);
         this.leaveTypes = ['ALL', ...Array.from(new Set(names))];
         this.cdr.detectChanges();

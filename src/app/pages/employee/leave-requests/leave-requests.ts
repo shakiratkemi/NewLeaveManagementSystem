@@ -18,6 +18,7 @@ export class LeaveRequests implements OnInit {
   selectedStatusFilter = signal<string>('ALL');
   selectedDepartmentFilter = signal<string>('ALL');
   selectedTypeFilter = signal<string>('ALL');
+  leaveTypes = signal<string[]>([]);
   selectedRecord = signal<HrLeaveRecord | null>(null);
 
   // Track processing request IDs to disable buttons during network calls
@@ -55,6 +56,34 @@ export class LeaveRequests implements OnInit {
 
   ngOnInit(): void {
     this.loadLeaveRequests();
+    this.loadLeaveTypes();
+  }
+
+  loadLeaveTypes(): void {
+    this.hrService.getLeaveTypes().subscribe({
+      next: (res: any) => {
+        let leaveTypeList: any[] = [];
+        if (Array.isArray(res)) {
+          leaveTypeList = res;
+        } else if (Array.isArray(res?.data)) {
+          leaveTypeList = res.data;
+        } else if (Array.isArray(res?.leaveTypes)) {
+          leaveTypeList = res.leaveTypes;
+        }
+        const names: string[] = leaveTypeList
+          .map((d: any) => (typeof d === 'string' ? d : d.name || d.leaveTypeName || ''))
+          .filter(Boolean);
+        if (names.length > 0) {
+          this.leaveTypes.set(Array.from(new Set(names)));
+        } else {
+          this.leaveTypes.set(['Annual Leave', 'Sick Leave', 'Maternity Leave', 'Paternity Leave', 'Casual Leave', 'Unpaid Leave']);
+        }
+      },
+      error: (err: any) => {
+        console.error('Error fetching leave types:', err);
+        this.leaveTypes.set(['Annual Leave', 'Sick Leave', 'Maternity Leave', 'Paternity Leave', 'Casual Leave', 'Unpaid Leave']);
+      },
+    });
   }
 
   loadLeaveRequests(): void {

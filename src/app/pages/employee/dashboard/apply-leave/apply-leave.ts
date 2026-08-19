@@ -61,18 +61,18 @@ export class Applyleave implements OnInit {
           }
         }
 
-        const isGuid = (val: string) =>
-          typeof val === 'string' &&
-          /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(val);
-
         const mapped = types
           .map((item: any) => {
-            const rawId = item.id || item.leaveTypeId || item.typeId || item.id || '';
-            const rawName = item.name || item.leaveTypeName || item.type || 'Leave';
+            if (typeof item === 'string') {
+              return { id: item, name: item, defaultDays: 10 };
+            }
+            const rawId = item.id || item.leaveTypeId || item.typeId || item.name || '';
+            const rawName = item.name || item.leaveTypeName || item.type || item.title || 'Leave';
+            const days = item.defaultDays ?? item.days ?? item.allottedDays ?? 10;
             return {
-              id: isGuid(rawId) ? rawId : rawId || rawName,
-              name: rawName,
-              defaultDays: item.defaultDays || item.days || 10,
+              id: String(rawId),
+              name: String(rawName),
+              defaultDays: Number(days),
             };
           })
           .filter((item: any) => Boolean(item.id && item.name));
@@ -83,10 +83,7 @@ export class Applyleave implements OnInit {
           this.leaveTypes = [
             { id: '3fa85f64-5717-4562-b3fc-2c963f66afa6', name: 'Annual Leave', defaultDays: 20 },
             { id: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890', name: 'Sick Leave', defaultDays: 10 },
-            { id: 'b2c3d4e5-f6a7-8901-bcde-f23456789012', name: 'Maternity Leave', defaultDays: 90 },
-            { id: 'c3d4e5f6-a7b8-9012-cdef-345678901234', name: 'Paternity Leave', defaultDays: 14 },
-            { id: 'd4e5f6a7-b8c9-0123-def0-456789012345', name: 'Casual Leave', defaultDays: 5 },
-            { id: 'e5f6a7b8-c9d0-1234-ef01-567890123456', name: 'Unpaid Leave', defaultDays: 30 },
+            { id: 'b2c3d4e5-f6a7-8901-bcde-f23456789012', name: 'Maternity Leave', defaultDays: 90 }
           ];
         }
 
@@ -98,9 +95,6 @@ export class Applyleave implements OnInit {
           { id: '3fa85f64-5717-4562-b3fc-2c963f66afa6', name: 'Annual Leave', defaultDays: 20 },
           { id: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890', name: 'Sick Leave', defaultDays: 10 },
           { id: 'b2c3d4e5-f6a7-8901-bcde-f23456789012', name: 'Maternity Leave', defaultDays: 90 },
-          { id: 'c3d4e5f6-a7b8-9012-cdef-345678901234', name: 'Paternity Leave', defaultDays: 14 },
-          { id: 'd4e5f6a7-b8c9-0123-def0-456789012345', name: 'Casual Leave', defaultDays: 5 },
-          { id: 'e5f6a7b8-c9d0-1234-ef01-567890123456', name: 'Unpaid Leave', defaultDays: 30 },
         ];
         this.cdr.detectChanges();
       },
@@ -129,23 +123,7 @@ export class Applyleave implements OnInit {
     const formValue = this.leaveForm.value;
     const selectedType = this.leaveTypes.find((t) => t.id === formValue.leaveType);
     const leaveTypeName = selectedType ? selectedType.name : formValue.leaveType;
-
-    const isGuid = (val: string) =>
-      typeof val === 'string' &&
-      /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(val);
-
-    let validLeaveTypeId = formValue.leaveType;
-    if (!isGuid(validLeaveTypeId)) {
-      const fallbackGuids: { [key: string]: string } = {
-        Annual: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
-        Sick: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
-        Maternity: 'b2c3d4e5-f6a7-8901-bcde-f23456789012',
-        Paternity: 'c3d4e5f6-a7b8-9012-cdef-345678901234',
-        Casual: 'd4e5f6a7-b8c9-0123-def0-456789012345',
-        Unpaid: 'e5f6a7b8-c9d0-1234-ef01-567890123456',
-      };
-      validLeaveTypeId = fallbackGuids[validLeaveTypeId] || '3fa85f64-5717-4562-b3fc-2c963f66afa6';
-    }
+    const validLeaveTypeId = formValue.leaveType;
 
     const leaveRequest: any = {
       leaveTypeId: validLeaveTypeId,
