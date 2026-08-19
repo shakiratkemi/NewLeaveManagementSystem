@@ -40,7 +40,7 @@ export class EmployeeSidebar implements OnInit {
   ];
 
   ngOnInit(): void {
-    const user = localStorage.getItem('loggedInUser');
+    const user = sessionStorage.getItem('loggedInUser') || localStorage.getItem('loggedInUser');
     if (user) {
       this.profile = JSON.parse(user);
       this.buildMenus();
@@ -68,6 +68,17 @@ export class EmployeeSidebar implements OnInit {
   get isTeamLead(): boolean {
     const role = (this.profile?.role || '').toLowerCase();
     return role === 'teamlead' || role === 'team_lead' || role === 'team lead';
+  }
+
+  get portalTitle(): string {
+    const role = (this.profile?.role || '').toLowerCase();
+    if (role.includes('hr')) {
+      return 'HR Portal';
+    }
+    if (role.includes('teamlead') || role.includes('team_lead') || role.includes('team lead')) {
+      return 'Team Lead Portal';
+    }
+    return 'Employee Portal';
   }
 
   buildMenus(): void {
@@ -146,7 +157,11 @@ export class EmployeeSidebar implements OnInit {
   }
 
   logout() {
+    sessionStorage.removeItem('access_token');
+    sessionStorage.removeItem('refresh_token');
+    sessionStorage.removeItem('loggedInUser');
     localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
     localStorage.removeItem('loggedInUser');
     this.router.navigateByUrl('/');
   }

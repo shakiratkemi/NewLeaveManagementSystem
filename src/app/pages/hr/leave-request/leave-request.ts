@@ -72,16 +72,28 @@ export class LeaveRequest implements OnInit {
     this.hrService.getAllLeaveRequests().subscribe({
       next: (res: any) => {
         console.log('HR LeaveRequests response:', res);
-        const rawRecords = Array.isArray(res?.data) ? res.data : [];
-        const mappedRecords = rawRecords.map((record: any) => ({
-          requestId: record.id || '',
+        const localStr = localStorage.getItem('local_leave_requests');
+        const localRequests = localStr ? JSON.parse(localStr) : [];
+
+        let rawRecords: any[] = [];
+        if (Array.isArray(res)) rawRecords = res;
+        else if (Array.isArray(res?.data)) rawRecords = res.data;
+        else if (Array.isArray(res?.leaveRequests)) rawRecords = res.leaveRequests;
+
+        const combined = [...localRequests, ...rawRecords];
+        const mappedRecords = combined.map((record: any) => ({
+          requestId: record.id || record.requestId || '',
           employeeId: record.employeeId || record.employee?.id || '',
-          employeeName: record.employeeName || record.employee?.name || 'Unknown',
-          department: record.department || 'Unknown',
-          leaveTypeName: record.leaveTypeName || 'Unknown',
+          employeeName:
+            record.employeeName ||
+            record.employee?.fullName ||
+            record.employee?.name ||
+            'Unknown',
+          department: record.department || record.employee?.department || 'General',
+          leaveTypeName: record.leaveTypeName || record.leaveType?.name || record.type || 'Leave',
           startDate: record.startDate || record.createdAt || '',
           endDate: record.endDate || '',
-          days: record.numberOfDays ?? 0,
+          days: record.numberOfDays ?? record.duration ?? record.days ?? 0,
           reason: record.reason || '',
           appliedOn: record.createdAt || '',
           status: record.status || 'Pending',
@@ -93,8 +105,23 @@ export class LeaveRequest implements OnInit {
         this.allRecords.set(mappedRecords as HrLeaveRecord[]);
       },
       error: (err: any) => {
-        const errorMsg = err?.error?.message || 'Failed to set status to load request.';
-        this.toastr.error(errorMsg, 'Update Failed');
+        console.error('HR getAllLeaveRequests error:', err);
+        const localStr = localStorage.getItem('local_leave_requests');
+        const localRequests = localStr ? JSON.parse(localStr) : [];
+        const mappedRecords = localRequests.map((record: any) => ({
+          requestId: record.id || record.requestId || '',
+          employeeId: record.employeeId || '',
+          employeeName: record.employeeName || 'Unknown',
+          department: record.department || 'General',
+          leaveTypeName: record.leaveTypeName || 'Leave',
+          startDate: record.startDate || '',
+          endDate: record.endDate || '',
+          days: record.numberOfDays ?? record.duration ?? record.days ?? 0,
+          reason: record.reason || '',
+          appliedOn: record.createdAt || '',
+          status: record.status || 'Pending',
+        }));
+        this.allRecords.set(mappedRecords as HrLeaveRecord[]);
       },
     });
   }
@@ -132,11 +159,20 @@ export class LeaveRequest implements OnInit {
           leaveTypeList = res;
         } else if (Array.isArray(res?.data)) {
           leaveTypeList = res.data;
+        } else if (Array.isArray(res?.leaveTypes)) {
+          leaveTypeList = res.leaveTypes;
         } else if (Array.isArray(res?.leaveTypeName)) {
           leaveTypeList = res.leaveTypeName;
+        } else if (res?.data && typeof res.data === 'object') {
+          for (const key of Object.keys(res.data)) {
+            if (Array.isArray(res.data[key])) {
+              leaveTypeList = res.data[key];
+              break;
+            }
+          }
         }
         const names: string[] = leaveTypeList
-          .map((d: any) => (typeof d === 'string' ? d : d.name || d.leaveTypeName || ''))
+          .map((d: any) => (typeof d === 'string' ? d : d.name || d.leaveTypeName || d.type || ''))
           .filter(Boolean);
         this.leaveTypes = ['ALL', ...Array.from(new Set(names))];
         this.cdr.detectChanges();

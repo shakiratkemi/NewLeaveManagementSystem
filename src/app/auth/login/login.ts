@@ -51,17 +51,21 @@ export class Login implements OnInit {
           console.log('API Response:', res);
           if (res && res.data) {
             const responseData = res.data;
+            sessionStorage.setItem('access_token', responseData.token);
+            sessionStorage.setItem('refresh_token', responseData.refreshToken);
             localStorage.setItem('access_token', responseData.token);
             localStorage.setItem('refresh_token', responseData.refreshToken);
+
             const helper = new JwtHelperService();
-            const decodedToken = helper.decodeToken(localStorage.getItem('access_token')!);
+            const decodedToken = helper.decodeToken(responseData.token);
             this.loggedInUser = {
               ...decodedToken,
               ...responseData,
               fullName:
-                responseData.fullName || decodedToken.fullName || decodedToken.name || 'User',
+                responseData.fullName || decodedToken?.fullName || decodedToken?.name || 'User',
             };
             console.log('Decoded token:', this.loggedInUser);
+            sessionStorage.setItem('loggedInUser', JSON.stringify(this.loggedInUser));
             localStorage.setItem('loggedInUser', JSON.stringify(this.loggedInUser));
 
             if (this.loggedInUser.role === 'HR') {

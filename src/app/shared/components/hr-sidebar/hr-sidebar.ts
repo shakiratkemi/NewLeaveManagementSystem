@@ -43,7 +43,7 @@ export class HrSidebar {
   ];
 
   ngOnInit(): void {
-    const userData = localStorage.getItem('loggedInUser');
+    const userData = sessionStorage.getItem('loggedInUser') || localStorage.getItem('loggedInUser');
     if (userData) {
       this.data = JSON.parse(userData);
     }
@@ -55,6 +55,17 @@ export class HrSidebar {
 
   get userRole(): string {
     return this.data?.designation || 'Software Engineer';
+  }
+
+  get portalTitle(): string {
+    const role = (this.data?.role || '').toLowerCase();
+    if (role.includes('teamlead') || role.includes('team_lead') || role.includes('team lead')) {
+      return 'Team Lead Portal';
+    }
+    if (role.includes('employee')) {
+      return 'Employee Portal';
+    }
+    return 'HR Portal';
   }
   get userEmail(): string {
     return this.data?.email || '';
@@ -98,7 +109,11 @@ export class HrSidebar {
   }
 
   logout() {
+    sessionStorage.removeItem('access_token');
+    sessionStorage.removeItem('refresh_token');
+    sessionStorage.removeItem('loggedInUser');
     localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
     localStorage.removeItem('loggedInUser');
     this.router.navigateByUrl('/');
   }

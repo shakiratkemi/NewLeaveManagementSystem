@@ -70,9 +70,9 @@
             class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition"
           >
             <option value="ALL">All Leave Types</option>
-            <option value="Annual Leave">Annual Leave</option>
-            <option value="Sick Leave">Sick Leave</option>
-            <option value="Maternity/Paternity Leave">Maternity/Paternity Leave</option>
+            @for (type of leaveTypes(); track type) {
+              <option [value]="type">{{ type }}</option>
+            }
           </select>
         </div>
 

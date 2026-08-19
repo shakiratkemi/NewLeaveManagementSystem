@@ -34,7 +34,7 @@ export interface ProfileDetails {
 export interface LeaveTypes {
   id: string;
   name: string;
-  defaultDays: number;
+  defaultDays?: number;
 }
 
 //  POST LeaveRequests
