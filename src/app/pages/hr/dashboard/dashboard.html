@@ -35,15 +35,13 @@
       </div>
 
       <div class="flex items-baseline gap-3 mt-6">
-        <h3 class="text-4xl sm:text-5xl font-black text-white tracking-tight">
-          {{ dashboardData?.totalEmployees ?? 0 }}
-        </h3>
-        <span
-          class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-white/20 text-white backdrop-blur-xs"
-        >
-          <!-- SVG Trend Icon Placeholder -->
-          <span>+4%</span>
-        </span>
+          <h3 class="text-4xl sm:text-5xl font-black text-white tracking-tight">
+            {{ dashboardData.totalEmployees}}
+          </h3>
+          <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-white/20 text-white backdrop-blur-xs">
+            <!-- SVG Trend Icon Placeholder -->
+            <span>+4%</span>
+          </span>
       </div>
       <img src="/assets/images/flow.svg" alt="people" />
     </div>
