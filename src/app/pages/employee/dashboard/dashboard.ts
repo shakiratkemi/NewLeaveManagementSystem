@@ -1,7 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-
 import { CommonModule, DatePipe } from '@angular/common';
 
 import { Applyleave } from './apply-leave/apply-leave';
@@ -43,10 +42,11 @@ export class Dashboard implements OnInit {
     this.isLoadingDashboard = true;
 
     this.employeeService.getEmployeeDashboard().subscribe({
-      next: (response: DashboardData) => {
+      next: (response: any) => {
         console.log('Dashboard response:', response);
 
-        this.dashboardData = response;
+        // Extract the inner 'data' payload where the stats reside
+        this.dashboardData = response?.data || response;
 
         this.isLoadingDashboard = false;
         this.cdr.detectChanges();
@@ -69,8 +69,6 @@ export class Dashboard implements OnInit {
 
         if (response?.success && Array.isArray(response.data)) {
           this.recentRequests = response.data;
-
-          // this.leaveRequests = response.data;
         } else {
           this.recentRequests = [];
           this.leaveRequests = [];
