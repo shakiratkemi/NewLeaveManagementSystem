@@ -60,6 +60,9 @@ export class LeaveRequests implements OnInit {
   loadLeaveRequests(): void {
     this.hrService.getAllLeaveRequests().subscribe({
       next: (res: any) => {
+        const localStr = localStorage.getItem('local_leave_requests');
+        const localRequests = localStr ? JSON.parse(localStr) : [];
+
         let rawRecords: any[] = [];
         if (Array.isArray(res)) rawRecords = res;
         else if (Array.isArray(res?.data)) rawRecords = res.data;
@@ -73,7 +76,8 @@ export class LeaveRequests implements OnInit {
           }
         }
 
-        const mappedRecords: HrLeaveRecord[] = rawRecords.map((record: any) => ({
+        const combined = [...localRequests, ...rawRecords];
+        const mappedRecords: HrLeaveRecord[] = combined.map((record: any) => ({
           requestId: record.id || record.requestId || '',
           employeeId: record.employeeId || record.employee?.id || '',
           employeeName:
@@ -99,6 +103,22 @@ export class LeaveRequests implements OnInit {
       },
       error: (err: any) => {
         console.error('Error loading leave requests:', err);
+        const localStr = localStorage.getItem('local_leave_requests');
+        const localRequests = localStr ? JSON.parse(localStr) : [];
+        const mappedRecords: HrLeaveRecord[] = localRequests.map((record: any) => ({
+          requestId: record.id || record.requestId || '',
+          employeeId: record.employeeId || '',
+          employeeName: record.employeeName || 'Unknown Employee',
+          department: record.department || 'General',
+          leaveTypeName: record.leaveTypeName || 'Leave',
+          startDate: record.startDate || '',
+          endDate: record.endDate || '',
+          days: record.numberOfDays ?? record.duration ?? record.days ?? 0,
+          reason: record.reason || '',
+          appliedOn: record.createdAt || '',
+          status: record.status || 'Pending',
+        }));
+        this.allRecords.set(mappedRecords);
       },
     });
   }

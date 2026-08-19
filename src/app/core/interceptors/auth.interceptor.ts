@@ -18,7 +18,7 @@ export class AuthInterceptor implements HttpInterceptor {
   ) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const token = localStorage.getItem('access_token');
+    const token = sessionStorage.getItem('access_token') || localStorage.getItem('access_token');
 
     // Skip attaching token for auth endpoints
     if (req.url.includes('Auth/login') || req.url.includes('Auth/refresh-token')) {
@@ -36,7 +36,8 @@ export class AuthInterceptor implements HttpInterceptor {
     return next.handle(authReq).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
-          const refreshToken = localStorage.getItem('refresh_token');
+          const refreshToken =
+            sessionStorage.getItem('refresh_token') || localStorage.getItem('refresh_token');
 
           if (!refreshToken) {
             this.logout();
@@ -55,6 +56,8 @@ export class AuthInterceptor implements HttpInterceptor {
               const newToken = response.data.token;
               const newRefreshToken = response.data.refreshToken || refreshToken;
 
+              sessionStorage.setItem('access_token', newToken);
+              sessionStorage.setItem('refresh_token', newRefreshToken);
               localStorage.setItem('access_token', newToken);
               localStorage.setItem('refresh_token', newRefreshToken);
 
@@ -86,6 +89,9 @@ export class AuthInterceptor implements HttpInterceptor {
   }
 
   private logout(): void {
+    sessionStorage.removeItem('access_token');
+    sessionStorage.removeItem('refresh_token');
+    sessionStorage.removeItem('loggedInUser');
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
     localStorage.removeItem('loggedInUser');

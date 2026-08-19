@@ -113,13 +113,43 @@ export class LeaveHistory implements OnChanges, AfterViewInit {
       next: (response) => {
         console.log('Leave Requests API response:', response);
 
-        if (response?.success && Array.isArray(response.data)) {
-          this.leaveRequests = response.data.map((request) => this.mapApiRequest(request));
+        const localStr = localStorage.getItem('local_leave_requests');
+        const localRequests = localStr ? JSON.parse(localStr) : [];
 
-          this.usingFallbackData = false;
-        } else {
-          this.useFallbackData();
+        let rawList: any[] = [];
+        if (response?.success && Array.isArray(response.data)) {
+          rawList = response.data;
+        } else if (Array.isArray(response)) {
+          rawList = response;
         }
+
+        let combined = [...localRequests, ...rawList];
+        const loggedInUserStr = sessionStorage.getItem('loggedInUser') || localStorage.getItem('loggedInUser');
+        if (loggedInUserStr) {
+          const user = JSON.parse(loggedInUserStr);
+          const currentUserId = user.userId || user.id || user.sub;
+          const currentUserEmail = (user.email || '').toLowerCase();
+          const currentUserName = (user.fullName || user.name || '').toLowerCase();
+
+          combined = combined.filter((req: any) => {
+            const reqUserId = req.employeeId || req.userId || req.employee?.id;
+            const reqEmail = (req.employeeEmail || req.employee?.email || '').toLowerCase();
+            const reqName = (
+              req.employeeName ||
+              req.employee?.fullName ||
+              req.employee?.name ||
+              ''
+            ).toLowerCase();
+
+            if (currentUserId && reqUserId) return String(reqUserId) === String(currentUserId);
+            if (currentUserEmail && reqEmail) return reqEmail === currentUserEmail;
+            if (currentUserName && reqName) return reqName === currentUserName;
+            return true;
+          });
+        }
+
+        this.leaveRequests = combined.map((request) => this.mapApiRequest(request));
+        this.usingFallbackData = false;
 
         this.pageIndex = 0;
         this.updatePagedData();
@@ -131,8 +161,6 @@ export class LeaveHistory implements OnChanges, AfterViewInit {
       error: (error) => {
         console.error('Leave Requests API error:', error);
 
-        // TEMPORARY FALLBACK
-        // The backend currently returns HTTP 500
         this.useFallbackData();
 
         this.pageIndex = 0;
