@@ -45,20 +45,55 @@
     <section class="relative bg-gradient-to-b from-[#e5edf8] via-[#EEF4FB] to-white pt-16 sm:pt-20 pb-20 overflow-hidden">
       <!-- Darker Layered Background Waves -->
       <div class="absolute inset-0 pointer-events-none opacity-85 z-0">
-        <svg class="w-full h-full" preserveAspectRatio="none" viewBox="0 0 1440 600" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Back Wave Layer (#DBE1FF) -->
-          <path d="M0 240C360 320 720 140 1080 240C1260 290 1380 250 1440 220V600H0V240Z" fill="#93C5FD" fill-opacity="0.35" />
-          <!-- Middle Wave Layer (#BFD1EF) -->
-          <path d="M0 280C300 360 600 180 900 280C1200 380 1350 290 1440 260V600H0V280Z" fill="#BFD1EF" fill-opacity="0.75" />
-          <!-- Front Wave Layer (#3B82F6 gradient overlay) -->
-          <path d="M0 340C320 240 640 400 960 300C1200 220 1350 310 1440 330V600H0V340Z" fill="url(#hero-darker-wave-grad)" />
-          <defs>
-            <linearGradient id="hero-darker-wave-grad" x1="720" y1="200" x2="720" y2="600" gradientUnits="userSpaceOnUse">
-              <stop stop-color="#2563EB" stop-opacity="0.25" />
-              <stop offset="1" stop-color="#FFFFFF" stop-opacity="0.05" />
-            </linearGradient>
-          </defs>
-        </svg>
+        <div class="absolute inset-0 pointer-events-none opacity-85 z-0">
+            <svg class="w-full h-full" preserveAspectRatio="none" viewBox="0 0 1440 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Back Wave Layer (#DBE1FF) -->
+                <path fill="#93C5FD" fill-opacity="0.35">
+                <animate attributeName="d"
+                    dur="10s" repeatCount="indefinite" calcMode="spline"
+                    keyTimes="0;0.33;0.66;1"
+                    keySplines="0.45 0 0.55 1;0.45 0 0.55 1;0.45 0 0.55 1"
+                    values="
+                    M0 240C360 320 720 140 1080 240C1260 290 1380 250 1440 220V600H0V240Z;
+                    M0 220C400 280 680 180 1080 260C1260 300 1380 230 1440 240V600H0V220Z;
+                    M0 260C320 300 760 160 1080 220C1260 270 1380 270 1440 210V600H0V260Z;
+                    M0 240C360 320 720 140 1080 240C1260 290 1380 250 1440 220V600H0V240Z
+                    " />
+                </path>
+                <!-- Middle Wave Layer (#BFD1EF) -->
+                <path fill="#BFD1EF" fill-opacity="0.75">
+                <animate attributeName="d"
+                    dur="8s" repeatCount="indefinite" calcMode="spline"
+                    keyTimes="0;0.33;0.66;1"
+                    keySplines="0.45 0 0.55 1;0.45 0 0.55 1;0.45 0 0.55 1"
+                    values="
+                    M0 280C300 360 600 180 900 280C1200 380 1350 290 1440 260V600H0V280Z;
+                    M0 260C340 320 620 200 900 300C1180 360 1350 260 1440 280V600H0V260Z;
+                    M0 300C280 340 640 160 900 260C1220 400 1350 320 1440 240V600H0V300Z;
+                    M0 280C300 360 600 180 900 280C1200 380 1350 290 1440 260V600H0V280Z
+                    " />
+                </path>
+                <!-- Front Wave Layer (gradient overlay) -->
+                <path fill="url(#hero-darker-wave-grad)">
+                <animate attributeName="d"
+                    dur="12s" repeatCount="indefinite" calcMode="spline"
+                    keyTimes="0;0.33;0.66;1"
+                    keySplines="0.45 0 0.55 1;0.45 0 0.55 1;0.45 0 0.55 1"
+                    values="
+                    M0 340C320 240 640 400 960 300C1200 220 1350 310 1440 330V600H0V340Z;
+                    M0 320C360 260 620 380 960 320C1180 250 1350 290 1440 350V600H0V320Z;
+                    M0 360C300 220 660 420 960 280C1220 200 1350 330 1440 310V600H0V360Z;
+                    M0 340C320 240 640 400 960 300C1200 220 1350 310 1440 330V600H0V340Z
+                    " />
+                </path>
+                <defs>
+                <linearGradient id="hero-darker-wave-grad" x1="720" y1="200" x2="720" y2="600" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#2563EB" stop-opacity="0.25" />
+                    <stop offset="1" stop-color="#FFFFFF" stop-opacity="0.05" />
+                </linearGradient>
+                </defs>
+            </svg>
+</div>
       </div>
 
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -104,9 +139,20 @@
           <div class="relative bg-gradient-to-br from-[#1E56EC] via-[#1D4ED8] to-[#1E40AF] rounded-3xl p-8 sm:p-10 text-white shadow-2xl overflow-hidden border border-blue-400/30">
             <!-- Background Decorative Wave inside card -->
             <div class="absolute inset-0 pointer-events-none opacity-30">
-              <svg class="w-full h-full" preserveAspectRatio="none" viewBox="0 0 600 200" fill="none">
-                <path d="M0 100C150 140 300 60 450 110C550 140 580 120 600 100V200H0V100Z" fill="white" />
-              </svg>
+                <svg class="w-full h-full" preserveAspectRatio="none" viewBox="0 0 600 200" fill="none">
+                    <path fill="white">
+                    <animate attributeName="d"
+                        dur="6s" repeatCount="indefinite" calcMode="spline"
+                        keyTimes="0;0.33;0.66;1"
+                        keySplines="0.45 0 0.55 1;0.45 0 0.55 1;0.45 0 0.55 1"
+                        values="
+                        M0 100C150 140 300 60 450 110C550 140 580 120 600 100V200H0V100Z;
+                        M0 90C170 130 280 70 450 120C540 150 580 110 600 110V200H0V90Z;
+                        M0 110C130 150 320 50 450 100C560 130 580 130 600 90V200H0V110Z;
+                        M0 100C150 140 300 60 450 110C550 140 580 120 600 100V200H0V100Z
+                        " />
+                    </path>
+                </svg>
             </div>
 
             <div class="relative z-10 flex items-start justify-between">
@@ -288,25 +334,47 @@
         <div>
           <span class="text-xs font-semibold text-slate-700 block mb-3">Follow Us</span>
           <div class="flex items-center gap-3">
-            <!-- Icon 1 -->
+            <!-- Website Link (SBSC) -->
             <a
-              href="#"
-              class="w-9 h-9 rounded-full bg-slate-200/80 hover:bg-slate-300 text-slate-600 flex items-center justify-center transition-colors cursor-pointer"
-              aria-label="Network"
-            >
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-              </svg>
-            </a>
-
-            <!-- Icon 2 -->
-            <a
-              href="#"
-              class="w-9 h-9 rounded-full bg-slate-200/80 hover:bg-slate-300 text-slate-600 flex items-center justify-center transition-colors cursor-pointer"
+              href="https://www.sbsc.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="w-9 h-9 rounded-full bg-slate-200/80 hover:bg-slate-300 hover:text-blue-600 text-slate-600 flex items-center justify-center transition-colors cursor-pointer"
               aria-label="Website"
+              title="SBSC Website"
             >
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m-9 9a9 9 0 019-9" />
+              </svg>
+            </a>
+
+            <!-- Instagram Link (SBSC Nigeria) -->
+            <a
+              href="https://www.instagram.com/sbsc_nigeria/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="w-9 h-9 rounded-full bg-slate-200/80 hover:bg-slate-300 hover:text-pink-600 text-slate-600 flex items-center justify-center transition-colors cursor-pointer"
+              aria-label="Instagram"
+              title="Instagram"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+
+            <!-- LinkedIn Link (SBSC Nigeria) -->
+            <a
+              href="https://www.linkedin.com/company/sbsc-nigeria/posts/?feedView=all"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="w-9 h-9 rounded-full bg-slate-200/80 hover:bg-slate-300 hover:text-blue-700 text-slate-600 flex items-center justify-center transition-colors cursor-pointer"
+              aria-label="LinkedIn"
+              title="LinkedIn"
+            >
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
               </svg>
             </a>
           </div>

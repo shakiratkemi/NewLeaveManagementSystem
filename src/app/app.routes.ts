@@ -16,6 +16,14 @@ export const routes: Routes = [
     loadChildren: () => import('./auth/auth.route').then((m) => m.AUTH_ROUTE),
   },
   {
+    path: 'auth',
+    loadChildren: () => import('./auth/auth.route').then((m) => m.AUTH_ROUTE),
+  },
+  {
+    path: 'reset-password',
+    loadComponent: () => import('./auth/reset-password/reset-password').then((m) => m.ResetPassword),
+  },
+  {
     path: 'hr',
     loadChildren: () => import('./pages/hr/hr.route').then((m) => m.HR_ROUTE),
     canActivate: [AuthguardGuard],
