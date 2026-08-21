@@ -31,7 +31,7 @@ export class Login implements OnInit {
     const token = this.route.snapshot.queryParams['token'];
     const email = this.route.snapshot.queryParams['email'];
     if (token || email) {
-      this.router.navigate(['/reset-password'], {
+      this.router.navigate(['/reset-token'], {
         queryParams: this.route.snapshot.queryParams,
         replaceUrl: true,
       });

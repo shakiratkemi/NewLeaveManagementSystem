@@ -23,7 +23,7 @@ export class Landing implements OnInit {
 
     // If query params contain token or email from reset link, auto-redirect to reset-password
     if (token || email) {
-      this.router.navigate(['/reset-password'], {
+      this.router.navigate(['/reset-token'], {
         queryParams: this.route.snapshot.queryParams,
         replaceUrl: true,
       });
