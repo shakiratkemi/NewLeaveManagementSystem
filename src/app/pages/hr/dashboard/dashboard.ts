@@ -5,10 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import {
-  LeaveConfirmationDialog,
-  LeaveConfirmationResult,
-} from '../../../shared/components/leave-confirmation-dialog/leave-confirmation-dialog';
+import { ConfirmationDialog } from '../../../shared/components/leave-confirmation-dialog/leave-confirmation-dialog';
 
 @Component({
   selector: 'app-dashboard',
@@ -59,36 +56,34 @@ export class Dashboard implements OnInit {
   ) {}
 
   confirmApprove(req: any): void {
-    const dialogRef = this.dialog.open(LeaveConfirmationDialog, {
+    const dialogRef = this.dialog.open(ConfirmationDialog, {
       data: {
-        action: 'approve',
-        employeeName: req.employeeName,
-        leaveType: req.leaveTypeName,
-        days: req.days,
+        title: 'Approve Leave',
+        content: `Are you sure you want to approve this leave request for ${req.employeeName}?`,
+        acceptText: 'Approve',
       },
       panelClass: 'custom-confirmation-dialog',
     });
 
-    dialogRef.afterClosed().subscribe((result: LeaveConfirmationResult) => {
-      if (result?.confirmed) {
+    dialogRef.afterClosed().subscribe((result: any) => {
+      if (result?.action) {
         this.updateStatus(req.id || req.requestId, 'Approved');
       }
     });
   }
 
   confirmDecline(req: any): void {
-    const dialogRef = this.dialog.open(LeaveConfirmationDialog, {
+    const dialogRef = this.dialog.open(ConfirmationDialog, {
       data: {
-        action: 'decline',
-        employeeName: req.employeeName,
-        leaveType: req.leaveTypeName,
-        days: req.days,
+        title: 'Decline Leave',
+        content: `Are you sure you want to decline this leave request for ${req.employeeName}?`,
+        acceptText: 'Decline',
       },
       panelClass: 'custom-confirmation-dialog',
     });
 
-    dialogRef.afterClosed().subscribe((result: LeaveConfirmationResult) => {
-      if (result?.confirmed) {
+    dialogRef.afterClosed().subscribe((result: any) => {
+      if (result?.action) {
         this.updateStatus(req.id || req.requestId, 'Rejected');
       }
     });
