@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { AuthService } from '../../core/services/auth-service';
@@ -22,11 +22,22 @@ export class Login implements OnInit {
   constructor(
     private fb: FormBuilder,
     private router: Router,
+    private route: ActivatedRoute,
     private authService: AuthService,
     private toastr: ToastrService,
   ) {}
 
   ngOnInit(): void {
+    const token = this.route.snapshot.queryParams['token'];
+    const email = this.route.snapshot.queryParams['email'];
+    if (token || email) {
+      this.router.navigate(['/reset-password'], {
+        queryParams: this.route.snapshot.queryParams,
+        replaceUrl: true,
+      });
+      return;
+    }
+
     this.LoginForm = this.fb.group({
       email: ['', Validators.compose([Validators.required, Validators.email])],
       password: [
