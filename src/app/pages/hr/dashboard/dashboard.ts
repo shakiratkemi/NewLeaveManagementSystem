@@ -4,10 +4,16 @@ import { HrService } from '../../../core/services/data/hr/hr-service';
 import { ToastrService } from 'ngx-toastr';
 import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import {
+  LeaveConfirmationDialog,
+  LeaveConfirmationResult,
+} from '../../../shared/components/leave-confirmation-dialog/leave-confirmation-dialog';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [FormsModule, DatePipe, RouterLink],
+  standalone: true,
+  imports: [FormsModule, DatePipe, RouterLink, MatDialogModule],
   templateUrl: './dashboard.html',
   styles: ``,
 })
@@ -49,7 +55,44 @@ export class Dashboard implements OnInit {
     private hrService: HrService,
     private toastr: ToastrService,
     private cdr: ChangeDetectorRef,
+    private dialog: MatDialog,
   ) {}
+
+  confirmApprove(req: any): void {
+    const dialogRef = this.dialog.open(LeaveConfirmationDialog, {
+      data: {
+        action: 'approve',
+        employeeName: req.employeeName,
+        leaveType: req.leaveTypeName,
+        days: req.days,
+      },
+      panelClass: 'custom-confirmation-dialog',
+    });
+
+    dialogRef.afterClosed().subscribe((result: LeaveConfirmationResult) => {
+      if (result?.confirmed) {
+        this.updateStatus(req.id || req.requestId, 'Approved');
+      }
+    });
+  }
+
+  confirmDecline(req: any): void {
+    const dialogRef = this.dialog.open(LeaveConfirmationDialog, {
+      data: {
+        action: 'decline',
+        employeeName: req.employeeName,
+        leaveType: req.leaveTypeName,
+        days: req.days,
+      },
+      panelClass: 'custom-confirmation-dialog',
+    });
+
+    dialogRef.afterClosed().subscribe((result: LeaveConfirmationResult) => {
+      if (result?.confirmed) {
+        this.updateStatus(req.id || req.requestId, 'Rejected');
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.loadDashboard();

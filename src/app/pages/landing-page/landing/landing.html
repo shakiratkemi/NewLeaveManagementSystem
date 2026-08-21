@@ -1,0 +1,322 @@
+<div class="min-h-screen bg-slate-50 font-sans antialiased text-slate-800 flex flex-col scroll-smooth">
+  <!-- Navbar -->
+  <header class="bg-white border-b border-slate-100/80 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <!-- Logo -->
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white shadow-xs">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+          </svg>
+        </div>
+        <span class="text-lg font-extrabold text-slate-900 tracking-tight">Leave Flow</span>
+      </div>
+
+      <!-- Right Header Actions -->
+      <div class="flex items-center gap-5">
+        <a
+          href="#features"
+          (click)="scrollToFeatures($event)"
+          class="text-slate-600 hover:text-slate-900 font-semibold text-sm transition-colors cursor-pointer"
+        >
+          Features
+        </a>
+        <a
+          routerLink="/login"
+          class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-full text-sm font-medium transition-colors shadow-2xs cursor-pointer"
+        >
+          Log In
+        </a>
+        <button
+          type="button"
+          class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center hover:opacity-90 transition-opacity cursor-pointer"
+          aria-label="User Account"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <main class="flex-grow">
+    <section class="relative bg-gradient-to-b from-[#e5edf8] via-[#EEF4FB] to-white pt-16 sm:pt-20 pb-20 overflow-hidden">
+      <!-- Darker Layered Background Waves -->
+      <div class="absolute inset-0 pointer-events-none opacity-85 z-0">
+        <svg class="w-full h-full" preserveAspectRatio="none" viewBox="0 0 1440 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Back Wave Layer (#DBE1FF) -->
+          <path d="M0 240C360 320 720 140 1080 240C1260 290 1380 250 1440 220V600H0V240Z" fill="#93C5FD" fill-opacity="0.35" />
+          <!-- Middle Wave Layer (#BFD1EF) -->
+          <path d="M0 280C300 360 600 180 900 280C1200 380 1350 290 1440 260V600H0V280Z" fill="#BFD1EF" fill-opacity="0.75" />
+          <!-- Front Wave Layer (#3B82F6 gradient overlay) -->
+          <path d="M0 340C320 240 640 400 960 300C1200 220 1350 310 1440 330V600H0V340Z" fill="url(#hero-darker-wave-grad)" />
+          <defs>
+            <linearGradient id="hero-darker-wave-grad" x1="720" y1="200" x2="720" y2="600" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#2563EB" stop-opacity="0.25" />
+              <stop offset="1" stop-color="#FFFFFF" stop-opacity="0.05" />
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <!-- Eyebrow Tag -->
+        <div class="text-center">
+          <span class="text-[11px] font-bold tracking-widest uppercase text-blue-600 inline-block mb-3">
+            WORKSPACE OVERVIEW
+          </span>
+        </div>
+
+        <!-- Headline -->
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight text-center max-w-4xl mx-auto leading-[1.12]">
+          Manage Leave with Absolute Visibility.
+        </h1>
+
+        <!-- Subtitle -->
+        <p class="text-slate-600 text-base sm:text-lg text-center max-w-2xl mx-auto mt-5 font-normal leading-relaxed">
+          A unified platform for HR administrators and employees to track, approve, and manage time-off requests seamlessly.
+        </p>
+
+        <!-- CTA Buttons -->
+        <div class="mt-8 flex items-center justify-center gap-4">
+          <a
+            routerLink="/onboarding"
+            class="bg-[#0B1527] hover:bg-slate-900 text-white font-semibold px-6 py-3.5 rounded-xl text-sm transition duration-150 inline-flex items-center gap-2 shadow-md hover:shadow-lg cursor-pointer"
+          >
+            Onboard With Us
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </a>
+
+          <a
+            routerLink="/login"
+            class="bg-[#EFEFF2] hover:bg-slate-200/90 text-slate-800 font-semibold px-6 py-3.5 rounded-xl text-sm transition duration-150 cursor-pointer"
+          >
+            Login
+          </a>
+        </div>
+
+        <!-- Active Workforce Preview Card -->
+        <div class="mt-14 max-w-3xl mx-auto">
+          <div class="relative bg-gradient-to-br from-[#1E56EC] via-[#1D4ED8] to-[#1E40AF] rounded-3xl p-8 sm:p-10 text-white shadow-2xl overflow-hidden border border-blue-400/30">
+            <!-- Background Decorative Wave inside card -->
+            <div class="absolute inset-0 pointer-events-none opacity-30">
+              <svg class="w-full h-full" preserveAspectRatio="none" viewBox="0 0 600 200" fill="none">
+                <path d="M0 100C150 140 300 60 450 110C550 140 580 120 600 100V200H0V100Z" fill="white" />
+              </svg>
+            </div>
+
+            <div class="relative z-10 flex items-start justify-between">
+              <div>
+                <span class="text-[11px] font-bold tracking-wider text-blue-200 uppercase">ACTIVE WORKFORCE</span>
+                <h3 class="text-xl font-bold text-white mt-1">Total Employees</h3>
+              </div>
+
+              <!-- People Icon -->
+              <div class="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white shrink-0">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+              </div>
+            </div>
+
+            <!-- Big Stat & Badge -->
+            <div class="relative z-10 mt-6 flex items-baseline gap-3">
+              <span class="text-5xl sm:text-6xl font-extrabold text-white tracking-tight">7</span>
+              <span class="bg-white/20 text-white text-xs font-semibold px-2.5 py-1 rounded-md font-mono backdrop-blur-xs">
+                +4%
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom White Gradient Overlay (fading to transparent at half of the blue active workforce card) -->
+      <div class="absolute inset-x-0 bottom-0 h-44 sm:h-52 bg-gradient-to-t from-white via-white/85 to-transparent pointer-events-none z-20"></div>
+    </section>
+
+    <!-- Features Overview Section -->
+    <section id="features" class="py-20 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-3xl mx-auto mb-16">
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+            Powerful features for modern HR
+          </h2>
+          <p class="text-slate-500 mt-2 text-sm sm:text-base font-normal">
+            Everything you need to manage your workforce's time off efficiently and transparently.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <!-- Real-time Dashboards -->
+          <div class="p-8 bg-[#F8FAFC] rounded-3xl border border-slate-100 hover:shadow-md transition duration-200">
+            <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center mb-6 shadow-xs">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+              </svg>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 mb-2">Real-time Dashboards</h3>
+            <p class="text-slate-500 text-xs sm:text-sm leading-relaxed">
+              Gain absolute visibility into your workforce with interactive analytics. Monitor attendance trends and leave balances instantly.
+            </p>
+          </div>
+
+          <!-- Automated Workflows -->
+          <div class="p-8 bg-[#F8FAFC] rounded-3xl border border-slate-100 hover:shadow-md transition duration-200">
+            <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center mb-6">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 mb-2">Automated Workflows</h3>
+            <p class="text-slate-500 text-xs sm:text-sm leading-relaxed">
+              Streamline operations with one-click approvals. Automated routing ensures requests reach the right manager without delay.
+            </p>
+          </div>
+
+          <!-- Employee Empowerment -->
+          <div class="p-8 bg-[#F8FAFC] rounded-3xl border border-slate-100 hover:shadow-md transition duration-200">
+            <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center mb-6">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 mb-2">Employee Empowerment</h3>
+            <p class="text-slate-500 text-xs sm:text-sm leading-relaxed">
+              Provide a self-service portal for easy request submission, balance tracking, and history viewing, reducing HR administrative overhead.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Trusted By Industry Leaders Section -->
+    <section class="py-14 bg-[#ECEFF3] border-y border-slate-200/60">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <span class="text-xs font-bold tracking-widest uppercase text-slate-400 text-center block mb-8">
+          TRUSTED BY INDUSTRY LEADERS
+        </span>
+
+        <div class="flex flex-wrap items-center justify-center gap-10 sm:gap-16 md:gap-24 opacity-75">
+          <!-- Acorn -->
+          <div class="flex items-center gap-2 text-slate-700 font-bold text-lg sm:text-xl font-sans tracking-tight">
+            <span class="text-xl">❄</span>
+            Acorn
+          </div>
+
+          <!-- Nexus -->
+          <div class="flex items-center gap-2 text-slate-700 font-bold text-lg sm:text-xl font-sans tracking-tight">
+            <span class="text-xl">⬡</span>
+            Nexus
+          </div>
+
+          <!-- Infinity -->
+          <div class="flex items-center gap-2 text-slate-700 font-bold text-lg sm:text-xl font-sans tracking-tight">
+            <span class="text-xl">∞</span>
+            Infinity
+          </div>
+
+          <!-- Vertex -->
+          <div class="flex items-center gap-2 text-slate-700 font-bold text-lg sm:text-xl font-sans tracking-tight">
+            <span class="text-xl">🍃</span>
+            Vertex
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dark Call To Action Banner -->
+    <section class="bg-[#0A1638] py-20 px-6 text-center text-white relative overflow-hidden">
+      <div class="max-w-4xl mx-auto relative z-10">
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight max-w-2xl mx-auto leading-tight mb-4">
+          Ready to streamline your HR workflow?
+        </h2>
+        <p class="text-slate-300 text-sm sm:text-base max-w-xl mx-auto mb-8 font-normal leading-relaxed">
+          Join thousands of companies using LeaveFlow to manage their workforce with unprecedented clarity.
+        </p>
+
+        <a
+          routerLink="/onboarding"
+          class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-7 py-3.5 rounded-xl text-sm transition duration-150 inline-flex items-center gap-2.5 shadow-md hover:shadow-lg cursor-pointer"
+        >
+          <span>Get Started Now</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58m-.119-8.54a6 6 0 00-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 00-2.58 5.84m2.699-2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 01-2.448-2.448 14.9 14.9 0 01.06-.312m2.699 2.7a6.004 6.004 0 01-2.7-2.701" />
+          </svg>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-[#F0F3F7] text-slate-600 pt-12 pb-8 border-t border-slate-200/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Top Grid: Brand, Legal, Follow Us -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 pb-10">
+        <!-- Brand Info -->
+        <div class="md:col-span-2">
+          <div class="flex items-center gap-2.5 mb-3">
+            <div class="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center text-white shadow-2xs">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+              </svg>
+            </div>
+            <span class="text-sm font-extrabold text-slate-900 tracking-tight">Leave Flow</span>
+          </div>
+          <p class="text-xs text-slate-500 max-w-sm leading-relaxed">
+            The corporate standard for high-density workforce management and growth automation.
+          </p>
+        </div>
+
+        <!-- Legal Links -->
+        <div>
+          <span class="text-xs font-semibold text-slate-700 block mb-3">Legal</span>
+          <ul class="space-y-2 text-xs text-slate-500">
+            <li>
+              <a href="#" class="hover:text-slate-900 transition-colors">Privacy Policy</a>
+            </li>
+            <li>
+              <a href="#" class="hover:text-slate-900 transition-colors">Terms of Service</a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Follow Us Icons -->
+        <div>
+          <span class="text-xs font-semibold text-slate-700 block mb-3">Follow Us</span>
+          <div class="flex items-center gap-3">
+            <!-- Icon 1 -->
+            <a
+              href="#"
+              class="w-9 h-9 rounded-full bg-slate-200/80 hover:bg-slate-300 text-slate-600 flex items-center justify-center transition-colors cursor-pointer"
+              aria-label="Network"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
+            </a>
+
+            <!-- Icon 2 -->
+            <a
+              href="#"
+              class="w-9 h-9 rounded-full bg-slate-200/80 hover:bg-slate-300 text-slate-600 flex items-center justify-center transition-colors cursor-pointer"
+              aria-label="Website"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m-9 9a9 9 0 019-9" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Copyright Row -->
+      <div class="border-t border-slate-200/80 pt-6 text-center text-xs text-slate-500">
+        © 2026 Leave Flow. All rights reserved. Professional Grade HR Management Platform.
+      </div>
+    </div>
+  </footer>
+</div>

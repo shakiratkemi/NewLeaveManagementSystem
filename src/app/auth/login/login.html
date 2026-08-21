@@ -1,190 +1,162 @@
-<div class="min-h-screen flex items-center justify-center bg-stone-50 p-4 sm:p-6 lg:p-8">
-  <!-- Main body -->
-  <div
-    class="w-full max-w-[1280px] lg:h-[690px] rounded-2xl sm:rounded-3xl shadow-xl border border-stone-200/60 overflow-hidden py-6 px-6 sm:px-12"
-    style="background: linear-gradient(135deg, #F8F9FF 0%, #EFF4FF 100%);"
-  >
-    <!-- Inner container -->
-    <div
-      class="w-full h-full max-w-[1184px] mx-auto flex flex-col lg:flex-row lg:justify-between items-center lg:items-stretch gap-8 lg:gap-0"
-    >
-      <!-- Left marketing text panel -->
-      <div class="hidden lg:flex flex-1 flex-col justify-center pr-10 xl:pr-16">
-        <p class="text-lg font-semibold text-stone-900 leading-snug max-w-sm">
+<div class="min-h-screen flex items-center justify-center bg-[#F4F6F9] p-4 sm:p-6 lg:p-8 font-sans antialiased text-slate-800">
+  <!-- Main Card Container -->
+  <div class="w-full max-w-[1180px] bg-white rounded-3xl shadow-xl border border-slate-200/60 overflow-hidden flex flex-col lg:flex-row min-h-[620px]">
+    <!-- Left Hero Image Panel with screen.png -->
+    <div class="w-full lg:w-1/2 relative min-h-[380px] lg:min-h-[620px] flex flex-col justify-end p-8 sm:p-12 overflow-hidden bg-slate-900">
+      <!-- Background Image -->
+      <img
+        src="/assets/images/screen.png"
+        alt="LeaveFlow Workspace"
+        class="absolute inset-0 w-full h-full object-cover object-center"
+      />
+
+      <!-- Dark Gradient Overlay for text contrast -->
+      <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-transparent pointer-events-none"></div>
+
+      <!-- Overlay Content -->
+      <div class="relative z-10 max-w-lg">
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-white leading-snug tracking-tight mb-3">
           Streamline leave requests and team management in one unified workspace.
-        </p>
-        <p class="mt-4 text-sm text-stone-500 leading-relaxed max-w-sm">
-          The quiet expert in HR tools. Designed to reduce cognitive load while providing a
-          premium experience for managing time off.
+        </h2>
+        <p class="text-xs sm:text-sm text-slate-300 font-normal leading-relaxed">
+          The quiet expert in HR tools. Designed to reduce cognitive load while providing a premium experience for managing time off.
         </p>
       </div>
+    </div>
 
-      <!-- Login component -->
-      <div
-        class="w-full lg:w-[448px] lg:max-w-[448px] lg:h-[642px] bg-white rounded-2xl shadow-xl border border-stone-200/80 p-6 sm:p-10 flex flex-col justify-center"
-      >
-        <!-- Logo -->
-        <div class="flex flex-col items-center gap-4 mb-6">
-          <img
-            src="/assets/images/LeaveFlow Logo.svg"
-            alt="LeaveFlow logo"
-            class="w-[200px] h-[80px] object-contain"
-          />
+    <!-- Right Login Form Panel -->
+    <div class="w-full lg:w-1/2 bg-white flex items-center justify-center p-6 sm:p-10 lg:p-14">
+      <div class="w-full max-w-[420px] bg-white rounded-2xl border border-slate-100 shadow-[0_10px_35px_-5px_rgba(0,0,0,0.05)] p-6 sm:p-9">
+        <!-- Top Logo Icon Badge -->
+        <div class="w-10 h-10 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-center text-slate-800 mx-auto mb-4 shadow-2xs">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+          </svg>
         </div>
 
         <!-- Heading -->
-        <div class="text-center mb-8">
-          <h2 class="text-2xl font-bold text-stone-900 tracking-tight">Welcome back</h2>
-          <p
-            class="font-['Geist'] font-normal text-base leading-6 tracking-normal text-center align-middle text-stone-500 mt-1"
-          >
+        <div class="text-center mb-6">
+          <h1 class="text-xl font-bold text-slate-900 tracking-tight">Welcome back</h1>
+          <p class="text-xs text-slate-500 mt-1 font-normal">
             Please enter your details to access your dashboard.
           </p>
         </div>
 
-        <form [formGroup]="LoginForm" (ngSubmit)="login()" class="space-y-5" novalidate>
-          <!-- Email -->
-          <div class="space-y-1.5">
-            <label class="block text-xs font-semibold text-stone-700 tracking-wider uppercase">
-              Email address
+        <form [formGroup]="LoginForm" (ngSubmit)="login()" class="space-y-4" novalidate>
+          <!-- Email Field -->
+          <div>
+            <label for="email" class="block text-[11px] font-bold tracking-wider text-slate-500 uppercase mb-1.5">
+              EMAIL ADDRESS
             </label>
-            <div class="relative">
-              <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-stone-400">
+            <div class="relative flex items-center">
+              <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 pointer-events-none">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                  />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
               </span>
               <input
+                id="email"
                 type="email"
                 formControlName="email"
                 placeholder="name@company.com"
-                class="w-full pl-10 pr-4 py-3 rounded-xl border bg-white text-stone-900 text-sm placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-900/10 transition-all duration-200"
-                [class.border-stone-200]="!(submitted && LoginForm.get('email')?.invalid)"
-                [class.focus:border-stone-400]="!(submitted && LoginForm.get('email')?.invalid)"
-                [class.border-red-400]="submitted && LoginForm.get('email')?.invalid"
+                class="w-full pl-10 pr-4 py-3 bg-white border rounded-xl text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition duration-150"
+                [ngClass]="{
+                  'border-slate-200': !(submitted && LoginForm.get('email')?.invalid),
+                  'border-rose-400 focus:border-rose-500 focus:ring-rose-500/10': submitted && LoginForm.get('email')?.invalid
+                }"
               />
             </div>
             @if (submitted && LoginForm.get('email')?.invalid) {
-              <p class="text-xs text-red-500 pt-0.5">
+              <p class="text-xs text-rose-500 mt-1 font-medium">
                 @if (LoginForm.get('email')?.errors?.['required']) {
-                  Email is required.
+                  Email address is required.
                 } @else if (LoginForm.get('email')?.errors?.['email']) {
-                  Enter a valid email address.
+                  Please enter a valid email address.
                 }
               </p>
             }
           </div>
 
-          <!-- Password -->
-          <div class="space-y-1.5">
-            <div class="flex items-center justify-between">
-              <label class="block text-xs font-semibold text-stone-700 tracking-wider uppercase">
-                Password
+          <!-- Password Field -->
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <label for="password" class="block text-[11px] font-bold tracking-wider text-slate-500 uppercase">
+                PASSWORD
               </label>
               <button
                 type="button"
                 (click)="onForgotPassword()"
-                class="font-['Geist'] font-normal text-base leading-6 tracking-normal align-middle text-[#0058BE] hover:opacity-80 transition-opacity"
+                class="text-xs font-semibold text-blue-600 hover:text-blue-700 transition-colors cursor-pointer"
               >
                 Forgot password?
               </button>
             </div>
-            <div class="relative">
-              <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-stone-400">
+            <div class="relative flex items-center">
+              <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 pointer-events-none">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                  />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                 </svg>
               </span>
               <input
+                id="password"
                 [type]="showPassword ? 'text' : 'password'"
                 formControlName="password"
                 placeholder="••••••••"
-                class="w-full pl-10 pr-11 py-3 rounded-xl border bg-white text-stone-900 text-sm placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-900/10 transition-all duration-200"
-                [class.border-stone-200]="!(submitted && LoginForm.get('password')?.invalid)"
-                [class.focus:border-stone-400]="!(submitted && LoginForm.get('password')?.invalid)"
-                [class.border-red-400]="submitted && LoginForm.get('password')?.invalid"
+                class="w-full pl-10 pr-10 py-3 bg-white border rounded-xl text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition duration-150"
+                [ngClass]="{
+                  'border-slate-200': !(submitted && LoginForm.get('password')?.invalid),
+                  'border-rose-400 focus:border-rose-500 focus:ring-rose-500/10': submitted && LoginForm.get('password')?.invalid
+                }"
               />
               <button
                 type="button"
                 (click)="togglePasswordVisibility()"
-                class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-stone-400 hover:text-stone-600 focus:outline-none transition"
+                class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 focus:outline-none transition cursor-pointer"
                 [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
               >
                 @if (showPassword) {
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858-5.908a10.018 10.018 0 013.682-.763c4.478 0 8.268 2.943 9.542 7a10.025 10.025 0 01-4.132 5.411M3 3l18 18"
-                    />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858-5.908a10.018 10.018 0 013.682-.763c4.478 0 8.268 2.943 9.542 7a10.025 10.025 0 01-4.132 5.411M3 3l18 18" />
                   </svg>
                 } @else {
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                    />
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                    />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                   </svg>
                 }
               </button>
             </div>
             @if (submitted && LoginForm.get('password')?.invalid) {
-              <p class="text-xs text-red-500 pt-0.5">
+              <p class="text-xs text-rose-500 mt-1 font-medium">
                 @if (LoginForm.get('password')?.errors?.['required']) {
                   Password is required.
                 } @else if (LoginForm.get('password')?.errors?.['minlength']) {
                   Password must be at least 8 characters.
                 } @else if (LoginForm.get('password')?.errors?.['pattern']) {
-                  Must include an uppercase letter, lowercase letter, and a number.
+                  Password must contain upper & lower case letters and a number.
                 }
               </p>
             }
           </div>
 
-          <!-- Submit -->
+          <!-- Submit Button -->
           <button
             type="submit"
-            class="w-full max-w-[350px] h-[52px] flex items-center justify-center gap-2 rounded-lg bg-black pt-[14px] pr-8 pb-[14px] pl-8 text-white font-semibold text-sm opacity-100 transition-all duration-200 shadow-sm hover:bg-stone-800 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-stone-900 focus:ring-offset-2 active:scale-[0.99] mx-auto"
+            class="w-full bg-[#0B1527] hover:bg-slate-900 text-white font-semibold py-3.5 rounded-xl text-sm transition duration-150 flex items-center justify-center gap-2 shadow-xs cursor-pointer mt-6"
           >
-            Log In to Workspace
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M17 8l4 4m0 0l-4 4m4-4H3"
-              />
+            <span>Log In to Workspace</span>
+            <svg class="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
             </svg>
           </button>
 
-          <!-- Footer -->
-          <p
-            class="font-['Geist'] font-normal text-base leading-6 tracking-normal text-center align-middle text-[#0B1C30]"
-          >
+          <!-- Contact HR Footer -->
+          <p class="text-xs text-slate-500 text-center mt-6">
             Need an account?
             <button
               type="button"
               (click)="onContactHr()"
-              class="font-['Geist'] font-normal text-base leading-6 tracking-normal align-middle text-[#0B1C30] underline decoration-solid underline-offset-0 decoration-[rgba(198,198,205,0.4)]"
+              class="font-semibold text-slate-900 hover:underline cursor-pointer ml-0.5"
             >
               Contact HR
             </button>

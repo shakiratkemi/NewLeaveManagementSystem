@@ -2,7 +2,19 @@ import { Routes } from '@angular/router';
 import { AuthguardGuard } from './core/guards/auth/authguard-guard';
 
 export const routes: Routes = [
-  { path: '', loadChildren: () => import('./auth/auth.route').then((m) => m.AUTH_ROUTE) },
+  {
+    path: '',
+    loadComponent: () => import('./pages/landing-page/landing/landing').then((m) => m.Landing),
+    pathMatch: 'full',
+  },
+  {
+    path: 'landing',
+    loadComponent: () => import('./pages/landing-page/landing/landing').then((m) => m.Landing),
+  },
+  {
+    path: 'login',
+    loadChildren: () => import('./auth/auth.route').then((m) => m.AUTH_ROUTE),
+  },
   {
     path: 'hr',
     loadChildren: () => import('./pages/hr/hr.route').then((m) => m.HR_ROUTE),
@@ -13,6 +25,8 @@ export const routes: Routes = [
     loadChildren: () => import('./pages/employee/employee.route').then((m) => m.EMPLOYEE_ROUTE),
     canActivate: [AuthguardGuard],
   },
-
-  { path: 'login', redirectTo: '', pathMatch: 'full' },
+  {
+    path: 'onboarding',
+    loadComponent: () => import('./pages/hr-onboarding/onboarding/onboarding').then((m) => m.Onboarding),
+  },
 ];
