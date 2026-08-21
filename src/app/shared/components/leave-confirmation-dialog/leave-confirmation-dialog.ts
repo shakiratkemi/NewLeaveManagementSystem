@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 
 export interface LeaveConfirmationData {
-  action: 'approve' | 'decline';
+  action?: 'approve' | 'decline' | 'confirm' | 'delete' | string;
   title?: string;
   message?: string;
   employeeName?: string;
@@ -13,11 +13,16 @@ export interface LeaveConfirmationData {
   endDate?: string;
   days?: number;
   reason?: string;
+  confirmButtonText?: string;
+  cancelButtonText?: string;
+  variant?: 'emerald' | 'rose' | 'indigo' | 'amber';
+  details?: Array<{ label: string; value: string | number }>;
+  showRemarksField?: boolean;
 }
 
 export interface LeaveConfirmationResult {
   confirmed: boolean;
-  action: 'approve' | 'decline';
+  action?: string;
   remarks?: string;
 }
 
@@ -36,26 +41,63 @@ export class LeaveConfirmationDialog {
     @Inject(MAT_DIALOG_DATA) public data: LeaveConfirmationData
   ) {}
 
+  get variant(): 'emerald' | 'rose' | 'indigo' | 'amber' {
+    if (this.data.variant) return this.data.variant;
+    if (this.data.action === 'decline' || this.data.action === 'delete') return 'rose';
+    if (this.data.action === 'approve') return 'emerald';
+    return 'indigo';
+  }
+
   get isApprove(): boolean {
-    return this.data.action === 'approve';
+    return this.variant === 'emerald';
   }
 
   get isDecline(): boolean {
-    return this.data.action === 'decline';
+    return this.variant === 'rose';
+  }
+
+  get isIndigo(): boolean {
+    return this.variant === 'indigo';
+  }
+
+  get isAmber(): boolean {
+    return this.variant === 'amber';
   }
 
   get dialogTitle(): string {
     if (this.data.title) return this.data.title;
-    return this.isApprove ? 'Approve Leave Request' : 'Decline Leave Request';
+    if (this.data.action === 'approve') return 'Approve Leave Request';
+    if (this.data.action === 'decline') return 'Decline Leave Request';
+    if (this.data.action === 'delete') return 'Delete Item';
+    return 'Confirm Action';
   }
 
   get dialogMessage(): string {
     if (this.data.message) return this.data.message;
-    if (this.isApprove) {
+    if (this.data.action === 'approve') {
       return `Are you sure you want to approve this leave request for ${this.data.employeeName || 'this employee'}?`;
-    } else {
+    }
+    if (this.data.action === 'decline') {
       return `Are you sure you want to decline this leave request for ${this.data.employeeName || 'this employee'}?`;
     }
+    return 'Are you sure you want to proceed with this action?';
+  }
+
+  get confirmText(): string {
+    if (this.data.confirmButtonText) return this.data.confirmButtonText;
+    if (this.data.action === 'approve') return 'Approve Leave';
+    if (this.data.action === 'decline') return 'Decline Leave';
+    if (this.data.action === 'delete') return 'Delete';
+    return 'Confirm';
+  }
+
+  get cancelText(): string {
+    return this.data.cancelButtonText || 'Cancel';
+  }
+
+  get shouldShowRemarks(): boolean {
+    if (this.data.showRemarksField !== undefined) return this.data.showRemarksField;
+    return this.data.action === 'decline';
   }
 
   confirm(): void {
