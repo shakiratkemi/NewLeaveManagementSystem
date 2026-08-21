@@ -139,8 +139,8 @@ export class AddEmployee {
       email: '',
       department: '',
       designation: '',
-      role: '',
-      clientResetUrl: `${window.location.origin}/auth/reset-password`,
+      role: 'Employee',
+      clientResetUrl: `${window.location.origin}/reset-password`,
     });
     this.close.emit();
   }
