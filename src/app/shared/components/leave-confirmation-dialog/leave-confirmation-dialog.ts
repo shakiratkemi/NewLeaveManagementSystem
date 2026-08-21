@@ -38,7 +38,7 @@ export class LeaveConfirmationDialog {
 
   constructor(
     public dialogRef: MatDialogRef<LeaveConfirmationDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: LeaveConfirmationData
+    @Inject(MAT_DIALOG_DATA) public data: LeaveConfirmationData,
   ) {}
 
   get variant(): 'emerald' | 'rose' | 'indigo' | 'amber' {

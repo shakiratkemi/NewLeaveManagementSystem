@@ -7,27 +7,59 @@
         'bg-emerald-100 text-emerald-600': isApprove,
         'bg-rose-100 text-rose-600': isDecline,
         'bg-indigo-100 text-indigo-600': isIndigo,
-        'bg-amber-100 text-amber-600': isAmber
+        'bg-amber-100 text-amber-600': isAmber,
       }"
     >
       <!-- Green Tick SVG for Emerald / Approve -->
-      <svg *ngIf="isApprove" class="w-6 h-6 stroke-[2.25]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg
+        *ngIf="isApprove"
+        class="w-6 h-6 stroke-[2.25]"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
         <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
       </svg>
 
       <!-- Red Cross SVG for Rose / Decline / Delete -->
-      <svg *ngIf="isDecline" class="w-6 h-6 stroke-[2.25]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg
+        *ngIf="isDecline"
+        class="w-6 h-6 stroke-[2.25]"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
       </svg>
 
       <!-- Blue Check / Info SVG for Indigo -->
-      <svg *ngIf="isIndigo" class="w-6 h-6 stroke-[2.25]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.02M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+      <svg
+        *ngIf="isIndigo"
+        class="w-6 h-6 stroke-[2.25]"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.02M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
+        />
       </svg>
 
       <!-- Warning Triangle SVG for Amber -->
-      <svg *ngIf="isAmber" class="w-6 h-6 stroke-[2.25]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+      <svg
+        *ngIf="isAmber"
+        class="w-6 h-6 stroke-[2.25]"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
+        />
       </svg>
     </div>
 
@@ -35,9 +67,7 @@
       <h3 class="text-xl font-bold text-slate-900 tracking-tight">
         {{ dialogTitle }}
       </h3>
-      <p class="text-xs text-slate-500 font-medium mt-0.5">
-        Action confirmation required
-      </p>
+      <p class="text-xs text-slate-500 font-medium mt-0.5">Action confirmation required</p>
     </div>
   </div>
 
@@ -47,7 +77,10 @@
   </p>
 
   <!-- Summary Detail Box -->
-  <div *ngIf="data.employeeName || data.leaveType || (data.details && data.details.length > 0)" class="bg-slate-50 border border-slate-200/70 rounded-2xl p-4 mb-5 space-y-2 text-xs text-slate-600">
+  <div
+    *ngIf="data.employeeName || data.leaveType || (data.details && data.details.length > 0)"
+    class="bg-slate-50 border border-slate-200/70 rounded-2xl p-4 mb-5 space-y-2 text-xs text-slate-600"
+  >
     <div *ngIf="data.employeeName" class="flex justify-between items-center">
       <span class="font-medium text-slate-400">Employee:</span>
       <span class="font-semibold text-slate-800">{{ data.employeeName }}</span>
@@ -97,22 +130,40 @@
         'bg-emerald-600 hover:bg-emerald-700 text-white': isApprove,
         'bg-rose-600 hover:bg-rose-700 text-white': isDecline,
         'bg-indigo-600 hover:bg-indigo-700 text-white': isIndigo,
-        'bg-amber-600 hover:bg-amber-700 text-white': isAmber
+        'bg-amber-600 hover:bg-amber-700 text-white': isAmber,
       }"
       class="inline-flex items-center gap-2 px-6 py-2.5 font-semibold text-xs rounded-xl shadow-xs transition duration-150 cursor-pointer"
     >
       <!-- Green Tick Icon for Approve -->
-      <svg *ngIf="isApprove" class="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg
+        *ngIf="isApprove"
+        class="w-4 h-4 stroke-[2.5]"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
         <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
       </svg>
 
       <!-- Red X Icon for Decline -->
-      <svg *ngIf="isDecline" class="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg
+        *ngIf="isDecline"
+        class="w-4 h-4 stroke-[2.5]"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
       </svg>
 
       <!-- Checkmark for Indigo/Amber -->
-      <svg *ngIf="isIndigo || isAmber" class="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg
+        *ngIf="isIndigo || isAmber"
+        class="w-4 h-4 stroke-[2.5]"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
         <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
       </svg>
 

@@ -5,10 +5,15 @@ import { Employee } from '../../../../core/services/data/employee/employee';
 import { LeaveTypes } from '../../../../core/interface/employee';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import {
+  LeaveConfirmationDialog,
+  LeaveConfirmationResult,
+} from '../../../../shared/components/leave-confirmation-dialog/leave-confirmation-dialog';
 
 @Component({
   selector: 'app-applyleave',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, MatDialogModule],
   templateUrl: './apply-leave.html',
   styles: ``,
 })
@@ -28,7 +33,29 @@ export class Applyleave implements OnInit {
     private router: Router,
     private toastr: ToastrService,
     private cdr: ChangeDetectorRef,
+    private dialog: MatDialog,
   ) {}
+
+  // confirmSubmit(): void {
+  //   const dialogRef = this.dialog.open(LeaveConfirmationDialog, {
+  //     data: {
+  //       action: 'approve',
+  //       // employeeName: req.employeeName,
+  //       // leaveType: req.leaveTypeName,
+  //       // days: req.days,
+  //     },
+  //     panelClass: 'custom-confirmation-dialog',
+  //   });
+
+  //   dialogRef.afterClosed().subscribe((result: SubmitLeaveConfirmationResult) => {
+  //     if (result?.confirmed) {
+  //       this.onSubmit();
+  //       this.toastr.success('Leave request submitted successfully.', 'Leave Request');
+  //       this.onClose();
+  //       this.router.navigateByUrl('/employee/leave-history');
+  //     }
+  //   });
+  // }
 
   ngOnInit(): void {
     this.leaveForm = this.fb.group({
@@ -83,7 +110,11 @@ export class Applyleave implements OnInit {
           this.leaveTypes = [
             { id: '3fa85f64-5717-4562-b3fc-2c963f66afa6', name: 'Annual Leave', defaultDays: 20 },
             { id: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890', name: 'Sick Leave', defaultDays: 10 },
-            { id: 'b2c3d4e5-f6a7-8901-bcde-f23456789012', name: 'Maternity Leave', defaultDays: 90 }
+            {
+              id: 'b2c3d4e5-f6a7-8901-bcde-f23456789012',
+              name: 'Maternity Leave',
+              defaultDays: 90,
+            },
           ];
         }
 
@@ -142,9 +173,9 @@ export class Applyleave implements OnInit {
     this.employeeService.createLeaveRequest(leaveRequest).subscribe({
       next: (response) => {
         console.log('Leave request created:', response);
-        this.toastr.success('Leave request submitted successfully.', 'Leave Request');
-        this.onClose();
-        this.router.navigateByUrl('/employee/leave-history');
+        // this.toastr.success('Leave request submitted successfully.', 'Leave Request');
+        // this.onClose();
+        // this.router.navigateByUrl('/employee/leave-history');
       },
 
       error: (error) => {
@@ -152,7 +183,8 @@ export class Applyleave implements OnInit {
 
         // Fallback for HTTP 500 (Internal Server Error) from Render backend
         if (error?.status >= 500 || error?.status === 0) {
-          const userStr = sessionStorage.getItem('loggedInUser') || localStorage.getItem('loggedInUser');
+          const userStr =
+            sessionStorage.getItem('loggedInUser') || localStorage.getItem('loggedInUser');
           const user = userStr ? JSON.parse(userStr) : null;
 
           const newRequestRecord = {
@@ -181,9 +213,9 @@ export class Applyleave implements OnInit {
           existingLocal.unshift(newRequestRecord);
           localStorage.setItem('local_leave_requests', JSON.stringify(existingLocal));
 
-          this.toastr.success('Leave request submitted successfully.', 'Leave Request');
-          this.onClose();
-          this.router.navigateByUrl('/employee/leave-history');
+          // this.toastr.success('Leave request submitted successfully.', 'Leave Request');
+          // this.onClose();
+          // this.router.navigateByUrl('/employee/leave-history');
           return;
         }
 
