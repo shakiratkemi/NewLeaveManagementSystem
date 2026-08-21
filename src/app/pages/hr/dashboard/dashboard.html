@@ -288,24 +288,28 @@
               <td class="py-4 px-6 whitespace-nowrap text-right">
                 @if (req.status === 'Pending') {
                   <div class="flex items-center justify-end gap-2">
-                    <!-- Reject Button -->
+                    <!-- Reject / Decline Button with Red X -->
                     <button
                       type="button"
-                      (click)="updateStatus(req.id, 'Rejected')"
-                      class="w-8 h-8 rounded-full border border-rose-300 text-rose-500 hover:bg-rose-50 flex items-center justify-center transition shadow-2xs"
-                      title="Reject"
+                      (click)="confirmDecline(req)"
+                      class="w-8 h-8 rounded-full bg-rose-50 border border-rose-200 text-rose-600 hover:bg-rose-100 flex items-center justify-center transition shadow-2xs cursor-pointer"
+                      title="Decline Request"
                     >
-                      <!-- SVG Reject / Close Icon Placeholder -->
+                      <svg class="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
                     </button>
 
-                    <!-- Approve Button -->
+                    <!-- Approve Button with Green Tick -->
                     <button
                       type="button"
-                      (click)="updateStatus(req.id, 'Approved')"
-                      class="w-8 h-8 rounded-full bg-emerald-400 hover:bg-emerald-500 text-white flex items-center justify-center transition shadow-2xs"
-                      title="Approve"
+                      (click)="confirmApprove(req)"
+                      class="w-8 h-8 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white flex items-center justify-center transition shadow-2xs cursor-pointer"
+                      title="Approve Request"
                     >
-                      <!-- SVG Approve / Check Icon Placeholder -->
+                      <svg class="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                      </svg>
                     </button>
                   </div>
                 } @else {
@@ -368,19 +372,23 @@
             <div class="flex items-center justify-end gap-3 pt-1">
               <button
                 type="button"
-                (click)="updateStatus(req.id, 'Rejected')"
-                class="w-9 h-9 rounded-full border border-rose-300 text-rose-500 hover:bg-rose-50 flex items-center justify-center transition"
-                title="Reject"
+                (click)="confirmDecline(req)"
+                class="w-9 h-9 rounded-full bg-rose-50 border border-rose-200 text-rose-600 hover:bg-rose-100 flex items-center justify-center transition cursor-pointer"
+                title="Decline Request"
               >
-                <!-- SVG Reject / Close Icon Placeholder -->
+                <svg class="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
               </button>
               <button
                 type="button"
-                (click)="updateStatus(req.id, 'Approved')"
-                class="w-9 h-9 rounded-full bg-emerald-400 hover:bg-emerald-500 text-white flex items-center justify-center transition"
-                title="Approve"
+                (click)="confirmApprove(req)"
+                class="w-9 h-9 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white flex items-center justify-center transition shadow-2xs cursor-pointer"
+                title="Approve Request"
               >
-                <!-- SVG Approve / Check Icon Placeholder -->
+                <svg class="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                </svg>
               </button>
             </div>
           }

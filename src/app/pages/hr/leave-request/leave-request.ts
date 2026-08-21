@@ -2,13 +2,19 @@ import { Component, OnInit, ViewChild, signal, computed, ChangeDetectorRef } fro
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { HrService } from '../../../core/services/data/hr/hr-service';
 import { HrLeaveRecord } from '../../../core/interface/hr';
 import { ToastrService } from 'ngx-toastr';
+import {
+  LeaveConfirmationDialog,
+  LeaveConfirmationData,
+  LeaveConfirmationResult,
+} from '../../../shared/components/leave-confirmation-dialog/leave-confirmation-dialog';
 
 @Component({
   selector: 'app-leave-request',
-  imports: [CommonModule, FormsModule, MatPaginatorModule, DatePipe],
+  imports: [CommonModule, FormsModule, MatPaginatorModule, DatePipe, MatDialogModule],
   templateUrl: './leave-request.html',
   styles: ``,
 })
@@ -63,6 +69,7 @@ export class LeaveRequest implements OnInit {
     private hrService: HrService,
     private toastr: ToastrService,
     private cdr: ChangeDetectorRef,
+    private dialog: MatDialog,
   ) {}
 
   // Track processing requests to disable buttons during network calls
@@ -248,6 +255,42 @@ export class LeaveRequest implements OnInit {
 
   closeDetailsModal(): void {
     this.selectedRecord.set(null);
+  }
+
+  confirmApprove(record: HrLeaveRecord): void {
+    const dialogRef = this.dialog.open(LeaveConfirmationDialog, {
+      data: {
+        action: 'approve',
+        employeeName: record.employeeName,
+        leaveType: record.leaveTypeName,
+        days: record.days,
+      },
+      panelClass: 'custom-confirmation-dialog',
+    });
+
+    dialogRef.afterClosed().subscribe((result: LeaveConfirmationResult) => {
+      if (result?.confirmed) {
+        this.approveRequest(record);
+      }
+    });
+  }
+
+  confirmDecline(record: HrLeaveRecord): void {
+    const dialogRef = this.dialog.open(LeaveConfirmationDialog, {
+      data: {
+        action: 'decline',
+        employeeName: record.employeeName,
+        leaveType: record.leaveTypeName,
+        days: record.days,
+      },
+      panelClass: 'custom-confirmation-dialog',
+    });
+
+    dialogRef.afterClosed().subscribe((result: LeaveConfirmationResult) => {
+      if (result?.confirmed) {
+        this.rejectRequest(record);
+      }
+    });
   }
 
   approveRequest(record: HrLeaveRecord): void {
