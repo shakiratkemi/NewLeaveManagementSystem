@@ -55,3 +55,8 @@ export interface EditEmployeeProfile {
   department: string;
   designation: string;
 }
+
+
+export interface AddEmployeeData {
+  
+}

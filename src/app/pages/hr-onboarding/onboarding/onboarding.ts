@@ -79,7 +79,7 @@ export class Onboarding {
   constructor(
     private fb: FormBuilder,
     private toastr: ToastrService,
-    private router: Router
+    private router: Router,
   ) {
     this.onboardingForm = this.fb.group({
       // Company Profile
@@ -190,5 +190,9 @@ export class Onboarding {
       this.toastr.success('Workspace setup completed successfully!', 'Setup Complete');
       this.router.navigate(['/hr/dashboard']);
     }, 1000);
+  }
+
+  backHome() {
+    this.router.navigateByUrl('/');
   }
 }

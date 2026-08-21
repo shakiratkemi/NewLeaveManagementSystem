@@ -1,4 +1,4 @@
-<div class="flex flex-col gap-8 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<div class="flex flex-col gap-8 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-0 py-0">
   <!-- Header -->
   <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
     <div>
@@ -35,13 +35,15 @@
       </div>
 
       <div class="flex items-baseline gap-3 mt-6">
-          <h3 class="text-4xl sm:text-5xl font-black text-white tracking-tight">
-            {{ dashboardData.totalEmployees}}
-          </h3>
-          <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-white/20 text-white backdrop-blur-xs">
-            <!-- SVG Trend Icon Placeholder -->
-            <span>+4%</span>
-          </span>
+        <h3 class="text-4xl sm:text-5xl font-black text-white tracking-tight">
+          {{ dashboardData.totalEmployees }}
+        </h3>
+        <span
+          class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-white/20 text-white backdrop-blur-xs"
+        >
+          <!-- SVG Trend Icon Placeholder -->
+          <span>+4%</span>
+        </span>
       </div>
       <img src="/assets/images/flow.svg" alt="people" />
     </div>
@@ -79,7 +81,7 @@
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
     <!-- Approved Requests -->
     <div
-      class="bg-blue-50/50 border border-blue-100/70 rounded-2xl p-5 flex flex-col justify-between shadow-2xs hover:shadow-xs transition"
+      class="bg-blue-50/50 border border-blue-100/70 rounded-2xl p-5 flex flex-col justify-between shadow-2xs transition-all duration-300 ease-in-out hover:-translate-y-1 hover:scale-[1.02] hover:shadow-md cursor-pointer"
     >
       <div class="flex items-center gap-2.5">
         <div
@@ -101,7 +103,7 @@
 
     <!-- Total Requests -->
     <div
-      class="bg-slate-50/80 border border-slate-200/70 rounded-2xl p-5 flex flex-col justify-between shadow-2xs hover:shadow-xs transition"
+      class="bg-slate-50/80 border border-slate-200/70 rounded-2xl p-5 flex flex-col justify-between transition-all duration-300 ease-in-out hover:-translate-y-1 hover:scale-[1.02] hover:shadow-md cursor-pointer"
     >
       <div class="flex items-center gap-2.5">
         <div
@@ -125,7 +127,7 @@
 
     <!-- Employees On Leave -->
     <div
-      class="bg-slate-50/80 border border-slate-200/70 rounded-2xl p-5 flex flex-col justify-between shadow-2xs hover:shadow-xs transition"
+      class="bg-slate-50/80 border border-slate-200/70 rounded-2xl p-5 flex flex-col justify-between transition-all duration-300 ease-in-out hover:-translate-y-1 hover:scale-[1.02] hover:shadow-md cursor-pointer"
     >
       <div class="flex items-center gap-2.5">
         <div
@@ -147,7 +149,7 @@
 
     <!-- Rejected Leaves -->
     <div
-      class="bg-rose-50/40 border border-rose-100/70 rounded-2xl p-5 flex flex-col justify-between shadow-2xs hover:shadow-xs transition"
+      class="bg-rose-50/40 border border-rose-100/70 rounded-2xl p-5 flex flex-col justify-between transition-all duration-300 ease-in-out hover:-translate-y-1 hover:scale-[1.02] hover:shadow-md cursor-pointer"
     >
       <div class="flex items-center gap-2.5">
         <div
@@ -295,8 +297,17 @@
                       class="w-8 h-8 rounded-full bg-rose-50 border border-rose-200 text-rose-600 hover:bg-rose-100 flex items-center justify-center transition shadow-2xs cursor-pointer"
                       title="Decline Request"
                     >
-                      <svg class="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                      <svg
+                        class="w-4 h-4 stroke-[2.5]"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M6 18L18 6M6 6l12 12"
+                        />
                       </svg>
                     </button>
 
@@ -307,8 +318,17 @@
                       class="w-8 h-8 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white flex items-center justify-center transition shadow-2xs cursor-pointer"
                       title="Approve Request"
                     >
-                      <svg class="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                      <svg
+                        class="w-4 h-4 stroke-[2.5]"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M4.5 12.75l6 6 9-13.5"
+                        />
                       </svg>
                     </button>
                   </div>
@@ -376,7 +396,12 @@
                 class="w-9 h-9 rounded-full bg-rose-50 border border-rose-200 text-rose-600 hover:bg-rose-100 flex items-center justify-center transition cursor-pointer"
                 title="Decline Request"
               >
-                <svg class="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg
+                  class="w-4 h-4 stroke-[2.5]"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
                   <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
@@ -386,7 +411,12 @@
                 class="w-9 h-9 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white flex items-center justify-center transition shadow-2xs cursor-pointer"
                 title="Approve Request"
               >
-                <svg class="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg
+                  class="w-4 h-4 stroke-[2.5]"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
                   <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                 </svg>
               </button>
