@@ -137,9 +137,9 @@ export class AddEmployee {
     this.AddEmployeeForm.reset({
       fullName: '',
       email: '',
-      department: 'Engineering',
+      department: '',
       designation: '',
-      role: 'Employee',
+      role: '',
       clientResetUrl: `${window.location.origin}/auth/reset-password`,
     });
     this.close.emit();
