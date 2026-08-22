@@ -21,7 +21,7 @@ import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-leave-history',
-  imports: [CommonModule, LeaveHistoryDetails, MatPaginatorModule, Applyleave, RouterLink],
+  imports: [CommonModule, LeaveHistoryDetails, MatPaginatorModule, Applyleave],
   templateUrl: './leave-history.html',
   styles: ``,
 })
@@ -368,9 +368,9 @@ export class LeaveHistory implements OnChanges, AfterViewInit {
     this.employeeService.createLeaveRequest(request).subscribe({
       next: (response: any) => {
         console.log('Leave request submitted:', response);
-
-        this.closeApplyModal();
         this.loadLeaveRequests();
+        this.closeApplyModal();
+        // this.loadLeaveRequests();
       },
       error: (error) => {
         console.error('Leave request submit error:', error);

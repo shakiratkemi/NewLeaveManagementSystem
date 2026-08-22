@@ -15,10 +15,10 @@ export const routes: Routes = [
     path: 'login',
     loadChildren: () => import('./auth/auth.route').then((m) => m.AUTH_ROUTE),
   },
-  {
-    path: 'auth',
-    loadChildren: () => import('./auth/auth.route').then((m) => m.AUTH_ROUTE),
-  },
+  // {
+  //   path: 'auth',
+  //   loadChildren: () => import('./auth/auth.route').then((m) => m.AUTH_ROUTE),
+  // },
   {
     path: 'reset-token',
     loadComponent: () => import('./auth/reset-password/reset-password').then((m) => m.ResetPassword),
