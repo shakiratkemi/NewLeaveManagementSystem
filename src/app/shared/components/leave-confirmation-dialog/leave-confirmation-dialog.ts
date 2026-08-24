@@ -5,8 +5,10 @@ import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/materia
 export interface ConfirmationDialogData {
   title: string;
   content: string;
+  details?: { label: string; value: string }[];
   cancelText?: string;
   acceptText?: string;
+  variant?: 'default' | 'danger';
 }
 
 @Component({
@@ -21,6 +23,10 @@ export class ConfirmationDialog {
     public dialogRef: MatDialogRef<ConfirmationDialog>,
     @Inject(MAT_DIALOG_DATA) public data: ConfirmationDialogData
   ) {}
+
+  get isDanger(): boolean {
+    return this.data.variant === 'danger';
+  }
 
   close(): void {
     this.dialogRef.close({ action: false });
