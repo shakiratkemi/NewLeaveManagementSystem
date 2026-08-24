@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-landing',
@@ -9,8 +9,26 @@ import { RouterLink } from '@angular/router';
   templateUrl: './landing.html',
   styleUrl: './landing.css',
 })
-export class Landing {
+export class Landing implements OnInit {
   activeTab: string = 'features';
+
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
+
+  ngOnInit(): void {
+    const token = this.route.snapshot.queryParams['token'];
+    const email = this.route.snapshot.queryParams['email'];
+
+    // If query params contain token or email from reset link, auto-redirect to reset-password
+    if (token || email) {
+      this.router.navigate(['/reset-token'], {
+        queryParams: this.route.snapshot.queryParams,
+        replaceUrl: true,
+      });
+    }
+  }
 
   scrollToFeatures(event: Event): void {
     event.preventDefault();

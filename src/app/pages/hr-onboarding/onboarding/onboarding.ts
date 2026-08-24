@@ -109,7 +109,7 @@ export class Onboarding {
   constructor(
     private fb: FormBuilder,
     private toastr: ToastrService,
-    private router: Router
+    private router: Router,
   ) {
     this.onboardingForm = this.fb.group(
       {

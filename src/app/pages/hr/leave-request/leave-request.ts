@@ -6,11 +6,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { HrService } from '../../../core/services/data/hr/hr-service';
 import { HrLeaveRecord } from '../../../core/interface/hr';
 import { ToastrService } from 'ngx-toastr';
-import {
-  LeaveConfirmationDialog,
-  LeaveConfirmationData,
-  LeaveConfirmationResult,
-} from '../../../shared/components/leave-confirmation-dialog/leave-confirmation-dialog';
+import { ConfirmationDialog } from '../../../shared/components/leave-confirmation-dialog/leave-confirmation-dialog';
 
 @Component({
   selector: 'app-leave-request',
@@ -258,36 +254,34 @@ export class LeaveRequest implements OnInit {
   }
 
   confirmApprove(record: HrLeaveRecord): void {
-    const dialogRef = this.dialog.open(LeaveConfirmationDialog, {
+    const dialogRef = this.dialog.open(ConfirmationDialog, {
       data: {
-        action: 'approve',
-        employeeName: record.employeeName,
-        leaveType: record.leaveTypeName,
-        days: record.days,
+        title: 'Approve Leave',
+        content: `Are you sure you want to approve this leave request for ${record.employeeName}?`,
+        acceptText: 'Approve',
       },
       panelClass: 'custom-confirmation-dialog',
     });
 
-    dialogRef.afterClosed().subscribe((result: LeaveConfirmationResult) => {
-      if (result?.confirmed) {
+    dialogRef.afterClosed().subscribe((result: any) => {
+      if (result?.action) {
         this.approveRequest(record);
       }
     });
   }
 
   confirmDecline(record: HrLeaveRecord): void {
-    const dialogRef = this.dialog.open(LeaveConfirmationDialog, {
+    const dialogRef = this.dialog.open(ConfirmationDialog, {
       data: {
-        action: 'decline',
-        employeeName: record.employeeName,
-        leaveType: record.leaveTypeName,
-        days: record.days,
+        title: 'Decline Leave',
+        content: `Are you sure you want to decline this leave request for ${record.employeeName}?`,
+        acceptText: 'Decline',
       },
       panelClass: 'custom-confirmation-dialog',
     });
 
-    dialogRef.afterClosed().subscribe((result: LeaveConfirmationResult) => {
-      if (result?.confirmed) {
+    dialogRef.afterClosed().subscribe((result: any) => {
+      if (result?.action) {
         this.rejectRequest(record);
       }
     });

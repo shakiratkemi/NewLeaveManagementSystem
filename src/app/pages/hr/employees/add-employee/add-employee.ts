@@ -29,7 +29,7 @@ export class AddEmployee {
       department: ['Engineering', Validators.required],
       designation: ['', Validators.required],
       role: ['Employee', Validators.required],
-      clientResetUrl: [`${window.location.origin}/auth/reset-password`, Validators.required],
+      clientResetUrl: [`${window.location.origin}/reset-token`, Validators.required],
     });
   }
 
@@ -101,7 +101,7 @@ export class AddEmployee {
           department: values[2],
           designation: values[3],
           role: values[4],
-          clientResetUrl: `${window.location.origin}/auth/reset-password`,
+          clientResetUrl: `${window.location.origin}/reset-token`,
         } as EmployeeFormPayload;
       })
       .filter(
@@ -137,10 +137,10 @@ export class AddEmployee {
     this.AddEmployeeForm.reset({
       fullName: '',
       email: '',
-      department: 'Engineering',
+      department: '',
       designation: '',
       role: 'Employee',
-      clientResetUrl: `${window.location.origin}/auth/reset-password`,
+      clientResetUrl: `${window.location.origin}/reset-token`,
     });
     this.close.emit();
   }
