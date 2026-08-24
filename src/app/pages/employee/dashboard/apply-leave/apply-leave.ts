@@ -5,10 +5,12 @@ import { Employee } from '../../../../core/services/data/employee/employee';
 import { LeaveTypes } from '../../../../core/interface/employee';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { ConfirmationDialog } from '../../../../shared/components/leave-confirmation-dialog/leave-confirmation-dialog';
 
 @Component({
   selector: 'app-applyleave',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, MatDialogModule],
   templateUrl: './apply-leave.html',
   styles: ``,
 })
@@ -28,6 +30,7 @@ export class Applyleave implements OnInit {
     private router: Router,
     private toastr: ToastrService,
     private cdr: ChangeDetectorRef,
+    private dialog: MatDialog,
   ) {}
 
   ngOnInit(): void {
@@ -83,7 +86,11 @@ export class Applyleave implements OnInit {
           this.leaveTypes = [
             { id: '3fa85f64-5717-4562-b3fc-2c963f66afa6', name: 'Annual Leave', defaultDays: 20 },
             { id: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890', name: 'Sick Leave', defaultDays: 10 },
-            { id: 'b2c3d4e5-f6a7-8901-bcde-f23456789012', name: 'Maternity Leave', defaultDays: 90 }
+            {
+              id: 'b2c3d4e5-f6a7-8901-bcde-f23456789012',
+              name: 'Maternity Leave',
+              defaultDays: 90,
+            },
           ];
         }
 
@@ -111,6 +118,115 @@ export class Applyleave implements OnInit {
     }
   }
 
+  // onSubmit(): void {
+  //   if (this.leaveForm.invalid) {
+  //     this.leaveForm.markAllAsTouched();
+  //     return;
+  //   }
+
+  //   this.errorMessage = '';
+  //   this.successMessage = '';
+
+  //   const formValue = this.leaveForm.value;
+  //   const selectedType = this.leaveTypes.find((t) => t.id === formValue.leaveType);
+  //   const leaveTypeName = selectedType ? selectedType.name : formValue.leaveType;
+  //   const validLeaveTypeId = formValue.leaveType;
+
+  //   const leaveRequest: any = {
+  //     leaveTypeId: validLeaveTypeId,
+  //     leaveTypeName: leaveTypeName,
+  //     startDate: new Date(formValue.startDate).toISOString(),
+  //     endDate: new Date(formValue.endDate).toISOString(),
+  //     numberOfDays: Number(formValue.duration) || 1,
+  //     duration: Number(formValue.duration) || 1,
+  //     days: Number(formValue.duration) || 1,
+  //     reason: formValue.reason,
+  //     requestComments: formValue.reason,
+  //   };
+
+  //   console.log('Leave Request Payload:', leaveRequest);
+
+  //   this.employeeService.createLeaveRequest(leaveRequest).subscribe({
+  //     next: (response) => {
+  //       console.log('Leave request created:', response);
+  //       // this.toastr.success('Leave request submitted successfully.', 'Leave Request');
+  //       // this.onClose();
+  //       // this.router.navigateByUrl('/employee/leave-history');
+  //     },
+
+  //     error: (error) => {
+  //       console.error('Leave request API error:', error);
+
+  //       // Fallback for HTTP 500 (Internal Server Error) from Render backend
+  //       if (error?.status >= 500 || error?.status === 0) {
+  //         const userStr =
+  //           sessionStorage.getItem('loggedInUser') || localStorage.getItem('loggedInUser');
+  //         const user = userStr ? JSON.parse(userStr) : null;
+
+  //         const newRequestRecord = {
+  //           id: 'REQ-' + Date.now().toString().slice(-4),
+  //           requestId: 'REQ-' + Date.now().toString().slice(-4),
+  //           employeeId: user?.userId || user?.id || 'EMP-001',
+  //           employeeName: user?.fullName || user?.name || 'Employee',
+  //           employeeEmail: user?.email || '',
+  //           department: user?.department || 'Engineering',
+  //           leaveTypeId: validLeaveTypeId,
+  //           leaveTypeName: leaveTypeName,
+  //           leaveType: { name: leaveTypeName },
+  //           startDate: new Date(formValue.startDate).toISOString(),
+  //           endDate: new Date(formValue.endDate).toISOString(),
+  //           duration: Number(formValue.duration) || 1,
+  //           numberOfDays: Number(formValue.duration) || 1,
+  //           days: Number(formValue.duration) || 1,
+  //           reason: formValue.reason,
+  //           requestComments: formValue.reason,
+  //           status: 'Pending',
+  //           createdAt: new Date().toISOString(),
+  //         };
+
+  //         const existingLocalStr = localStorage.getItem('local_leave_requests');
+  //         const existingLocal = existingLocalStr ? JSON.parse(existingLocalStr) : [];
+  //         existingLocal.unshift(newRequestRecord);
+  //         localStorage.setItem('local_leave_requests', JSON.stringify(existingLocal));
+
+  //         // this.toastr.success('Leave request submitted successfully.', 'Leave Request');
+  //         // this.onClose();
+  //         // this.router.navigateByUrl('/employee/leave-history');
+  //         return;
+  //       }
+
+  //       let msg = 'Unable to submit leave request. Please check your form data.';
+
+  //       if (error?.error) {
+  //         if (error.error.errors && typeof error.error.errors === 'object') {
+  //           const errObj = error.error.errors;
+  //           const msgs: string[] = [];
+  //           for (const key of Object.keys(errObj)) {
+  //             if (Array.isArray(errObj[key])) {
+  //               msgs.push(`${key}: ${errObj[key].join(', ')}`);
+  //             } else if (typeof errObj[key] === 'string') {
+  //               msgs.push(`${key}: ${errObj[key]}`);
+  //             }
+  //           }
+  //           if (msgs.length > 0) {
+  //             msg = msgs.join(' | ');
+  //           }
+  //         } else if (typeof error.error === 'string') {
+  //           msg = error.error;
+  //         } else if (error.error.message) {
+  //           msg = error.error.message;
+  //         } else if (error.error.title) {
+  //           msg = error.error.title;
+  //         }
+  //       }
+
+  //       this.errorMessage = msg;
+  //       this.toastr.error(msg, 'Leave Request Error');
+  //       this.cdr.detectChanges();
+  //     },
+  //   });
+  // }
+
   onSubmit(): void {
     if (this.leaveForm.invalid) {
       this.leaveForm.markAllAsTouched();
@@ -121,12 +237,13 @@ export class Applyleave implements OnInit {
     this.successMessage = '';
 
     const formValue = this.leaveForm.value;
-    const selectedType = this.leaveTypes.find((t) => t.id === formValue.leaveType);
-    const leaveTypeName = selectedType ? selectedType.name : formValue.leaveType;
-    const validLeaveTypeId = formValue.leaveType;
 
-    const leaveRequest: any = {
-      leaveTypeId: validLeaveTypeId,
+    const selectedType = this.leaveTypes.find((t) => t.id === formValue.leaveType);
+
+    const leaveTypeName = selectedType ? selectedType.name : formValue.leaveType;
+
+    const leaveRequest = {
+      leaveTypeId: formValue.leaveType,
       leaveTypeName: leaveTypeName,
       startDate: new Date(formValue.startDate).toISOString(),
       endDate: new Date(formValue.endDate).toISOString(),
@@ -137,62 +254,52 @@ export class Applyleave implements OnInit {
       requestComments: formValue.reason,
     };
 
-    console.log('Leave Request Payload:', leaveRequest);
+    console.log('Leave Request ready for confirmation:', leaveRequest);
+
+    this.openConfirmationDialog(leaveRequest);
+  }
+
+  openConfirmationDialog(leaveRequest: any): void {
+    const dialogRef = this.dialog.open(ConfirmationDialog, {
+      data: {
+        title: 'Submit Leave',
+        content: 'Are you sure you want to submit this leave request?',
+        acceptText: 'Yes, Submit',
+      },
+      panelClass: 'custom-confirmation-dialog',
+    });
+
+    dialogRef.afterClosed().subscribe((result: any) => {
+      if (result?.action) {
+        this.submitLeaveRequest(leaveRequest);
+      }
+    });
+  }
+
+  submitLeaveRequest(leaveRequest: any): void {
+    console.log('Submitting confirmed leave request:', leaveRequest);
 
     this.employeeService.createLeaveRequest(leaveRequest).subscribe({
-      next: (response) => {
-        console.log('Leave request created:', response);
+      next: (response: any) => {
+        console.log('Leave request created successfully:', response);
+
         this.toastr.success('Leave request submitted successfully.', 'Leave Request');
+
         this.onClose();
+
         this.router.navigateByUrl('/employee/leave-history');
       },
 
       error: (error) => {
         console.error('Leave request API error:', error);
 
-        // Fallback for HTTP 500 (Internal Server Error) from Render backend
-        if (error?.status >= 500 || error?.status === 0) {
-          const userStr = sessionStorage.getItem('loggedInUser') || localStorage.getItem('loggedInUser');
-          const user = userStr ? JSON.parse(userStr) : null;
-
-          const newRequestRecord = {
-            id: 'REQ-' + Date.now().toString().slice(-4),
-            requestId: 'REQ-' + Date.now().toString().slice(-4),
-            employeeId: user?.userId || user?.id || 'EMP-001',
-            employeeName: user?.fullName || user?.name || 'Employee',
-            employeeEmail: user?.email || '',
-            department: user?.department || 'Engineering',
-            leaveTypeId: validLeaveTypeId,
-            leaveTypeName: leaveTypeName,
-            leaveType: { name: leaveTypeName },
-            startDate: new Date(formValue.startDate).toISOString(),
-            endDate: new Date(formValue.endDate).toISOString(),
-            duration: Number(formValue.duration) || 1,
-            numberOfDays: Number(formValue.duration) || 1,
-            days: Number(formValue.duration) || 1,
-            reason: formValue.reason,
-            requestComments: formValue.reason,
-            status: 'Pending',
-            createdAt: new Date().toISOString(),
-          };
-
-          const existingLocalStr = localStorage.getItem('local_leave_requests');
-          const existingLocal = existingLocalStr ? JSON.parse(existingLocalStr) : [];
-          existingLocal.unshift(newRequestRecord);
-          localStorage.setItem('local_leave_requests', JSON.stringify(existingLocal));
-
-          this.toastr.success('Leave request submitted successfully.', 'Leave Request');
-          this.onClose();
-          this.router.navigateByUrl('/employee/leave-history');
-          return;
-        }
-
-        let msg = 'Unable to submit leave request. Please check your form data.';
+        let msg = 'Unable to submit leave request. Please try again.';
 
         if (error?.error) {
           if (error.error.errors && typeof error.error.errors === 'object') {
             const errObj = error.error.errors;
             const msgs: string[] = [];
+
             for (const key of Object.keys(errObj)) {
               if (Array.isArray(errObj[key])) {
                 msgs.push(`${key}: ${errObj[key].join(', ')}`);
@@ -200,6 +307,7 @@ export class Applyleave implements OnInit {
                 msgs.push(`${key}: ${errObj[key]}`);
               }
             }
+
             if (msgs.length > 0) {
               msg = msgs.join(' | ');
             }
@@ -213,7 +321,9 @@ export class Applyleave implements OnInit {
         }
 
         this.errorMessage = msg;
+
         this.toastr.error(msg, 'Leave Request Error');
+
         this.cdr.detectChanges();
       },
     });

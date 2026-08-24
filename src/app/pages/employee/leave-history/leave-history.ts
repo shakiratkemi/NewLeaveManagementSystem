@@ -10,16 +10,18 @@ import {
   ViewChild,
 } from '@angular/core';
 
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { LeaveHistoryDetails } from './leave-history-details/leave-history-details';
 import { PageEvent, MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
 
 import { Employee } from '../../../core/services/data/employee/employee';
 import { LeaveHistoryRow, LeaveRequestHistory } from '../../../core/interface/employee';
+import { Applyleave } from '../dashboard/apply-leave/apply-leave';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-leave-history',
-  imports: [CommonModule, LeaveHistoryDetails, MatPaginatorModule],
+  imports: [CommonModule, LeaveHistoryDetails, MatPaginatorModule, Applyleave],
   templateUrl: './leave-history.html',
   styles: ``,
 })
@@ -39,6 +41,8 @@ export class LeaveHistory implements OnChanges, AfterViewInit {
   pageSize = 5;
   pageIndex = 0;
   pagedData: LeaveHistoryRow[] = [];
+
+  isApplyModalOpen = false;
 
   isLoading = false;
   usingFallbackData = false;
@@ -124,7 +128,8 @@ export class LeaveHistory implements OnChanges, AfterViewInit {
         }
 
         let combined = [...localRequests, ...rawList];
-        const loggedInUserStr = sessionStorage.getItem('loggedInUser') || localStorage.getItem('loggedInUser');
+        const loggedInUserStr =
+          sessionStorage.getItem('loggedInUser') || localStorage.getItem('loggedInUser');
         if (loggedInUserStr) {
           const user = JSON.parse(loggedInUserStr);
           const currentUserId = user.userId || user.id || user.sub;
@@ -357,5 +362,30 @@ export class LeaveHistory implements OnChanges, AfterViewInit {
 
   get totalRecords(): number {
     return this.data.length || this.leaveRequests.length;
+  }
+
+  handleLeaveSubmit(request: any): void {
+    this.employeeService.createLeaveRequest(request).subscribe({
+      next: (response: any) => {
+        console.log('Leave request submitted:', response);
+        this.loadLeaveRequests();
+        this.closeApplyModal();
+        // this.loadLeaveRequests();
+      },
+      error: (error) => {
+        console.error('Leave request submit error:', error);
+        // this.loadRecentRequests();
+        //this.closeApplyModal();
+      },
+    });
+  }
+
+  openApplyModal(): void {
+    this.isApplyModalOpen = true;
+  }
+
+  closeApplyModal(): void {
+    this.isApplyModalOpen = false;
+    this.cdr.detectChanges();
   }
 }

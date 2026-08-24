@@ -1,12 +1,16 @@
-<section class="flex flex-col gap-8 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<section class="flex flex-col gap-8 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-0 py-8">
   <!-- Header -->
   <header class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
     <div>
-      <span class="text-[11px] font-bold text-slate-400 tracking-wider uppercase">Workspace Overview</span>
-      <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mt-0.5">Dashboard</h1>
+      <span class="text-[11px] font-bold text-slate-400 tracking-wider uppercase"
+        >Workspace Overview</span
+      >
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mt-0.5">
+        Dashboard
+      </h1>
       <p class="text-sm text-slate-500 mt-1">
         Welcome back,
-        <span class="font-medium text-slate-800">{{ dashboardData.employeeName}}! 👋</span>
+        <span class="font-medium text-slate-800">{{ dashboardData.employeeName }}! 👋</span>
       </p>
     </div>
 
@@ -23,14 +27,20 @@
   <!-- Featured Top Cards (2 Columns) -->
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6">
     <!-- Card 1: Days Remaining -->
-    <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1E6BFB] via-[#1D63EA] to-[#1246D6] p-6 sm:p-8 text-white shadow-lg shadow-blue-600/15 flex flex-col justify-between min-h-[190px]">
+    <div
+      class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1E6BFB] via-[#1D63EA] to-[#1246D6] p-6 sm:p-8 text-white shadow-lg shadow-blue-600/15 flex flex-col justify-between min-h-[190px]"
+    >
       <div class="flex items-start justify-between relative z-10">
         <div>
-          <span class="text-[11px] font-bold tracking-wider uppercase text-blue-200">Leave Balance</span>
+          <span class="text-[11px] font-bold tracking-wider uppercase text-blue-200"
+            >Leave Balance</span
+          >
           <h2 class="text-lg sm:text-xl font-bold text-white mt-0.5">Days Remaining</h2>
         </div>
-        <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white shrink-0">
-          <img src="/assets/images/people.svg" alt="leave">
+        <div
+          class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white shrink-0"
+        >
+          <img src="/assets/images/people.svg" alt="leave" />
         </div>
       </div>
 
@@ -46,14 +56,20 @@
     </div>
 
     <!-- Card 2: Pending Approval -->
-    <div class="relative overflow-hidden rounded-3xl bg-[#072418] p-6 sm:p-8 text-white shadow-lg shadow-emerald-950/20 flex flex-col justify-between min-h-[190px] border border-emerald-900/30">
+    <div
+      class="relative overflow-hidden rounded-3xl bg-[#072418] p-6 sm:p-8 text-white shadow-lg shadow-emerald-950/20 flex flex-col justify-between min-h-[190px] border border-emerald-900/30"
+    >
       <div class="flex items-start justify-between">
         <div>
-          <span class="text-[11px] font-bold tracking-wider uppercase text-emerald-400">Attention Required</span>
+          <span class="text-[11px] font-bold tracking-wider uppercase text-emerald-400"
+            >Attention Required</span
+          >
           <h2 class="text-lg sm:text-xl font-bold text-emerald-400 mt-0.5">Pending Approval</h2>
         </div>
-        <div class="w-10 h-10 rounded-full bg-emerald-950 border border-emerald-800/50 flex items-center justify-center text-emerald-400 shrink-0">
-           <img src="/assets/images/todo.svg" alt="leave">
+        <div
+          class="w-10 h-10 rounded-full bg-emerald-950 border border-emerald-800/50 flex items-center justify-center text-emerald-400 shrink-0"
+        >
+          <img src="/assets/images/todo.svg" alt="leave" />
         </div>
       </div>
 
@@ -69,15 +85,21 @@
   <!-- Secondary Stats Row (2 Cards) -->
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
     <!-- Approved Leaves -->
-    <div class="bg-slate-50/80 border border-slate-200/70 rounded-2xl p-5 sm:p-6 flex flex-col justify-between shadow-2xs hover:shadow-xs transition">
+    <div
+      class="bg-slate-50/80 border border-slate-200/70 rounded-2xl p-5 sm:p-6 flex flex-col justify-between shadow-2xs hover:shadow-xs transition-all duration-300 ease-in-out hover:-translate-y-1 hover:scale-[1.02]"
+    >
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-2.5">
-          <div class="w-9 h-9 rounded-3xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
-            <img src="/assets/images/approved.svg" alt="">
+          <div
+            class="w-9 h-9 rounded-3xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0"
+          >
+            <img src="/assets/images/approved.svg" alt="" />
           </div>
           <span class="text-xs sm:text-sm font-semibold text-slate-700">Approved Leaves</span>
         </div>
-        <span class="text-[11px] font-semibold text-slate-600 bg-white px-2.5 py-1 rounded-md border border-slate-200/80 shadow-2xs">
+        <span
+          class="text-[11px] font-semibold text-slate-600 bg-white px-2.5 py-1 rounded-md border border-slate-200/80 shadow-2xs"
+        >
           This Year
         </span>
       </div>
@@ -86,21 +108,27 @@
           {{ dashboardData.approvedLeavesCount }}
         </h4>
         <div class="w-16 h-6 flex items-center justify-end">
-         <img src="/assets/images/up.svg" alt="uptrend">
+          <img src="/assets/images/up.svg" alt="uptrend" />
         </div>
       </div>
     </div>
 
     <!-- Rejected Leaves -->
-    <div class="bg-slate-50/80 border border-slate-200/70 rounded-2xl p-5 sm:p-6 flex flex-col justify-between shadow-2xs hover:shadow-xs transition">
+    <div
+      class="bg-slate-50/80 border border-slate-200/70 rounded-2xl p-5 sm:p-6 flex flex-col justify-between shadow-2xs hover:shadow-xs transition-all duration-300 ease-in-out hover:-translate-y-1 hover:scale-[1.02]"
+    >
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-2.5">
-          <div class="w-9 h-9 rounded-3xl bg-rose-100 text-rose-600 flex items-center justify-center shrink-0">
-            <img src="/assets/images/rejected.svg" alt="">
+          <div
+            class="w-9 h-9 rounded-3xl bg-rose-100 text-rose-600 flex items-center justify-center shrink-0"
+          >
+            <img src="/assets/images/rejected.svg" alt="" />
           </div>
           <span class="text-xs sm:text-sm font-semibold text-slate-700">Rejected Leaves</span>
         </div>
-        <span class="text-[11px] font-semibold text-slate-600 bg-white px-2.5 py-1 rounded-md border border-slate-200/80 shadow-2xs">
+        <span
+          class="text-[11px] font-semibold text-slate-600 bg-white px-2.5 py-1 rounded-md border border-slate-200/80 shadow-2xs"
+        >
           This Year
         </span>
       </div>
@@ -109,7 +137,7 @@
           {{ dashboardData.rejectedLeavesCount }}
         </h4>
         <div class="w-16 h-6 flex items-center justify-end">
-         <img src="/assets/images/down.svg" alt="downtrend">
+          <img src="/assets/images/down.svg" alt="downtrend" />
         </div>
       </div>
     </div>
@@ -134,17 +162,22 @@
 
       <div class="space-y-3">
         @for (request of recentRequests; track request.id) {
-          <div class="flex items-center justify-between gap-3 bg-slate-50/70 hover:bg-slate-100/80 p-3.5 sm:p-4 rounded-2xl border border-slate-100/80 transition">
+          <div
+            class="flex items-center justify-between gap-3 bg-slate-50/70 hover:bg-slate-100/80 p-3.5 sm:p-4 rounded-2xl border border-slate-100/80 transition"
+          >
             <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 border border-blue-100/60">
-                <img src="/assets/images/date.svg" alt="date">
+              <div
+                class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 border border-blue-100/60"
+              >
+                <img src="/assets/images/date.svg" alt="date" />
               </div>
               <div>
                 <p class="font-bold text-slate-900 text-sm">
                   {{ request?.leaveType?.name || request?.leaveTypeName }}
                 </p>
                 <p class="text-xs text-slate-400 mt-0.5">
-                  {{ request.startDate | date: 'mediumDate' }} - {{ request.endDate | date: 'mediumDate' }}
+                  {{ request.startDate | date: 'mediumDate' }} -
+                  {{ request.endDate | date: 'mediumDate' }}
                 </p>
               </div>
             </div>
@@ -152,9 +185,11 @@
             <span
               class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold shrink-0"
               [ngClass]="{
-                'bg-emerald-50 text-emerald-700 border border-emerald-200/60': request.status === 'Approved',
-                'bg-amber-50 text-amber-700 border border-amber-200/60': request.status === 'Pending',
-                'bg-rose-50 text-rose-700 border border-rose-200/60': request.status === 'Rejected'
+                'bg-emerald-50 text-emerald-700 border border-emerald-200/60':
+                  request.status === 'Approved',
+                'bg-amber-50 text-amber-700 border border-amber-200/60':
+                  request.status === 'Pending',
+                'bg-rose-50 text-rose-700 border border-rose-200/60': request.status === 'Rejected',
               }"
             >
               <span class="w-1.5 h-1.5 rounded-full bg-current"></span>
@@ -162,7 +197,9 @@
             </span>
           </div>
         } @empty {
-          <div class="p-8 text-center text-xs sm:text-sm text-slate-400 italic bg-slate-50/50 rounded-2xl">
+          <div
+            class="p-8 text-center text-xs sm:text-sm text-slate-400 italic bg-slate-50/50 rounded-2xl"
+          >
             No recent leave requests found.
           </div>
         }
@@ -177,10 +214,12 @@
 
       <div class="space-y-3">
         @for (activity of recentRequests; track activity.id) {
-          <div class="flex items-start gap-3 border-l-4 border-blue-500 bg-slate-50/70 hover:bg-slate-100/80 p-3.5 sm:p-4 rounded-r-2xl transition">
+          <div
+            class="flex items-start gap-3 border-l-4 border-blue-500 bg-slate-50/70 hover:bg-slate-100/80 p-3.5 sm:p-4 rounded-r-2xl transition"
+          >
             <div class="text-xs sm:text-sm w-full space-y-1">
               <p class="font-semibold text-slate-800">
-                Submitted {{ activity?.leaveType?.name || activity?.leaveTypeName }} request 
+                Submitted {{ activity?.leaveType?.name || activity?.leaveTypeName }} request
               </p>
               <p class="text-xs text-slate-400 flex flex-wrap items-center gap-1.5">
                 <span>Status is currently</span>
@@ -189,7 +228,7 @@
                   [ngClass]="{
                     'text-emerald-700 bg-emerald-100/70': activity.status === 'Approved',
                     'text-amber-700 bg-amber-100/70': activity.status === 'Pending',
-                    'text-rose-700 bg-rose-100/70': activity.status === 'Rejected'
+                    'text-rose-700 bg-rose-100/70': activity.status === 'Rejected',
                   }"
                 >
                   {{ activity.status }}
@@ -198,7 +237,9 @@
             </div>
           </div>
         } @empty {
-          <div class="p-8 text-center text-xs sm:text-sm text-slate-400 italic bg-slate-50/50 rounded-2xl">
+          <div
+            class="p-8 text-center text-xs sm:text-sm text-slate-400 italic bg-slate-50/50 rounded-2xl"
+          >
             No recent leave activity found.
           </div>
         }

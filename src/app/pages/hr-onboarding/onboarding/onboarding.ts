@@ -247,4 +247,8 @@ export class Onboarding {
       },
     });
   }
+
+  backHome() {
+    this.router.navigateByUrl('/');
+  }
 }

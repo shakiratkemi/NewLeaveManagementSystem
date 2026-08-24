@@ -1,9 +1,17 @@
-<div class="p-6">
-  <div class="mb-6 flex items-center justify-between">
+<div class="p-6 lg:px-0">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-5">
     <div>
       <h1 class="text-2xl font-bold text-gray-900">Leave History</h1>
       <p class="text-sm text-gray-500">View and manage your past and current leave applications.</p>
     </div>
+    <button
+      (click)="openApplyModal()"
+      type="button"
+      class="inline-flex items-center gap-2 bg-slate-950 hover:bg-slate-800 text-white rounded-xl px-4 py-2.5 text-xs sm:text-sm font-semibold shadow-sm transition shrink-0 self-start sm:self-auto cursor-pointer"
+    >
+      <!-- SVG Plus Icon Placeholder -->
+      <span>+ Apply Leave</span>
+    </button>
   </div>
 
   @if (usingFallbackData) {
@@ -61,10 +69,23 @@
                 <button
                   type="button"
                   (click)="onView(item, $event)"
-                  class="rounded-md p-1.5 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700"
+                  class="rounded-md p-1.5 text-blue-500 transition-colors hover:bg-blue-100 hover:text-blue-700"
                   title="View Details"
                 >
-                  👁️
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                    ></path>
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                    ></path>
+                  </svg>
                 </button>
               </div>
             </td>
@@ -93,6 +114,13 @@
   </div>
 
   <!-- <app-table [data]="leaveRequests" (viewDetails)="handleViewDetails($any($event))"> </app-table> -->
+
+  <app-applyleave
+    [isOpen]="isApplyModalOpen"
+    (close)="closeApplyModal()"
+    (submitLeave)="handleLeaveSubmit($event)"
+  >
+  </app-applyleave>
 
   <app-leave-history-details
     [request]="selectedRequest"
