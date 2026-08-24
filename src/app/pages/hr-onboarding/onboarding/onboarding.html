@@ -61,7 +61,6 @@
           </p>
         </div>
 
-        <!-- Grid Controls -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6 mb-6">
           <!-- Company Name -->
           <div>
@@ -187,7 +186,6 @@
         <div>
           <label class="block text-sm font-semibold text-slate-700 mb-2"> Company Logo </label>
 
-          <!-- Upload Dropzone -->
           <div
             class="relative border-2 border-dashed rounded-2xl p-8 sm:p-10 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-200"
             [ngClass]="{
@@ -209,7 +207,6 @@
               (change)="onFileSelected($event)"
             />
 
-            <!-- Empty State / Drag and Drop Prompt -->
             <ng-container *ngIf="!logoPreview()">
               <div
                 class="w-12 h-12 rounded-full bg-white border border-slate-200/80 shadow-xs flex items-center justify-center mb-3 text-slate-400 transition-transform duration-200"
@@ -236,7 +233,6 @@
               </p>
             </ng-container>
 
-            <!-- File Uploaded Preview State -->
             <ng-container *ngIf="logoPreview()">
               <div class="flex flex-col sm:flex-row items-center gap-4 z-10">
                 <div
@@ -290,10 +286,7 @@
               Set up the primary administrative account.
             </p>
           </div>
-          <!-- Primary Owner Badge -->
-          <span
-            class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/60 shadow-2xs shrink-0"
-          >
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/60 shadow-2xs shrink-0">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5"></span>
             Primary Owner
           </span>
@@ -353,6 +346,49 @@
               class="mt-1.5 text-xs text-rose-500 font-medium"
             >
               A valid work email is required
+            </div>
+          </div>
+
+          <!-- Password -->
+          <div>
+            <label for="password" class="block text-sm font-semibold text-slate-700 mb-2">
+              Password <span class="text-rose-500 ml-0.5">*</span>
+            </label>
+            <input
+              id="password"
+              type="password"
+              formControlName="password"
+              placeholder="••••••••"
+              class="w-full bg-[#F8FAFC] border border-slate-200 rounded-xl px-4 py-3.5 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-500/10 transition duration-150 ease-in-out"
+              [ngClass]="{
+                'border-rose-400 focus:border-rose-500 focus:ring-rose-500/10': onboardingForm.get('password')?.touched && onboardingForm.get('password')?.invalid
+              }"
+            />
+            <div *ngIf="onboardingForm.get('password')?.touched && onboardingForm.get('password')?.invalid" class="mt-1.5 text-xs text-rose-500 font-medium">
+              Password is required (min. 8 characters)
+            </div>
+          </div>
+
+          <!-- Confirm Password -->
+          <div>
+            <label for="confirmPassword" class="block text-sm font-semibold text-slate-700 mb-2">
+              Confirm Password <span class="text-rose-500 ml-0.5">*</span>
+            </label>
+            <input
+              id="confirmPassword"
+              type="password"
+              formControlName="confirmPassword"
+              placeholder="••••••••"
+              class="w-full bg-[#F8FAFC] border border-slate-200 rounded-xl px-4 py-3.5 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-500/10 transition duration-150 ease-in-out"
+              [ngClass]="{
+                'border-rose-400 focus:border-rose-500 focus:ring-rose-500/10': onboardingForm.get('confirmPassword')?.touched && onboardingForm.get('confirmPassword')?.invalid
+              }"
+            />
+            <div *ngIf="onboardingForm.get('confirmPassword')?.touched && onboardingForm.get('confirmPassword')?.hasError('required')" class="mt-1.5 text-xs text-rose-500 font-medium">
+              Please confirm your password
+            </div>
+            <div *ngIf="onboardingForm.get('confirmPassword')?.touched && onboardingForm.get('confirmPassword')?.hasError('passwordMismatch')" class="mt-1.5 text-xs text-rose-500 font-medium">
+              Passwords do not match
             </div>
           </div>
 
@@ -431,14 +467,6 @@
 
       <!-- Action / Footer Buttons -->
       <div class="pt-4 flex items-center justify-end gap-4">
-        <!-- <button
-          type="button"
-          routerLink="/hr/dashboard"
-          class="px-5 py-3 text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition duration-150 cursor-pointer"
-        >
-          Skip for now
-        </button> -->
-
         <button
           type="submit"
           [disabled]="isSubmitting()"

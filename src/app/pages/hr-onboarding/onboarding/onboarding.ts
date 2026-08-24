@@ -1,8 +1,36 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  ReactiveFormsModule,
+  FormBuilder,
+  FormGroup,
+  Validators,
+  AbstractControl,
+  ValidationErrors,
+} from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { HrService } from '../../../core/services/data/hr/hr-service';
+
+// Cross-field validator to check password === confirmPassword
+export function passwordsMatchValidator(control: AbstractControl): ValidationErrors | null {
+  const password = control.get('password')?.value;
+  const confirmPassword = control.get('confirmPassword')?.value;
+
+  if (password !== confirmPassword) {
+    control.get('confirmPassword')?.setErrors({ passwordMismatch: true });
+    return { passwordMismatch: true };
+  }
+
+  const confirmControl = control.get('confirmPassword');
+  if (confirmControl?.hasError('passwordMismatch')) {
+    const errors = { ...confirmControl.errors };
+    delete errors['passwordMismatch'];
+    confirmControl.setErrors(Object.keys(errors).length ? errors : null);
+  }
+
+  return null;
+}
 
 @Component({
   selector: 'app-onboarding',
@@ -12,6 +40,8 @@ import { ToastrService } from 'ngx-toastr';
   styleUrl: './onboarding.css',
 })
 export class Onboarding {
+  private hrService = inject(HrService);
+
   onboardingForm: FormGroup;
   isSubmitting = signal(false);
   isDragging = signal(false);
@@ -81,31 +111,36 @@ export class Onboarding {
     private toastr: ToastrService,
     private router: Router,
   ) {
-    this.onboardingForm = this.fb.group({
-      // Company Profile
-      companyName: ['', [Validators.required]],
-      industry: ['', [Validators.required]],
-      companySize: [''],
-      website: [''],
+    this.onboardingForm = this.fb.group(
+      {
+        // Company Profile
+        companyName: ['', [Validators.required]],
+        industry: ['', [Validators.required]],
+        companySize: [''],
+        website: [''],
 
-      // HR Administrator Setup
-      adminFullName: ['', [Validators.required]],
-      adminWorkEmail: ['', [Validators.required, Validators.email]],
-      adminPhoneNumber: [''],
-      adminJobTitle: [''],
+        // HR Administrator Setup
+        adminFullName: ['', [Validators.required]],
+        adminWorkEmail: ['', [Validators.required, Validators.email]],
+        adminPhoneNumber: [''],
+        adminJobTitle: [''],
 
-      // System Preferences
-      employeeIdPrefix: ['NIG-', [Validators.required]],
-      timezone: ['UTC (Coordinated Universal Time)', [Validators.required]],
-      dateFormat: ['MM/DD/YYYY (e.g., 12/31/2024)', [Validators.required]],
-      currency: ['USD ($) - US Dollar', [Validators.required]],
-    });
+        password: ['', [Validators.required, Validators.minLength(8)]],
+        confirmPassword: ['', [Validators.required]],
+
+        // System Preferences
+        employeeIdPrefix: ['NIG-', [Validators.required]],
+        timezone: ['UTC (Coordinated Universal Time)', [Validators.required]],
+        dateFormat: ['MM/DD/YYYY (e.g., 12/31/2024)', [Validators.required]],
+        currency: ['USD ($) - US Dollar', [Validators.required]],
+      },
+      { validators: passwordsMatchValidator }
+    );
   }
 
   get sampleEmployeeId(): string {
     const raw = (this.onboardingForm.get('employeeIdPrefix')?.value || 'NIG-').trim();
     if (!raw) return 'NIG-001';
-    // If user already included numbers or hyphens
     if (raw.endsWith('-') || raw.endsWith('/') || raw.endsWith('_')) {
       return `${raw}001`;
     }
@@ -177,22 +212,39 @@ export class Onboarding {
 
     this.isSubmitting.set(true);
 
-    const payload = {
-      ...this.onboardingForm.value,
-      sampleEmployeeIdPreview: this.sampleEmployeeId,
-      logoName: this.logoFile()?.name || null,
-    };
+    const formValue = this.onboardingForm.value;
 
-    console.log('HR Onboarding Submitted:', payload);
+    const formData = new FormData();
+    formData.append('CompanyName', formValue.companyName || '');
+    formData.append('Industry', formValue.industry || '');
+    formData.append('CompanySize', formValue.companySize || '');
+    formData.append('Website', formValue.website || '');
+    formData.append('AdminFullName', formValue.adminFullName || '');
+    formData.append('AdminEmail', formValue.adminWorkEmail || '');
+    formData.append('PhoneNumber', formValue.adminPhoneNumber || '');
+    formData.append('JobTitle', formValue.adminJobTitle || '');
+    formData.append('Password', formValue.password || '');
+    formData.append('CodePrefix', formValue.employeeIdPrefix || '');
 
-    setTimeout(() => {
-      this.isSubmitting.set(false);
-      this.toastr.success('Workspace setup completed successfully!', 'Setup Complete');
-      this.router.navigate(['/hr/dashboard']);
-    }, 1000);
-  }
+    const logo = this.logoFile();
+    if (logo) {
+      formData.append('CompanyLogo', logo, logo.name);
+    }
 
-  backHome() {
-    this.router.navigateByUrl('/');
+    this.hrService.registerOrganization(formData).subscribe({
+      next: (res: any) => {
+        console.log('Organization registered:', res);
+        this.isSubmitting.set(false);
+        this.toastr.success('Workspace setup completed successfully!', 'Setup Complete');
+        this.router.navigate(['/hr/dashboard']);
+      },
+      error: (err: any) => {
+        console.error('Error registering organization:', err);
+        this.isSubmitting.set(false);
+        const errorMsg =
+          err?.error?.message || err?.message || 'Failed to complete setup. Please try again.';
+        this.toastr.error(errorMsg, 'Setup Failed');
+      },
+    });
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
@@ -20,12 +20,14 @@ export class SettingsPage implements OnInit {
   isLoading: boolean = false;
   activeTab: 'general' | 'leave-policy' | 'notifications' | 'company' | 'department' = 'general';
 
-  // General Settings
-  companyName: string = 'SBSC LeaveFlow Inc.';
-  IDnaming: string = 'EMP-';
+  // General Settings — signals so zoneless change detection actually
+  // schedules a re-render when the API response updates them.
+  companyName = signal<string>('SBSC LeaveFlow Inc.');
+  IDnaming = signal<string>('EMP-');
   workWeekStart: string = 'Monday';
   fiscalYearStart: string = 'January';
   autoApproveDaysThreshold: number = 2;
+  isLoadingOrganizationSettings: boolean = false;
 
   // Leave Policy Settings (Create Leave Type)
   newLeaveTypeName: string = '';
@@ -38,13 +40,14 @@ export class SettingsPage implements OnInit {
   annualLeaveAllowance: number = 20;
   sickLeaveAllowance: number = 10;
   maternityLeaveAllowance: number = 90;
-  paternityLeaveAllowance: number = 14;
 
   // Notification Settings
   emailAlertsOnNewRequest: boolean = true;
   emailAlertsOnApproval: boolean = true;
   dailyDigestEnabled: boolean = false;
   reminderDaysBeforeLeave: number = 3;
+  isLoadingNotificationSettings: boolean = false;
+  isUpdatingNotificationSettings: boolean = false;
 
   // Department Settings
   newDepartmentName: string = '';
@@ -61,20 +64,54 @@ export class SettingsPage implements OnInit {
     this.loadLeaveTypes();
     this.loadUsers();
     this.loadDepartments();
+    this.loadNotificationSettings();
+    this.loadOrganizationSettings();
 
-    setTimeout(() => {
-      const savedSettings = localStorage.getItem('hr_settings');
-      if (savedSettings) {
-        try {
-          const data = JSON.parse(savedSettings);
-          Object.assign(this, data);
-        } catch (e) {
-          console.error('Error parsing settings', e);
-        }
+    const savedSettings = localStorage.getItem('hr_settings');
+    if (savedSettings) {
+      try {
+        const {
+          emailAlertsOnNewRequest,
+          emailAlertsOnApproval,
+          dailyDigestEnabled,
+          reminderDaysBeforeLeave,
+          companyName, // excluded — this is API-driven (read-only), never restore from cache
+          IDnaming, // excluded — this is API-driven (read-only), never restore from cache
+          ...otherSettings
+        } = JSON.parse(savedSettings);
+        Object.assign(this, otherSettings);
+      } catch (e) {
+        console.error('Error parsing settings', e);
       }
-      this.isLoading = false;
-      this.loaderService.hide();
-    }, 400);
+    }
+    this.isLoading = false;
+    this.loaderService.hide();
+  }
+
+  loadOrganizationSettings(): void {
+    this.isLoadingOrganizationSettings = true;
+    this.hrService.getOrganizationSettings().subscribe({
+      next: (res: any) => {
+        console.log('getOrganizationSettings response:', res);
+        const data = res?.data || res || {};
+
+        if (data.companyName || data.CompanyName) {
+          this.companyName.set(data.companyName || data.CompanyName);
+        }
+
+        const idNamingValue =
+          data.idNaming ?? data.IDNaming ?? data.codePrefix ?? data.CodePrefix;
+        if (idNamingValue) {
+          this.IDnaming.set(idNamingValue);
+        }
+
+        this.isLoadingOrganizationSettings = false;
+      },
+      error: (err: any) => {
+        console.error('Error loading organization settings:', err);
+        this.isLoadingOrganizationSettings = false;
+      },
+    });
   }
 
   loadUsers(): void {
@@ -238,6 +275,42 @@ export class SettingsPage implements OnInit {
     });
   }
 
+  loadNotificationSettings(): void {
+    this.isLoadingNotificationSettings = true;
+    this.hrService.getNotificationSettings().subscribe({
+      next: (res: any) => {
+        console.log('GET Notification Settings response:', res);
+        const data = res?.data || res || {};
+
+        if (typeof data.enableNewLeaveRequestEmails === 'boolean') {
+          this.emailAlertsOnNewRequest = data.enableNewLeaveRequestEmails;
+        }
+
+        if (typeof data.enableLeaveStatusUpdateEmails === 'boolean') {
+          this.emailAlertsOnApproval = data.enableLeaveStatusUpdateEmails;
+        }
+
+        this.isLoadingNotificationSettings = false;
+      },
+      error: (err: any) => {
+        console.error('Error fetching notification settings:', err);
+        const savedSettings = localStorage.getItem('hr_settings');
+        if (savedSettings) {
+          try {
+            const data = JSON.parse(savedSettings);
+            if (typeof data.emailAlertsOnNewRequest === 'boolean') {
+              this.emailAlertsOnNewRequest = data.emailAlertsOnNewRequest;
+            }
+            if (typeof data.emailAlertsOnApproval === 'boolean') {
+              this.emailAlertsOnApproval = data.emailAlertsOnApproval;
+            }
+          } catch (e) {}
+        }
+        this.isLoadingNotificationSettings = false;
+      },
+    });
+  }
+
   setActiveTab(tab: 'general' | 'leave-policy' | 'notifications' | 'company' | 'department'): void {
     this.activeTab = tab;
   }
@@ -246,28 +319,42 @@ export class SettingsPage implements OnInit {
     this.isLoading = true;
     this.loaderService.show();
 
-    setTimeout(() => {
-      const settingsData = {
-        companyName: this.companyName,
-        IDnaming: this.IDnaming,
-        workWeekStart: this.workWeekStart,
-        fiscalYearStart: this.fiscalYearStart,
-        autoApproveDaysThreshold: this.autoApproveDaysThreshold,
-        annualLeaveAllowance: this.annualLeaveAllowance,
-        sickLeaveAllowance: this.sickLeaveAllowance,
-        maternityLeaveAllowance: this.maternityLeaveAllowance,
-        paternityLeaveAllowance: this.paternityLeaveAllowance,
-        emailAlertsOnNewRequest: this.emailAlertsOnNewRequest,
-        emailAlertsOnApproval: this.emailAlertsOnApproval,
-        dailyDigestEnabled: this.dailyDigestEnabled,
-        reminderDaysBeforeLeave: this.reminderDaysBeforeLeave,
-      };
+    const notificationPayload = {
+      enableNewLeaveRequestEmails: Boolean(this.emailAlertsOnNewRequest),
+      enableLeaveStatusUpdateEmails: Boolean(this.emailAlertsOnApproval),
+    };
 
-      localStorage.setItem('hr_settings', JSON.stringify(settingsData));
-      this.isLoading = false;
-      this.loaderService.hide();
+    console.log('Sending PUT Notification Settings payload:', notificationPayload);
 
-      this.toastr.success('Settings saved successfully!', 'Success');
-    }, 500);
+    const settingsData = {
+      workWeekStart: this.workWeekStart,
+      fiscalYearStart: this.fiscalYearStart,
+      autoApproveDaysThreshold: this.autoApproveDaysThreshold,
+      annualLeaveAllowance: this.annualLeaveAllowance,
+      sickLeaveAllowance: this.sickLeaveAllowance,
+      maternityLeaveAllowance: this.maternityLeaveAllowance,
+      emailAlertsOnNewRequest: this.emailAlertsOnNewRequest,
+      emailAlertsOnApproval: this.emailAlertsOnApproval,
+      dailyDigestEnabled: this.dailyDigestEnabled,
+      reminderDaysBeforeLeave: this.reminderDaysBeforeLeave,
+    };
+    localStorage.setItem('hr_settings', JSON.stringify(settingsData));
+
+    this.hrService.updateNotificationSettings(notificationPayload).subscribe({
+      next: (res: any) => {
+        console.log('PUT Notification Settings response:', res);
+        this.isLoading = false;
+        this.loaderService.hide();
+        this.toastr.success('Settings saved successfully!', 'Success');
+      },
+      error: (err: any) => {
+        console.error('Error updating notification settings:', err);
+        this.isLoading = false;
+        this.loaderService.hide();
+        const errorMsg =
+          err?.error?.message || err?.message || 'Failed to save settings. Please try again.';
+        this.toastr.error(errorMsg, 'Save Failed');
+      },
+    });
   }
 }

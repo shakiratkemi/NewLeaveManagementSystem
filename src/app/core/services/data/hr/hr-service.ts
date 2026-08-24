@@ -16,6 +16,10 @@ const routes = {
   departments: 'Departments',
   Department: 'Departments',
   Users: 'Users',
+  notificationSettings: 'Settings/notifications',
+  onboarding: 'Onboarding',
+  registerOrganization: 'Auth/register-organization',
+  organizationSettings: 'Settings/organization',
 };
 
 @Injectable({
@@ -23,12 +27,10 @@ const routes = {
 })
 export class HrService {
   baseUrl: string = environment.apiBaseUrl;
-  // Broadcast when a leave request changes (id + new status)
   leaveRequestUpdated = new Subject<{ id: string; status: string }>();
 
   constructor(private http: HttpClient) {}
 
-  // Dashboard
   getHrDashboard(): Observable<any> {
     return this.http.get(`${this.baseUrl}${routes.dashboard}`);
   }
@@ -85,5 +87,21 @@ export class HrService {
   editUserProfile(updatedData: any): Observable<any> {
     const url = `${this.baseUrl}${routes.editUser}`;
     return this.http.put(url, updatedData);
+  }
+
+  getNotificationSettings(): Observable<any> {
+    return this.http.get(`${this.baseUrl}${routes.notificationSettings}`);
+  }
+
+  updateNotificationSettings(payload: any): Observable<any> {
+    return this.http.put(`${this.baseUrl}${routes.notificationSettings}`, payload);
+  }
+
+  registerOrganization(formData: FormData): Observable<any> {
+    return this.http.post(`${this.baseUrl}${routes.registerOrganization}`, formData);
+  }
+
+  getOrganizationSettings(): Observable<any> {
+    return this.http.get(`${this.baseUrl}${routes.organizationSettings}`);
   }
 }
