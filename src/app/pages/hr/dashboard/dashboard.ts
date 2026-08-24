@@ -59,8 +59,14 @@ export class Dashboard implements OnInit {
     const dialogRef = this.dialog.open(ConfirmationDialog, {
       data: {
         title: 'Approve Leave',
-        content: `Are you sure you want to approve this leave request for ${req.employeeName}?`,
+        content: 'Are you sure you want to approve this leave request?',
         acceptText: 'Approve',
+        details: [
+          { label: 'Employee', value: req.employeeName },
+          { label: 'Leave Type', value: req.leaveTypeName },
+          { label: 'Duration', value: `${req.days} day(s)` },
+          { label: 'Reason', value: req.reason || 'N/A' },
+        ],
       },
       panelClass: 'custom-confirmation-dialog',
     });
@@ -76,8 +82,15 @@ export class Dashboard implements OnInit {
     const dialogRef = this.dialog.open(ConfirmationDialog, {
       data: {
         title: 'Decline Leave',
-        content: `Are you sure you want to decline this leave request for ${req.employeeName}?`,
+        content: 'Are you sure you want to decline this leave request?',
         acceptText: 'Decline',
+        variant: 'danger',
+        details: [
+          { label: 'Employee', value: req.employeeName },
+          { label: 'Leave Type', value: req.leaveTypeName },
+          { label: 'Duration', value: `${req.days} day(s)` },
+          { label: 'Reason', value: req.reason || 'N/A' },
+        ],
       },
       panelClass: 'custom-confirmation-dialog',
     });
