@@ -88,10 +88,7 @@ export class LeaveRequest implements OnInit {
           requestId: record.id || record.requestId || '',
           employeeId: record.employeeId || record.employee?.id || '',
           employeeName:
-            record.employeeName ||
-            record.employee?.fullName ||
-            record.employee?.name ||
-            'Unknown',
+            record.employeeName || record.employee?.fullName || record.employee?.name || 'Unknown',
           department: record.department || record.employee?.department || 'General',
           leaveTypeName: record.leaveTypeName || record.leaveType?.name || record.type || 'Leave',
           startDate: record.startDate || record.createdAt || '',
@@ -253,17 +250,17 @@ export class LeaveRequest implements OnInit {
     this.selectedRecord.set(null);
   }
 
-  confirmApprove(record: HrLeaveRecord): void {
+  confirmApprove(req: HrLeaveRecord): void {
     const dialogRef = this.dialog.open(ConfirmationDialog, {
       data: {
         title: 'Approve Leave',
         content: 'Are you sure you want to approve this leave request?',
         acceptText: 'Approve',
         details: [
-          { label: 'Employee', value: record.employeeName },
-          { label: 'Leave Type', value: record.leaveTypeName },
-          { label: 'Duration', value: `${record.days} day(s)` },
-          { label: 'Reason', value: record.reason || 'N/A' },
+          { label: 'Employee', value: req.employeeName },
+          { label: 'Leave Type', value: req.leaveTypeName },
+          { label: 'Duration', value: `${req.days} day(s)` },
+          { label: 'Reason', value: req.reason || 'N/A' },
         ],
       },
       panelClass: 'custom-confirmation-dialog',
@@ -271,12 +268,12 @@ export class LeaveRequest implements OnInit {
 
     dialogRef.afterClosed().subscribe((result: any) => {
       if (result?.action) {
-        this.approveRequest(record);
+        this.approveRequest(req);
       }
     });
   }
 
-  confirmDecline(record: HrLeaveRecord): void {
+  confirmDecline(req: HrLeaveRecord): void {
     const dialogRef = this.dialog.open(ConfirmationDialog, {
       data: {
         title: 'Decline Leave',
@@ -284,10 +281,10 @@ export class LeaveRequest implements OnInit {
         acceptText: 'Decline',
         variant: 'danger',
         details: [
-          { label: 'Employee', value: record.employeeName },
-          { label: 'Leave Type', value: record.leaveTypeName },
-          { label: 'Duration', value: `${record.days} day(s)` },
-          { label: 'Reason', value: record.reason || 'N/A' },
+          { label: 'Employee', value: req.employeeName },
+          { label: 'Leave Type', value: req.leaveTypeName },
+          { label: 'Duration', value: `${req.days} day(s)` },
+          { label: 'Reason', value: req.reason || 'N/A' },
         ],
       },
       panelClass: 'custom-confirmation-dialog',
@@ -295,7 +292,7 @@ export class LeaveRequest implements OnInit {
 
     dialogRef.afterClosed().subscribe((result: any) => {
       if (result?.action) {
-        this.rejectRequest(record);
+        this.rejectRequest(req);
       }
     });
   }
