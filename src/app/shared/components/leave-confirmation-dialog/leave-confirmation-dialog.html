@@ -1,4 +1,4 @@
-<div class="w-[400px] rounded-3xl p-8 flex flex-col items-start bg-white">
+<div class="w-100 rounded-3xl p-8 flex flex-col items-start bg-white">
   <!-- Title -->
   <p class="text-slate-900 font-semibold leading-7 text-2xl mb-2 text-left">
     {{ data.title }}
@@ -10,11 +10,12 @@
   </p>
 
   <!-- Details Section -->
-  <div *ngIf="data.details && data.details.length > 0"
+  <div
+    *ngIf="data.details && data.details.length > 0"
     class="w-full rounded-xl p-4 mb-6 space-y-2.5 border"
     [ngClass]="{
       'bg-rose-50/50 border-rose-100': isDanger,
-      'bg-slate-50 border-slate-200/70': !isDanger
+      'bg-slate-50 border-slate-200/70': !isDanger,
     }"
   >
     <div *ngFor="let item of data.details" class="flex justify-between items-center text-sm">
@@ -36,7 +37,7 @@
       class="flex-1 cursor-pointer text-white px-6 text-sm font-semibold py-3.5 rounded-xl outline-0 border-0 transition-colors"
       [ngClass]="{
         'bg-rose-600 hover:bg-rose-700': isDanger,
-        'bg-blue-600 hover:bg-blue-700': !isDanger
+        'bg-blue-600 hover:bg-blue-700': !isDanger,
       }"
     >
       {{ data.acceptText || 'Confirm' }}
