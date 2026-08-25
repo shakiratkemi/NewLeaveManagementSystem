@@ -1,13 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { EmployeeFormPayload } from '../../../../core/interface/hr';
 import { ToastrService } from 'ngx-toastr';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { ConfirmationDialog } from '../../../../shared/components/leave-confirmation-dialog/leave-confirmation-dialog';
 
 @Component({
   selector: 'app-add-employee',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, MatDialogModule],
   templateUrl: './add-employee.html',
   styles: ``,
 })
@@ -22,6 +24,8 @@ export class AddEmployee {
   constructor(
     private fb: FormBuilder,
     private toastr: ToastrService,
+    private dialog: MatDialog,
+    private cdr: ChangeDetectorRef,
   ) {
     this.AddEmployeeForm = this.fb.group({
       fullName: ['', Validators.required],
@@ -124,7 +128,6 @@ export class AddEmployee {
       this.save.emit(employee);
     });
 
-    // alert(`${employees.length} employee(s) imported successfully.`);
     this.toastr.success(
       `${employees.length} employee(s) imported successfully.`,
       'Import Successful',
@@ -153,6 +156,25 @@ export class AddEmployee {
 
     const payload = this.AddEmployeeForm.value as EmployeeFormPayload;
     console.log('AddEmployee onSubmit payload:', payload);
-    this.save.emit(payload);
+    this.openConfirmationDialog(payload);
+  }
+
+  openConfirmationDialog(payload: EmployeeFormPayload): void {
+    const dialogRef = this.dialog.open(ConfirmationDialog, {
+      data: {
+        title: 'Add Employee',
+        content: 'Are you sure you want to add this employee?',
+        acceptText: 'Yes, Add Employee',
+      },
+      panelClass: 'custom-confirmation-dialog',
+    });
+
+    dialogRef.afterClosed().subscribe((result: any) => {
+      if (result?.action) {
+        this.save.emit(payload);
+        this.toastr.success('Employee added successfully.', 'Add Employee');
+        this.onClose();
+      }
+    });
   }
 }

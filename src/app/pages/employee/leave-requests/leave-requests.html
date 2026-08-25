@@ -2,7 +2,9 @@
   <div class="max-w-7xl mx-auto space-y-6">
     <!-- Page Header -->
     <div>
-      <span class="text-[11px] font-bold text-slate-400 tracking-wider uppercase">Team Management</span>
+      <span class="text-[11px] font-bold text-slate-400 tracking-wider uppercase"
+        >Team Management</span
+      >
       <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mt-0.5">
         Team Leave Requests
       </h1>
@@ -42,7 +44,12 @@
               class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
             >
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                ></path>
               </svg>
             </button>
           }
@@ -111,7 +118,9 @@
               <tr class="hover:bg-slate-50/60 transition">
                 <td class="py-3.5 px-4">
                   <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-full bg-slate-100 text-slate-700 font-bold text-xs flex items-center justify-center shrink-0 border border-slate-200">
+                    <div
+                      class="w-9 h-9 rounded-full bg-slate-100 text-slate-700 font-bold text-xs flex items-center justify-center shrink-0 border border-slate-200"
+                    >
                       {{ getInitials(row.employeeName) }}
                     </div>
                     <div class="flex flex-col">
@@ -123,7 +132,8 @@
                 <td class="py-3.5 px-4 text-slate-600">{{ row.department }}</td>
                 <td class="py-3.5 px-4 text-slate-700 font-medium">{{ row.leaveTypeName }}</td>
                 <td class="py-3.5 px-4 text-slate-600 whitespace-nowrap">
-                  {{ row.startDate | date: 'mediumDate' }} &ndash; {{ row.endDate | date: 'mediumDate' }}
+                  {{ row.startDate | date: 'mediumDate' }} &ndash;
+                  {{ row.endDate | date: 'mediumDate' }}
                 </td>
                 <td class="py-3.5 px-4 text-center font-semibold text-slate-900">{{ row.days }}</td>
                 <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">
@@ -138,47 +148,96 @@
                   </span>
                 </td>
                 <td class="py-3.5 px-4 text-center">
-                  @if (row.status === 'Pending') {
-                    <div class="flex items-center justify-center gap-2">
-                      <button
-                        (click)="approveRequest(row)"
-                        [disabled]="processing.has(row.requestId)"
-                        class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold shadow-xs transition cursor-pointer disabled:opacity-50"
-                        title="Approve"
-                      >
-                        Approve
-                      </button>
-                      <button
-                        (click)="rejectRequest(row)"
-                        [disabled]="processing.has(row.requestId)"
-                        class="px-3 py-1.5 bg-rose-50 border border-rose-200 text-rose-600 hover:bg-rose-100 rounded-lg text-xs font-semibold transition cursor-pointer disabled:opacity-50"
-                        title="Reject"
-                      >
-                        Reject
-                      </button>
+                  <div class="flex items-center justify-end gap-2">
+                    @if (row.status === 'Pending') {
+                      <div class="flex items-center justify-center gap-2">
+                        <button
+                          (click)="confirmApprove(row)"
+                          [disabled]="processing.has(row.requestId)"
+                          class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold shadow-xs transition cursor-pointer disabled:opacity-50"
+                          title="Approve"
+                        >
+                          <svg
+                            class="w-4 h-4 stroke-[2.5]"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M4.5 12.75l6 6 9-13.5"
+                            />
+                          </svg>
+                        </button>
+                        <button
+                          (click)="confirmDecline(row)"
+                          [disabled]="processing.has(row.requestId)"
+                          class="px-3 py-1.5 bg-rose-50 border border-rose-200 text-rose-600 hover:bg-rose-100 rounded-lg text-xs font-semibold transition cursor-pointer disabled:opacity-50"
+                          title="Reject"
+                        >
+                          <svg
+                            class="w-4 h-4 stroke-[2.5]"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>
+                        </button>
+                        <button
+                          (click)="openDetailsModal(row)"
+                          class="p-2 text-blue-700 hover:text-[#68a7f5] hover:bg-[#68a7f5]/10 rounded-lg transition"
+                          title="View Details"
+                        >
+                          <svg
+                            class="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                            ></path>
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                            ></path>
+                          </svg>
+                        </button>
+                      </div>
+                    } @else {
                       <button
                         (click)="openDetailsModal(row)"
-                        class="p-2 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition cursor-pointer"
+                        class="p-2 text-blue-700 hover:text-[#68a7f5] hover:bg-[#68a7f5]/10 rounded-lg transition"
                         title="View Details"
                       >
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                          ></path>
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                          ></path>
                         </svg>
                       </button>
-                    </div>
-                  } @else {
-                    <button
-                      (click)="openDetailsModal(row)"
-                      class="p-2 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition cursor-pointer"
-                      title="View Details"
-                    >
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                      </svg>
-                    </button>
-                  }
+                    }
+                  </div>
                 </td>
               </tr>
             } @empty {
@@ -225,7 +284,9 @@
 
         <!-- Modal Body -->
         <div class="p-5 space-y-4">
-          <div class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200/60">
+          <div
+            class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200/60"
+          >
             <div
               class="w-10 h-10 rounded-full bg-[#0d1d3e] text-white font-bold flex items-center justify-center text-sm"
             >
@@ -252,12 +313,16 @@
 
             <div>
               <span class="block uppercase font-bold text-slate-400">Leave Category</span>
-              <span class="font-semibold text-slate-800 text-sm mt-0.5 block">{{ rec.leaveTypeName }}</span>
+              <span class="font-semibold text-slate-800 text-sm mt-0.5 block">{{
+                rec.leaveTypeName
+              }}</span>
             </div>
 
             <div>
               <span class="block uppercase font-bold text-slate-400">Total Duration</span>
-              <span class="font-semibold text-slate-800 text-sm mt-0.5 block">{{ rec.days }} Working Day(s)</span>
+              <span class="font-semibold text-slate-800 text-sm mt-0.5 block"
+                >{{ rec.days }} Working Day(s)</span
+              >
             </div>
 
             <div>
@@ -270,7 +335,9 @@
 
           <div class="space-y-1">
             <span class="block uppercase font-bold text-slate-400 text-xs">Reason Provided</span>
-            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/60 text-xs text-slate-700">
+            <div
+              class="p-3 bg-slate-50 rounded-xl border border-slate-200/60 text-xs text-slate-700"
+            >
               {{ rec.reason }}
             </div>
           </div>
