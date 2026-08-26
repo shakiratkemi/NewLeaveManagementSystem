@@ -20,6 +20,7 @@ const routes = {
   onboarding: 'Onboarding',
   registerOrganization: 'Auth/register-organization',
   organizationSettings: 'Settings/organization',
+  assignTeamLead: 'Departments/assign-team-lead',
 };
 
 @Injectable({
@@ -68,6 +69,13 @@ export class HrService {
     payload: { name: string; teamLeadName?: string; teamLeadId?: string } | any,
   ): Observable<any> {
     return this.http.post(`${this.baseUrl}${routes.Department}`, payload);
+  }
+
+  assignTeamLead(departmentId: string, teamLeadId: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}${routes.assignTeamLead}`, {
+      departmentId,
+      teamLeadId,
+    });
   }
 
   approveLeaveRequest(id: string): Observable<any> {

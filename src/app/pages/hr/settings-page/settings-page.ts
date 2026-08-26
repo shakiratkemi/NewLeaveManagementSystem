@@ -51,12 +51,16 @@ export class SettingsPage implements OnInit {
 
   // Department Settings
   newDepartmentName: string = '';
-  selectedTeamLead: string = '';
   usersList: any[] = [];
   isLoadingUsers: boolean = false;
   departmentsList: any[] = [];
   isLoadingDepartments: boolean = false;
   isSubmittingDepartment: boolean = false;
+
+  // Assign Team Lead Settings — separate, independent action
+  selectedDepartmentForTeamLead: string = '';
+  selectedTeamLeadForAssignment: string = '';
+  isAssigningTeamLead: boolean = false;
 
   ngOnInit(): void {
     this.isLoading = true;
@@ -180,21 +184,12 @@ export class SettingsPage implements OnInit {
       name: this.newDepartmentName.trim(),
     };
 
-    if (this.selectedTeamLead) {
-      payload.teamLeadName = this.selectedTeamLead;
-      const foundUser = this.usersList.find((u) => u.fullName === this.selectedTeamLead);
-      if (foundUser?.id) {
-        payload.teamLeadId = foundUser.id;
-      }
-    }
-
     this.isSubmittingDepartment = true;
     this.hrService.createDepartment(payload).subscribe({
       next: (res: any) => {
         const deptName = payload.name;
         this.toastr.success(`Department "${deptName}" created successfully!`, 'Success');
         this.newDepartmentName = '';
-        this.selectedTeamLead = '';
         this.isSubmittingDepartment = false;
         this.loadDepartments();
       },
@@ -206,6 +201,37 @@ export class SettingsPage implements OnInit {
         this.isSubmittingDepartment = false;
       },
     });
+  }
+
+  assignTeamLead(): void {
+    if (!this.selectedDepartmentForTeamLead) {
+      this.toastr.warning('Please select a department.', 'Validation Error');
+      return;
+    }
+    if (!this.selectedTeamLeadForAssignment) {
+      this.toastr.warning('Please select a team lead.', 'Validation Error');
+      return;
+    }
+
+    this.isAssigningTeamLead = true;
+    this.hrService
+      .assignTeamLead(this.selectedDepartmentForTeamLead, this.selectedTeamLeadForAssignment)
+      .subscribe({
+        next: (res: any) => {
+          this.toastr.success('Team lead assigned successfully!', 'Success');
+          this.selectedDepartmentForTeamLead = '';
+          this.selectedTeamLeadForAssignment = '';
+          this.isAssigningTeamLead = false;
+          this.loadDepartments();
+        },
+        error: (err: any) => {
+          console.error('Error assigning team lead:', err);
+          const errorMsg =
+            err?.error?.message || err?.message || 'Failed to assign team lead. Please try again.';
+          this.toastr.error(errorMsg, 'Assignment Failed');
+          this.isAssigningTeamLead = false;
+        },
+      });
   }
 
   loadLeaveTypes(): void {
