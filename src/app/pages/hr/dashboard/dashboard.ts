@@ -6,6 +6,7 @@ import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ConfirmationDialog } from '../../../shared/components/leave-confirmation-dialog/leave-confirmation-dialog';
+import { HrLeaveRecord } from '../../../core/interface/hr';
 
 @Component({
   selector: 'app-dashboard',
@@ -17,6 +18,7 @@ import { ConfirmationDialog } from '../../../shared/components/leave-confirmatio
 export class Dashboard implements OnInit {
   dashboardData!: any;
   leaveRequests = signal<any[]>([]);
+  allRecords = signal<HrLeaveRecord[]>([]);
   pendingRequests = computed(() =>
     this.leaveRequests().filter((r) => (r as any).status === 'Pending'),
   );
@@ -26,6 +28,7 @@ export class Dashboard implements OnInit {
   departments: string[] = ['All'];
   statuses: string[] = ['All', 'Pending', 'Approved', 'Rejected'];
   isMobileMenuOpen = false;
+  selectedRecord = signal<HrLeaveRecord | null>(null);
 
   filteredRequests = computed(() => {
     return this.leaveRequests().filter((req) => {
@@ -55,7 +58,9 @@ export class Dashboard implements OnInit {
     private dialog: MatDialog,
   ) {}
 
-  confirmApprove(req: any): void {
+  processing = new Set<string>();
+
+  confirmApprove(req: HrLeaveRecord): void {
     const dialogRef = this.dialog.open(ConfirmationDialog, {
       data: {
         title: 'Approve Leave',
@@ -73,7 +78,7 @@ export class Dashboard implements OnInit {
 
     dialogRef.afterClosed().subscribe((result: any) => {
       if (result?.action) {
-        this.updateStatus(req.id || req.requestId, 'Approved');
+        this.approveRequest(req);
       }
     });
   }
@@ -97,7 +102,7 @@ export class Dashboard implements OnInit {
 
     dialogRef.afterClosed().subscribe((result: any) => {
       if (result?.action) {
-        this.updateStatus(req.id || req.requestId, 'Rejected');
+        this.rejectRequest(req);
       }
     });
   }
@@ -116,49 +121,69 @@ export class Dashboard implements OnInit {
     });
   }
 
-  updateStatus(id: string, newStatus: 'Approved' | 'Rejected'): void {
-    if (!id) {
-      this.toastr.warning('Invalid leave request ID.', 'Warning');
-      return;
-    }
-
-    // Update in local storage if present
-    const localStr = localStorage.getItem('local_leave_requests');
-    if (localStr) {
-      const localList = JSON.parse(localStr);
-      const updatedLocal = localList.map((r: any) =>
-        r.id === id || r.requestId === id ? { ...r, status: newStatus } : r,
-      );
-      localStorage.setItem('local_leave_requests', JSON.stringify(updatedLocal));
-    }
-
-    // Update in component state immediately
-    const updated = this.leaveRequests().map((r) =>
-      (r as any).id === id || (r as any).requestId === id ? { ...(r as any), status: newStatus } : r,
-    );
-    this.leaveRequests.set(updated);
-
-    const call =
-      newStatus === 'Approved'
-        ? this.hrService.approveLeaveRequest(id)
-        : this.hrService.rejectLeaveRequest(id);
-
-    call.subscribe({
+  approveRequest(record: HrLeaveRecord): void {
+    const id = record.requestId || (record as any).id;
+    if (!id) return;
+    this.processing.add(id);
+    this.hrService.approveLeaveRequest(id).subscribe({
       next: (res: any) => {
-        console.log('Dashboard updateStatus response:', res);
-        this.toastr.success(
-          `Leave request ${newStatus.toLowerCase()} successfully!`,
-          'Status Updated',
-        );
-        this.loadDashboard();
+        console.log('approveLeaveRequest response:', res);
+        // fetch updated record from server
+        this.hrService.getRequestById(id).subscribe({
+          next: (r: any) => {
+            const payload = r?.data ?? r;
+            const single = Array.isArray(payload) ? payload[0] : payload;
+            const mapped = this.mapSingleRecord(single || record);
+            this.replaceRecord(mapped);
+            this.selectedRecord.set(mapped);
+            this.processing.delete(id);
+          },
+          error: (err: any) => {
+            const errorMsg = err?.error?.message || 'Failed fetching updated record after approve.';
+            this.toastr.error(errorMsg, 'Update Failed');
+            this.replaceRecord({ ...record, status: 'Approved' });
+            this.selectedRecord.set({ ...record, status: 'Approved' });
+            this.processing.delete(id);
+          },
+        });
       },
       error: (err: any) => {
-        console.log('Update status offline fallback');
-        this.toastr.success(
-          `Leave request ${newStatus.toLowerCase()} successfully!`,
-          'Status Updated',
-        );
-        this.loadDashboard();
+        const errorMsg = err?.error?.message || 'Failed to approve request.';
+        this.toastr.error(errorMsg, 'Update Failed');
+        this.processing.delete(id);
+      },
+    });
+  }
+
+  rejectRequest(record: HrLeaveRecord): void {
+    const id = record.requestId || (record as any).id;
+    if (!id) return;
+    this.processing.add(id);
+    this.hrService.rejectLeaveRequest(id).subscribe({
+      next: (res: any) => {
+        console.log('rejectLeaveRequest response:', res);
+        this.hrService.getRequestById(id).subscribe({
+          next: (r: any) => {
+            const payload = r?.data ?? r;
+            const single = Array.isArray(payload) ? payload[0] : payload;
+            const mapped = this.mapSingleRecord(single || record);
+            this.replaceRecord(mapped);
+            this.selectedRecord.set(mapped);
+            this.processing.delete(id);
+          },
+          error: (err: any) => {
+            const errorMsg = err?.error?.message || 'Failed to update record after reject';
+            this.toastr.error(errorMsg, 'Update Failed');
+            this.replaceRecord({ ...record, status: 'Rejected' });
+            this.selectedRecord.set({ ...record, status: 'Rejected' });
+            this.processing.delete(id);
+          },
+        });
+      },
+      error: (err: any) => {
+        const errorMsg = err?.error?.message || 'Failed to reject request.';
+        this.toastr.error(errorMsg, 'Update Failed');
+        this.processing.delete(id);
       },
     });
   }
@@ -218,7 +243,11 @@ export class Dashboard implements OnInit {
               id: item.id ?? item.requestId ?? '',
               requestId: item.id ?? item.requestId ?? '',
               employeeName:
-                item.employeeName ?? item.employee?.fullName ?? item.employee?.name ?? item.name ?? 'Employee',
+                item.employeeName ??
+                item.employee?.fullName ??
+                item.employee?.name ??
+                item.name ??
+                'Employee',
               department: item.department ?? item.employee?.department ?? 'Engineering',
               leaveTypeName: item.leaveTypeName ?? item.leaveType?.name ?? item.type ?? 'Leave',
               startDate: item.startDate ?? item.createdAt ?? '',
@@ -283,6 +312,31 @@ export class Dashboard implements OnInit {
         console.error('HR Dashboard API error:', error);
       },
     });
+  }
+
+  private mapSingleRecord(record: any): HrLeaveRecord {
+    return {
+      requestId: record.id || record.requestId || '',
+      employeeId: record.employeeId || record.employee?.id || record.employeeId || '',
+      employeeName:
+        record.employeeName || record.employee?.name || record.employeeName || 'Unknown',
+      department: record.department || record.employee?.department || 'Unknown',
+      leaveTypeName: record.leaveTypeName || 'Unknown',
+      startDate: record.startDate || record.createdAt || '',
+      endDate: record.endDate || '',
+      days: record.numberOfDays ?? record.days ?? 0,
+      reason: record.reason || '',
+      appliedOn: record.createdAt || record.appliedOn || '',
+      status: record.status || 'Pending',
+      approverName: record.managerComments ? 'Manager' : record.approverName || undefined,
+      approverRemarks: record.managerComments || record.approverRemarks || undefined,
+      contactDetails: record.employee?.email || record.contactDetails || undefined,
+    } as HrLeaveRecord;
+  }
+
+  private replaceRecord(updated: HrLeaveRecord): void {
+    const list = this.allRecords().map((r) => (r.requestId === updated.requestId ? updated : r));
+    this.allRecords.set(list);
   }
 
   getStatusClass(status: string): string {
