@@ -6,6 +6,11 @@ import { ToastrService } from 'ngx-toastr';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ConfirmationDialog } from '../../../../shared/components/leave-confirmation-dialog/leave-confirmation-dialog';
 
+export interface DepartmentOption {
+  id: string;
+  name: string;
+}
+
 @Component({
   selector: 'app-add-employee',
   standalone: true,
@@ -15,7 +20,7 @@ import { ConfirmationDialog } from '../../../../shared/components/leave-confirma
 })
 export class AddEmployee {
   @Input() isOpen = false;
-  @Input() departments: readonly string[] = [];
+  @Input() departments: readonly DepartmentOption[] = [];
   @Output() close = new EventEmitter<void>();
   @Output() save = new EventEmitter<EmployeeFormPayload>();
 
@@ -30,7 +35,7 @@ export class AddEmployee {
     this.AddEmployeeForm = this.fb.group({
       fullName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      department: ['Engineering', Validators.required],
+      departmentId: ['', Validators.required],
       designation: ['', Validators.required],
       role: ['Employee', Validators.required],
       clientResetUrl: [`${window.location.origin}/reset-token`, Validators.required],
@@ -94,15 +99,25 @@ export class AddEmployee {
       return;
     }
 
+    const unmatchedDepartments = new Set<string>();
+
     const employees: EmployeeFormPayload[] = rows
       .slice(1)
       .map((row) => {
         const values = row.split(',').map((value) => value.trim());
+        const deptName = values[2];
+        const matchedDept = this.departments.find(
+          (d) => d.name.toLowerCase() === deptName?.toLowerCase(),
+        );
+
+        if (deptName && !matchedDept) {
+          unmatchedDepartments.add(deptName);
+        }
 
         return {
           fullName: values[0],
           email: values[1],
-          department: values[2],
+          departmentId: matchedDept?.id ?? '',
           designation: values[3],
           role: values[4],
           clientResetUrl: `${window.location.origin}/reset-token`,
@@ -112,10 +127,17 @@ export class AddEmployee {
         (employee) =>
           employee.fullName &&
           employee.email &&
-          employee.department &&
+          employee.departmentId &&
           employee.designation &&
           employee.role,
       );
+
+    if (unmatchedDepartments.size > 0) {
+      this.toastr.warning(
+        `These departments in the CSV don't match existing departments and were skipped: ${Array.from(unmatchedDepartments).join(', ')}`,
+        'Unmatched Departments',
+      );
+    }
 
     if (employees.length === 0) {
       this.toastr.warning('No valid employee records were found in the CSV.', 'Invalid');
@@ -140,7 +162,7 @@ export class AddEmployee {
     this.AddEmployeeForm.reset({
       fullName: '',
       email: '',
-      department: '',
+      departmentId: '',
       designation: '',
       role: 'Employee',
       clientResetUrl: `${window.location.origin}/reset-token`,

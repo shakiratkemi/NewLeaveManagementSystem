@@ -26,7 +26,7 @@ export type EmployeeFormData = {
 export interface EmployeeFormPayload {
   fullName: string;
   email: string;
-  department: string;
+  departmentId: string;
   designation: string;
   role: string;
   clientResetUrl?: string;

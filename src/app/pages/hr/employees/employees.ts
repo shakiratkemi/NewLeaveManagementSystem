@@ -9,7 +9,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatPaginatorModule, MatPaginator, PageEvent } from '@angular/material/paginator';
-import { AddEmployee } from './add-employee/add-employee';
+import { AddEmployee, DepartmentOption } from './add-employee/add-employee';
 import { HrService } from '../../../core/services/data/hr/hr-service';
 import { AuthService } from '../../../core/services/auth-service';
 import {
@@ -35,6 +35,7 @@ export class Employees implements OnInit, AfterViewInit {
   searchQuery: string = '';
   selectedDepartmentFilter: string = 'ALL';
   departments: string[] = ['ALL'];
+  departmentOptions: DepartmentOption[] = [];
   selectedStatus: string = 'All';
   selectedEmployeeForModal: EmployeeRecord | null = null;
   selectedEmployeeForEdit: EditEmployeeProfile | null = null;
@@ -133,6 +134,13 @@ export class Employees implements OnInit, AfterViewInit {
         } else if (Array.isArray(res?.data?.departments)) {
           deptList = res.data.departments;
         }
+
+        this.departmentOptions = deptList
+          .map((d: any) => ({
+            id: String(d.id || d.departmentId || d._id || d.name || '').trim(),
+            name: String(d.departmentName || d.name || d.title || '').trim(),
+          }))
+          .filter((d) => Boolean(d.id) && Boolean(d.name));
 
         const names: string[] = deptList
           .map((d: any) => {
