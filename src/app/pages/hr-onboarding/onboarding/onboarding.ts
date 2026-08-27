@@ -32,6 +32,21 @@ export function passwordsMatchValidator(control: AbstractControl): ValidationErr
   return null;
 }
 
+// Maps backend ValidationProblemDetails field keys (PascalCase, matching
+// the multipart/form-data payload keys) to this form's control names.
+const SERVER_FIELD_TO_CONTROL: Record<string, string> = {
+  CompanyName: 'companyName',
+  Industry: 'industry',
+  CompanySize: 'companySize',
+  Website: 'website',
+  AdminFullName: 'adminFullName',
+  AdminEmail: 'adminWorkEmail',
+  PhoneNumber: 'adminPhoneNumber',
+  JobTitle: 'adminJobTitle',
+  Password: 'password',
+  CodePrefix: 'employeeIdPrefix',
+};
+
 @Component({
   selector: 'app-onboarding',
   standalone: true,
@@ -49,6 +64,9 @@ export class Onboarding {
   // Logo state
   logoPreview = signal<string | null>(null);
   logoFile = signal<File | null>(null);
+  // CompanyLogo isn't a form control (it's a raw File in a signal), so its
+  // server validation error is tracked separately and shown under the dropzone.
+  logoError = signal<string | null>(null);
 
   readonly industries: string[] = [
     'Technology & Software',
@@ -109,7 +127,7 @@ export class Onboarding {
   constructor(
     private fb: FormBuilder,
     private toastr: ToastrService,
-    private router: Router,
+    private router: Router
   ) {
     this.onboardingForm = this.fb.group(
       {
@@ -136,6 +154,19 @@ export class Onboarding {
       },
       { validators: passwordsMatchValidator }
     );
+
+    // Clear a control's server-side error the moment the user edits it,
+    // so a stale backend message doesn't linger after they've fixed the field.
+    Object.keys(this.onboardingForm.controls).forEach((key) => {
+      this.onboardingForm.get(key)?.valueChanges.subscribe(() => {
+        const control = this.onboardingForm.get(key);
+        if (control?.hasError('serverError')) {
+          const errors = { ...control.errors };
+          delete errors['serverError'];
+          control.setErrors(Object.keys(errors).length ? errors : null);
+        }
+      });
+    });
   }
 
   get sampleEmployeeId(): string {
@@ -190,6 +221,7 @@ export class Onboarding {
     }
 
     this.logoFile.set(file);
+    this.logoError.set(null); // clear any prior server error once a file is chosen
 
     const reader = new FileReader();
     reader.onload = () => {
@@ -203,6 +235,28 @@ export class Onboarding {
     this.logoFile.set(null);
   }
 
+  // Maps the backend's { errors: { FieldName: string[] } } shape onto the
+  // matching form controls (and the logo signal), so each message renders
+  // directly under its field instead of only going to console/toast.
+  private applyServerValidationErrors(errors: Record<string, string[]>): void {
+    Object.keys(errors).forEach((serverKey) => {
+      const messages = errors[serverKey];
+      const firstMessage = Array.isArray(messages) ? messages[0] : String(messages);
+
+      if (serverKey === 'CompanyLogo') {
+        this.logoError.set(firstMessage);
+        return;
+      }
+
+      const controlName = SERVER_FIELD_TO_CONTROL[serverKey];
+      const control = controlName ? this.onboardingForm.get(controlName) : null;
+      if (control) {
+        control.setErrors({ ...control.errors, serverError: firstMessage });
+        control.markAsTouched();
+      }
+    });
+  }
+
   onSubmit(): void {
     if (this.onboardingForm.invalid) {
       this.onboardingForm.markAllAsTouched();
@@ -211,6 +265,7 @@ export class Onboarding {
     }
 
     this.isSubmitting.set(true);
+    this.logoError.set(null);
 
     const formValue = this.onboardingForm.value;
 
@@ -241,14 +296,18 @@ export class Onboarding {
       error: (err: any) => {
         console.error('Error registering organization:', err);
         this.isSubmitting.set(false);
+
+        const validationErrors = err?.error?.errors;
+        if (err?.status === 400 && validationErrors) {
+          this.applyServerValidationErrors(validationErrors);
+          this.toastr.error('Please fix the highlighted fields below.', 'Validation Error');
+          return;
+        }
+
         const errorMsg =
           err?.error?.message || err?.message || 'Failed to complete setup. Please try again.';
         this.toastr.error(errorMsg, 'Setup Failed');
       },
     });
-  }
-
-  backHome() {
-    this.router.navigateByUrl('/');
   }
 }
