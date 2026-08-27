@@ -1,64 +1,18 @@
-<div class="min-h-screen bg-[#F8FAFC] py-12 px-4 sm:px-6 lg:px-8 antialiased text-slate-800">
+<div class="min-h-screen bg-[#F8FAFC] py-12 px-4 sm:px-6 lg:px-8 font-sans antialiased text-slate-800">
   <div class="max-w-4xl mx-auto space-y-8">
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-      <div>
-        <span class="text-[11px] font-bold tracking-widest uppercase text-slate-400 block mb-1">
-          SETUP WIZARD
-        </span>
-        <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-          HR Administrator Onboarding
-        </h1>
-        <p class="mt-2 text-slate-500 text-base font-normal">
-          Configure your workspace settings to get started with LeaveFlow.
-        </p>
-      </div>
-
-      <!-- Back Home Button -->
-      <button
-        type="button"
-        routerLink="/dashboard"
-        class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200/80 bg-white text-slate-600 hover:bg-slate-50 hover:border-slate-300 shadow-2xs hover:text-blue-600 transition-colors duration-200 shrink-0 self-start sm:self-center cursor-pointer"
-      >
-        <svg
-          class="w-4 h-4 stroke-2"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="M15 19l-7-7 7-7" />
-          <path d="M19 12H8" />
-          <path d="M3 10.5V18a2 2 0 0 0 2 2h3" />
-        </svg>
-        <span class="text-sm font-semibold">Back Home</span>
-      </button>
-    </div>
-
     <!-- Header Section -->
-    <!-- <div>
-      <span class="text-[11px] font-bold tracking-widest uppercase text-slate-400 block mb-1"
-        >SETUP WIZARD</span
-      >
-      <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-        HR Administrator Onboarding
-      </h1>
-      <p class="mt-2 text-slate-500 text-base font-normal">
-        Configure your workspace settings to get started with LeaveFlow.
-      </p>
-    </div> -->
+    <div>
+      <span class="text-[11px] font-bold tracking-widest uppercase text-slate-400 block mb-1">SETUP WIZARD</span>
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">HR Administrator Onboarding</h1>
+      <p class="mt-2 text-slate-500 text-base font-normal">Configure your workspace settings to get started with LeaveFlow.</p>
+    </div>
 
     <form [formGroup]="onboardingForm" (ngSubmit)="onSubmit()" class="space-y-8">
       <!-- CARD 1: Company Profile -->
-      <div
-        class="bg-white rounded-3xl border border-slate-100 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.03)] p-6 sm:p-10"
-      >
+      <div class="bg-white rounded-3xl border border-slate-100 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.03)] p-6 sm:p-10">
         <div class="mb-8">
           <h2 class="text-xl font-bold text-slate-900 tracking-tight">Company Profile</h2>
-          <p class="text-sm text-slate-500 mt-1 font-normal">
-            Provide basic information about your organization.
-          </p>
+          <p class="text-sm text-slate-500 mt-1 font-normal">Provide basic information about your organization.</p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6 mb-6">
@@ -74,19 +28,14 @@
               placeholder="e.g. Acme Corp"
               class="w-full bg-[#F8FAFC] border border-slate-200 rounded-xl px-4 py-3.5 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-500/10 transition duration-150 ease-in-out"
               [ngClass]="{
-                'border-rose-400 focus:border-rose-500 focus:ring-rose-500/10':
-                  onboardingForm.get('companyName')?.touched &&
-                  onboardingForm.get('companyName')?.invalid,
+                'border-rose-400 focus:border-rose-500 focus:ring-rose-500/10': onboardingForm.get('companyName')?.touched && onboardingForm.get('companyName')?.invalid
               }"
             />
-            <div
-              *ngIf="
-                onboardingForm.get('companyName')?.touched &&
-                onboardingForm.get('companyName')?.invalid
-              "
-              class="mt-1.5 text-xs text-rose-500 font-medium"
-            >
+            <div *ngIf="onboardingForm.get('companyName')?.touched && onboardingForm.get('companyName')?.hasError('required')" class="mt-1.5 text-xs text-rose-500 font-medium">
               Company name is required
+            </div>
+            <div *ngIf="onboardingForm.get('companyName')?.hasError('serverError')" class="mt-1.5 text-xs text-rose-500 font-medium">
+              {{ onboardingForm.get('companyName')?.errors?.['serverError'] }}
             </div>
           </div>
 
@@ -102,9 +51,7 @@
                 class="w-full bg-[#F8FAFC] border border-slate-200 rounded-xl px-4 py-3.5 text-sm text-slate-800 focus:outline-none focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-500/10 transition duration-150 ease-in-out appearance-none cursor-pointer"
                 [ngClass]="{
                   'text-slate-400': !onboardingForm.get('industry')?.value,
-                  'border-rose-400 focus:border-rose-500 focus:ring-rose-500/10':
-                    onboardingForm.get('industry')?.touched &&
-                    onboardingForm.get('industry')?.invalid,
+                  'border-rose-400 focus:border-rose-500 focus:ring-rose-500/10': onboardingForm.get('industry')?.touched && onboardingForm.get('industry')?.invalid
                 }"
               >
                 <option value="" disabled selected>Select industry</option>
@@ -112,26 +59,17 @@
                   {{ ind }}
                 </option>
               </select>
-              <div
-                class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500"
-              >
+              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M19 9l-7 7-7-7"
-                  />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                 </svg>
               </div>
             </div>
-            <div
-              *ngIf="
-                onboardingForm.get('industry')?.touched && onboardingForm.get('industry')?.invalid
-              "
-              class="mt-1.5 text-xs text-rose-500 font-medium"
-            >
+            <div *ngIf="onboardingForm.get('industry')?.touched && onboardingForm.get('industry')?.hasError('required')" class="mt-1.5 text-xs text-rose-500 font-medium">
               Industry selection is required
+            </div>
+            <div *ngIf="onboardingForm.get('industry')?.hasError('serverError')" class="mt-1.5 text-xs text-rose-500 font-medium">
+              {{ onboardingForm.get('industry')?.errors?.['serverError'] }}
             </div>
           </div>
 
@@ -152,18 +90,14 @@
                   {{ size }}
                 </option>
               </select>
-              <div
-                class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500"
-              >
+              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M19 9l-7 7-7-7"
-                  />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                 </svg>
               </div>
+            </div>
+            <div *ngIf="onboardingForm.get('companySize')?.hasError('serverError')" class="mt-1.5 text-xs text-rose-500 font-medium">
+              {{ onboardingForm.get('companySize')?.errors?.['serverError'] }}
             </div>
           </div>
 
@@ -179,20 +113,25 @@
               placeholder="https://example.com"
               class="w-full bg-[#F8FAFC] border border-slate-200 rounded-xl px-4 py-3.5 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-500/10 transition duration-150 ease-in-out"
             />
+            <div *ngIf="onboardingForm.get('website')?.hasError('serverError')" class="mt-1.5 text-xs text-rose-500 font-medium">
+              {{ onboardingForm.get('website')?.errors?.['serverError'] }}
+            </div>
           </div>
         </div>
 
         <!-- Company Logo Upload Area -->
         <div>
-          <label class="block text-sm font-semibold text-slate-700 mb-2"> Company Logo </label>
+          <label class="block text-sm font-semibold text-slate-700 mb-2">
+            Company Logo
+          </label>
 
           <div
             class="relative border-2 border-dashed rounded-2xl p-8 sm:p-10 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-200"
             [ngClass]="{
               'border-indigo-500 bg-indigo-50/40 scale-[1.005]': isDragging(),
-              'border-slate-200 hover:border-slate-300 bg-[#F8FAFC] hover:bg-slate-100/60':
-                !isDragging() && !logoPreview(),
-              'border-slate-200 bg-[#F8FAFC]': logoPreview(),
+              'border-rose-400 bg-rose-50/30': logoError() && !isDragging(),
+              'border-slate-200 hover:border-slate-300 bg-[#F8FAFC] hover:bg-slate-100/60': !isDragging() && !logoPreview() && !logoError(),
+              'border-slate-200 bg-[#F8FAFC]': logoPreview() && !logoError()
             }"
             (dragover)="onDragOver($event)"
             (dragleave)="onDragLeave($event)"
@@ -208,20 +147,9 @@
             />
 
             <ng-container *ngIf="!logoPreview()">
-              <div
-                class="w-12 h-12 rounded-full bg-white border border-slate-200/80 shadow-xs flex items-center justify-center mb-3 text-slate-400 transition-transform duration-200"
-              >
-                <svg
-                  class="w-6 h-6 stroke-[1.75]"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5h10.5a3.75 3.75 0 003.75-3.75 3.375 3.375 0 00-2.25-3.187 4.5 4.5 0 00-8.625-2.625 3.375 3.375 0 00-3.375 3.187A3.75 3.75 0 006.75 19.5z"
-                  />
+              <div class="w-12 h-12 rounded-full bg-white border border-slate-200/80 shadow-xs flex items-center justify-center mb-3 text-slate-400 transition-transform duration-200">
+                <svg class="w-6 h-6 stroke-[1.75]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5h10.5a3.75 3.75 0 003.75-3.75 3.375 3.375 0 00-2.25-3.187 4.5 4.5 0 00-8.625-2.625 3.375 3.375 0 00-3.375 3.187A3.75 3.75 0 006.75 19.5z" />
                 </svg>
               </div>
 
@@ -235,19 +163,11 @@
 
             <ng-container *ngIf="logoPreview()">
               <div class="flex flex-col sm:flex-row items-center gap-4 z-10">
-                <div
-                  class="w-20 h-20 rounded-xl border border-slate-200 bg-white p-2 flex items-center justify-center overflow-hidden shadow-xs"
-                >
-                  <img
-                    [src]="logoPreview()"
-                    alt="Logo Preview"
-                    class="max-w-full max-h-full object-contain"
-                  />
+                <div class="w-20 h-20 rounded-xl border border-slate-200 bg-white p-2 flex items-center justify-center overflow-hidden shadow-xs">
+                  <img [src]="logoPreview()" alt="Logo Preview" class="max-w-full max-h-full object-contain" />
                 </div>
                 <div class="text-center sm:text-left">
-                  <p class="text-sm font-semibold text-slate-800 truncate max-w-xs">
-                    {{ logoFile()?.name }}
-                  </p>
+                  <p class="text-sm font-semibold text-slate-800 truncate max-w-xs">{{ logoFile()?.name }}</p>
                   <p class="text-xs text-slate-400 mt-0.5" *ngIf="logoFile()?.size">
                     {{ (logoFile()!.size / 1024).toFixed(1) }} KB
                   </p>
@@ -272,19 +192,18 @@
               </div>
             </ng-container>
           </div>
+          <div *ngIf="logoError()" class="mt-1.5 text-xs text-rose-500 font-medium">
+            {{ logoError() }}
+          </div>
         </div>
       </div>
 
       <!-- CARD 2: HR Administrator Setup -->
-      <div
-        class="bg-white rounded-3xl border border-slate-100 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.03)] p-6 sm:p-10"
-      >
+      <div class="bg-white rounded-3xl border border-slate-100 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.03)] p-6 sm:p-10">
         <div class="flex items-start justify-between mb-8">
           <div>
             <h2 class="text-xl font-bold text-slate-900 tracking-tight">HR Administrator Setup</h2>
-            <p class="text-sm text-slate-500 mt-1 font-normal">
-              Set up the primary administrative account.
-            </p>
+            <p class="text-sm text-slate-500 mt-1 font-normal">Set up the primary administrative account.</p>
           </div>
           <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/60 shadow-2xs shrink-0">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5"></span>
@@ -305,19 +224,14 @@
               placeholder="Jane Doe"
               class="w-full bg-[#F8FAFC] border border-slate-200 rounded-xl px-4 py-3.5 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-500/10 transition duration-150 ease-in-out"
               [ngClass]="{
-                'border-rose-400 focus:border-rose-500 focus:ring-rose-500/10':
-                  onboardingForm.get('adminFullName')?.touched &&
-                  onboardingForm.get('adminFullName')?.invalid,
+                'border-rose-400 focus:border-rose-500 focus:ring-rose-500/10': onboardingForm.get('adminFullName')?.touched && onboardingForm.get('adminFullName')?.invalid
               }"
             />
-            <div
-              *ngIf="
-                onboardingForm.get('adminFullName')?.touched &&
-                onboardingForm.get('adminFullName')?.invalid
-              "
-              class="mt-1.5 text-xs text-rose-500 font-medium"
-            >
+            <div *ngIf="onboardingForm.get('adminFullName')?.touched && onboardingForm.get('adminFullName')?.hasError('required')" class="mt-1.5 text-xs text-rose-500 font-medium">
               Full name is required
+            </div>
+            <div *ngIf="onboardingForm.get('adminFullName')?.hasError('serverError')" class="mt-1.5 text-xs text-rose-500 font-medium">
+              {{ onboardingForm.get('adminFullName')?.errors?.['serverError'] }}
             </div>
           </div>
 
@@ -333,19 +247,17 @@
               placeholder="jane@company.com"
               class="w-full bg-[#F8FAFC] border border-slate-200 rounded-xl px-4 py-3.5 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-500/10 transition duration-150 ease-in-out"
               [ngClass]="{
-                'border-rose-400 focus:border-rose-500 focus:ring-rose-500/10':
-                  onboardingForm.get('adminWorkEmail')?.touched &&
-                  onboardingForm.get('adminWorkEmail')?.invalid,
+                'border-rose-400 focus:border-rose-500 focus:ring-rose-500/10': onboardingForm.get('adminWorkEmail')?.touched && onboardingForm.get('adminWorkEmail')?.invalid
               }"
             />
-            <div
-              *ngIf="
-                onboardingForm.get('adminWorkEmail')?.touched &&
-                onboardingForm.get('adminWorkEmail')?.invalid
-              "
-              class="mt-1.5 text-xs text-rose-500 font-medium"
-            >
-              A valid work email is required
+            <div *ngIf="onboardingForm.get('adminWorkEmail')?.touched && onboardingForm.get('adminWorkEmail')?.hasError('required')" class="mt-1.5 text-xs text-rose-500 font-medium">
+              Work email is required
+            </div>
+            <div *ngIf="onboardingForm.get('adminWorkEmail')?.touched && onboardingForm.get('adminWorkEmail')?.hasError('email')" class="mt-1.5 text-xs text-rose-500 font-medium">
+              Please enter a valid email address
+            </div>
+            <div *ngIf="onboardingForm.get('adminWorkEmail')?.hasError('serverError')" class="mt-1.5 text-xs text-rose-500 font-medium">
+              {{ onboardingForm.get('adminWorkEmail')?.errors?.['serverError'] }}
             </div>
           </div>
 
@@ -364,8 +276,14 @@
                 'border-rose-400 focus:border-rose-500 focus:ring-rose-500/10': onboardingForm.get('password')?.touched && onboardingForm.get('password')?.invalid
               }"
             />
-            <div *ngIf="onboardingForm.get('password')?.touched && onboardingForm.get('password')?.invalid" class="mt-1.5 text-xs text-rose-500 font-medium">
-              Password is required (min. 8 characters)
+            <div *ngIf="onboardingForm.get('password')?.touched && onboardingForm.get('password')?.hasError('required')" class="mt-1.5 text-xs text-rose-500 font-medium">
+              Password is required
+            </div>
+            <div *ngIf="onboardingForm.get('password')?.touched && onboardingForm.get('password')?.hasError('minlength')" class="mt-1.5 text-xs text-rose-500 font-medium">
+              Password must be at least 8 characters
+            </div>
+            <div *ngIf="onboardingForm.get('password')?.hasError('serverError')" class="mt-1.5 text-xs text-rose-500 font-medium">
+              {{ onboardingForm.get('password')?.errors?.['serverError'] }}
             </div>
           </div>
 
@@ -404,6 +322,9 @@
               placeholder="+1 (555) 000-0000"
               class="w-full bg-[#F8FAFC] border border-slate-200 rounded-xl px-4 py-3.5 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-500/10 transition duration-150 ease-in-out"
             />
+            <div *ngIf="onboardingForm.get('adminPhoneNumber')?.hasError('serverError')" class="mt-1.5 text-xs text-rose-500 font-medium">
+              {{ onboardingForm.get('adminPhoneNumber')?.errors?.['serverError'] }}
+            </div>
           </div>
 
           <!-- Job Title -->
@@ -418,19 +339,18 @@
               placeholder="HR Director"
               class="w-full bg-[#F8FAFC] border border-slate-200 rounded-xl px-4 py-3.5 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-500/10 transition duration-150 ease-in-out"
             />
+            <div *ngIf="onboardingForm.get('adminJobTitle')?.hasError('serverError')" class="mt-1.5 text-xs text-rose-500 font-medium">
+              {{ onboardingForm.get('adminJobTitle')?.errors?.['serverError'] }}
+            </div>
           </div>
         </div>
       </div>
 
       <!-- CARD 3: System Preferences -->
-      <div
-        class="bg-white rounded-3xl border border-slate-100 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.03)] p-6 sm:p-10"
-      >
+      <div class="bg-white rounded-3xl border border-slate-100 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.03)] p-6 sm:p-10">
         <div class="mb-8">
           <h2 class="text-xl font-bold text-slate-900 tracking-tight">System Preferences</h2>
-          <p class="text-sm text-slate-500 mt-1 font-normal">
-            Configure default regional settings and ID formatting for your workspace.
-          </p>
+          <p class="text-sm text-slate-500 mt-1 font-normal">Configure default regional settings and ID formatting for your workspace.</p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
@@ -440,9 +360,7 @@
               <label for="employeeIdPrefix" class="block text-sm font-semibold text-slate-700">
                 Employee ID Format Prefix <span class="text-rose-500 ml-0.5">*</span>
               </label>
-              <span
-                class="text-xs font-mono font-semibold px-2.5 py-0.5 bg-indigo-50 text-indigo-700 border border-indigo-200/60 rounded-md"
-              >
+              <span class="text-xs font-mono font-semibold px-2.5 py-0.5 bg-indigo-50 text-indigo-700 border border-indigo-200/60 rounded-md">
                 Sample: {{ sampleEmployeeId }}
               </span>
             </div>
@@ -453,14 +371,18 @@
               placeholder="e.g. NIG- or EMP-"
               class="w-full bg-[#F8FAFC] border border-slate-200 rounded-xl px-4 py-3.5 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-500/10 transition duration-150 ease-in-out"
               [ngClass]="{
-                'border-rose-400 focus:border-rose-500 focus:ring-rose-500/10':
-                  onboardingForm.get('employeeIdPrefix')?.touched &&
-                  onboardingForm.get('employeeIdPrefix')?.invalid,
+                'border-rose-400 focus:border-rose-500 focus:ring-rose-500/10': onboardingForm.get('employeeIdPrefix')?.touched && onboardingForm.get('employeeIdPrefix')?.invalid
               }"
             />
             <p class="text-xs text-slate-400 font-normal mt-1.5">
               Custom prefix used to automatically generate employee IDs (e.g., NIG-001, EMP-001).
             </p>
+            <div *ngIf="onboardingForm.get('employeeIdPrefix')?.touched && onboardingForm.get('employeeIdPrefix')?.hasError('required')" class="mt-1.5 text-xs text-rose-500 font-medium">
+              Employee ID prefix is required
+            </div>
+            <div *ngIf="onboardingForm.get('employeeIdPrefix')?.hasError('serverError')" class="mt-1.5 text-xs text-rose-500 font-medium">
+              {{ onboardingForm.get('employeeIdPrefix')?.errors?.['serverError'] }}
+            </div>
           </div>
         </div>
       </div>
@@ -480,19 +402,8 @@
           </span>
           <span *ngIf="isSubmitting()" class="flex items-center gap-2">
             <svg class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-              <circle
-                class="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                stroke-width="4"
-              ></circle>
-              <path
-                class="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              ></path>
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
             Completing Setup...
           </span>
