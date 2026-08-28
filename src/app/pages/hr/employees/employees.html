@@ -137,33 +137,32 @@
 
                 <td class="py-4 px-6 min-w-50">
                   <div class="space-y-1.5">
-                    <div>
-                      <div class="flex justify-between text-xs font-medium text-slate-600 mb-0.5">
-                        <span>Annual</span>
-                        <span
-                          >{{ emp.annualLeaveBalance }}/{{ emp.totalAnnualLeave }} days left</span
-                        >
+                    @for (lb of getPreviewLeaveBalances(emp); track lb.typeName) {
+                      <div>
+                        <div class="flex justify-between text-xs font-medium text-slate-600 mb-0.5">
+                          <span>{{ lb.typeName }}</span>
+                          <span>{{ lb.balance }}/{{ lb.total }} days left</span>
+                        </div>
+                        <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                          <div
+                            class="h-full bg-[#68a7f5] rounded-full"
+                            [style.width.%]="lb.total > 0 ? (lb.balance / lb.total) * 100 : 0"
+                          ></div>
+                        </div>
                       </div>
-                      <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                        <div
-                          class="h-full bg-[#68a7f5] rounded-full"
-                          [style.width.%]="(emp.annualLeaveBalance / emp.totalAnnualLeave) * 100"
-                        ></div>
-                      </div>
-                    </div>
+                    } @empty {
+                      <span class="text-xs text-slate-400 italic">No leave types assigned</span>
+                    }
 
-                    <div>
-                      <div class="flex justify-between text-xs font-medium text-slate-600 mb-0.5">
-                        <span>Sick</span>
-                        <span>{{ emp.sickLeaveBalance }}/{{ emp.totalSickLeave }} days left</span>
-                      </div>
-                      <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                        <div
-                          class="h-full bg-emerald-500 rounded-full"
-                          [style.width.%]="(emp.sickLeaveBalance / emp.totalSickLeave) * 100"
-                        ></div>
-                      </div>
-                    </div>
+                    @if (getExtraLeaveBalanceCount(emp) > 0) {
+                      <button
+                        type="button"
+                        (click)="openLeaveModal(emp)"
+                        class="text-[11px] font-semibold text-indigo-600 hover:text-indigo-700"
+                      >
+                        +{{ getExtraLeaveBalanceCount(emp) }} more leave type(s)
+                      </button>
+                    }
                   </div>
                 </td>
 
@@ -266,35 +265,22 @@
             </div>
 
             <div class="pt-2 border-t border-slate-200/60 space-y-1.5">
-              <div>
-                <div class="flex justify-between text-slate-600 mb-0.5">
-                  <span>Annual Leave:</span>
-                  <span class="font-semibold"
-                    >{{ emp.annualLeaveBalance }} / {{ emp.totalAnnualLeave }} Days</span
-                  >
+              @for (lb of emp.leaveBalances; track lb.typeName) {
+                <div>
+                  <div class="flex justify-between text-slate-600 mb-0.5">
+                    <span>{{ lb.typeName }}:</span>
+                    <span class="font-semibold">{{ lb.balance }} / {{ lb.total }} Days</span>
+                  </div>
+                  <div class="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                    <div
+                      class="h-full bg-[#68a7f5] rounded-full"
+                      [style.width.%]="lb.total > 0 ? (lb.balance / lb.total) * 100 : 0"
+                    ></div>
+                  </div>
                 </div>
-                <div class="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
-                  <div
-                    class="h-full bg-[#68a7f5] rounded-full"
-                    [style.width.%]="(emp.annualLeaveBalance / emp.totalAnnualLeave) * 100"
-                  ></div>
-                </div>
-              </div>
-
-              <div>
-                <div class="flex justify-between text-slate-600 mb-0.5">
-                  <span>Sick Leave:</span>
-                  <span class="font-semibold"
-                    >{{ emp.sickLeaveBalance }} / {{ emp.totalSickLeave }} Days</span
-                  >
-                </div>
-                <div class="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
-                  <div
-                    class="h-full bg-emerald-500 rounded-full"
-                    [style.width.%]="(emp.sickLeaveBalance / emp.totalSickLeave) * 100"
-                  ></div>
-                </div>
-              </div>
+              } @empty {
+                <span class="text-slate-400 italic">No leave types assigned</span>
+              }
             </div>
           </div>
 
@@ -344,26 +330,18 @@
               Current Leave Breakdown
             </h4>
 
-            <div class="grid grid-cols-2 gap-3">
-              <div class="bg-indigo-50/60 border border-indigo-100 p-3 rounded-xl">
-                <div class="text-xs text-indigo-600 font-medium">Annual Leave</div>
-                <div class="text-xl font-bold text-indigo-950 mt-1">
-                  {{ employee.annualLeaveBalance }} Days
+            <div class="grid grid-cols-2 gap-3 max-h-80 overflow-y-auto pr-1">
+              @for (lb of employee.leaveBalances; track lb.typeName) {
+                <div class="bg-indigo-50/60 border border-indigo-100 p-3 rounded-xl">
+                  <div class="text-xs text-indigo-600 font-medium">{{ lb.typeName }}</div>
+                  <div class="text-xl font-bold text-indigo-950 mt-1">{{ lb.balance }} Days</div>
+                  <div class="text-[10px] text-indigo-500">of {{ lb.total }} Total Days</div>
                 </div>
-                <div class="text-[10px] text-indigo-500">
-                  of {{ employee.totalAnnualLeave }} Total Days
+              } @empty {
+                <div class="col-span-2 text-sm text-slate-400 italic text-center py-4">
+                  No leave types have been assigned to this employee yet.
                 </div>
-              </div>
-
-              <div class="bg-emerald-50/60 border border-emerald-100 p-3 rounded-xl">
-                <div class="text-xs text-emerald-600 font-medium">Sick Leave</div>
-                <div class="text-xl font-bold text-emerald-950 mt-1">
-                  {{ employee.sickLeaveBalance }} Days
-                </div>
-                <div class="text-[10px] text-emerald-500">
-                  of {{ employee.totalSickLeave }} Total Days
-                </div>
-              </div>
+              }
             </div>
           </div>
 
