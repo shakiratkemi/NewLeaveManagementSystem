@@ -1,13 +1,19 @@
+export interface LeaveBalanceItem {
+  typeName: string;
+  balance: number;
+  total: number;
+}
+
 export type EmployeeRecord = {
   id: string;
   name: string;
   email: string;
   role: string;
   department: string;
-  annualLeaveBalance: number;
-  totalAnnualLeave: number;
-  sickLeaveBalance: number;
-  totalSickLeave: number;
+  // Dynamic — one entry per leave type that exists in the system
+  // (from GET /LeaveTypes / whatever the backend returns per employee),
+  // instead of two fixed Annual/Sick fields.
+  leaveBalances: LeaveBalanceItem[];
   status: 'Active' | 'On Leave' | 'Inactive';
 };
 
@@ -58,5 +64,5 @@ export interface EditEmployeeProfile {
 
 
 export interface AddEmployeeData {
-  
+
 }

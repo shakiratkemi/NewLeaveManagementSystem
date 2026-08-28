@@ -17,6 +17,7 @@ import {
   EmployeeFormData,
   EmployeeFormPayload,
   EmployeeRecord,
+  LeaveBalanceItem,
 } from '../../../core/interface/hr';
 import { EditEmployee } from './edit-employee/edit-employee';
 import { ToastrService } from 'ngx-toastr';
@@ -118,6 +119,16 @@ export class Employees implements OnInit, AfterViewInit {
   get pagedEmployees(): EmployeeRecord[] {
     const startIndex = this.pageIndex * this.pageSize;
     return this.filteredEmployees.slice(startIndex, startIndex + this.pageSize);
+  }
+
+  // Table rows have limited width — show at most the first 2 leave types
+  // there; the modal (getAllLeaveBalances) shows every type in full.
+  getPreviewLeaveBalances(emp: EmployeeRecord): LeaveBalanceItem[] {
+    return (emp.leaveBalances ?? []).slice(0, 2);
+  }
+
+  getExtraLeaveBalanceCount(emp: EmployeeRecord): number {
+    return Math.max((emp.leaveBalances ?? []).length - 2, 0);
   }
 
   loadDepartments(): void {
@@ -234,12 +245,19 @@ export class Employees implements OnInit, AfterViewInit {
       name: this.newEmployee.name,
       email: this.newEmployee.email,
       role: this.newEmployee.role,
-      department: this.newEmployee.department || 'Engineering',
-      designation: this.newEmployee.designation || 'Employee',
-      annualLeaveBalance: this.newEmployee.totalAnnualLeave || 20,
-      totalAnnualLeave: this.newEmployee.totalAnnualLeave || 20,
-      sickLeaveBalance: this.newEmployee.totalSickLeave || 10,
-      totalSickLeave: this.newEmployee.totalSickLeave || 10,
+      department: this.newEmployee.department || 'Unassigned',
+      leaveBalances: [
+        {
+          typeName: 'Annual Leave',
+          balance: this.newEmployee.totalAnnualLeave || 20,
+          total: this.newEmployee.totalAnnualLeave || 20,
+        },
+        {
+          typeName: 'Sick Leave',
+          balance: this.newEmployee.totalSickLeave || 10,
+          total: this.newEmployee.totalSickLeave || 10,
+        },
+      ],
       status: this.newEmployee.status || 'Active',
     } as EmployeeRecord;
 
@@ -288,27 +306,13 @@ export class Employees implements OnInit, AfterViewInit {
       name: '',
       email: '',
       role: 'Employee',
-      department: 'Engineering',
+      department: '',
       designation: '',
       totalAnnualLeave: 20,
       totalSickLeave: 10,
       status: 'Active',
     };
   }
-
-  // handleSaveEmployee(formData: EmployeeFormData): void {
-  //   const createdEmployee: EmployeeRecord = {
-  //     id: `EMP-00${this.employees.length + 1}`,
-  //     name: formData.name,
-  //     email: formData.email,
-  //     role: formData.role,
-  //     department: formData.department || 'Engineering',
-  //     designation: formData.designation || 'Employee',
-  //     password: formData.password || '',
-  //   };
-
-  //   this.employees = [createdEmployee, ...this.employees];
-  // }
 
   private loadEmployees(): void {
     this.hrService.getAllEmployees().subscribe({
@@ -318,6 +322,8 @@ export class Employees implements OnInit, AfterViewInit {
 
         if (Array.isArray(response)) {
           list = response;
+        } else if (Array.isArray(response?.items)) {
+          list = response.items;
         } else if (Array.isArray(response?.data)) {
           list = response.data;
         } else if (Array.isArray(response?.data?.data)) {
@@ -352,21 +358,29 @@ export class Employees implements OnInit, AfterViewInit {
     });
   }
 
+  // Dynamically maps EVERY leave type the backend returns for this employee —
+  // no hardcoded assumption about which types exist (Annual/Sick/etc).
+  // Admin-created leave types automatically show up here since they flow
+  // through in item.leaveBalances[] once assigned to the employee.
+  private mapLeaveBalances(item: any): LeaveBalanceItem[] {
+    const raw = item.leaveBalances;
+    if (!Array.isArray(raw)) return [];
+
+    return raw.map((lb: any) => ({
+      typeName: lb.leaveTypeName ?? lb.typeName ?? 'Leave',
+      balance: Number(lb.daysRemaining ?? lb.balance ?? 0),
+      total: Number(lb.totalDays ?? lb.total ?? 0),
+    }));
+  }
+
   private mapEmployee(item: any, index: number): EmployeeRecord {
     return {
       id: item.id ?? item.employeeId ?? item.userId ?? `EMP-00${index + 1}`,
       name: item.fullName ?? item.name ?? item.employeeName ?? item.userName ?? 'Unknown Employee',
       email: item.email ?? item.employeeEmail ?? item.userEmail ?? 'N/A',
-      role: item.jobTitle ?? item.designation ?? 'Employee',
-      department: item.departmentName ?? item.name ?? 'Engineering',
-      annualLeaveBalance: Number(
-        item.annualLeaveBalance ?? item.remainingAnnualLeave ?? item.annualLeave ?? 20,
-      ),
-      totalAnnualLeave: Number(item.totalAnnualLeave ?? item.annualLeaveQuota ?? 20),
-      sickLeaveBalance: Number(
-        item.sickLeaveBalance ?? item.remainingSickLeave ?? item.sickLeave ?? 10,
-      ),
-      totalSickLeave: Number(item.totalSickLeave ?? item.sickLeaveQuota ?? 10),
+      role: item.designation ?? item.jobTitle ?? 'Employee',
+      department: item.departmentName ?? item.name ?? 'Unassigned',
+      leaveBalances: this.mapLeaveBalances(item),
       status: this.normalizeStatus(item.status ?? item.employeeStatus),
     };
   }
