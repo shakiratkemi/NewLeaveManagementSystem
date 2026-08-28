@@ -127,7 +127,7 @@ export class Onboarding {
   constructor(
     private fb: FormBuilder,
     private toastr: ToastrService,
-    private router: Router
+    private router: Router,
   ) {
     this.onboardingForm = this.fb.group(
       {
@@ -152,7 +152,7 @@ export class Onboarding {
         dateFormat: ['MM/DD/YYYY (e.g., 12/31/2024)', [Validators.required]],
         currency: ['USD ($) - US Dollar', [Validators.required]],
       },
-      { validators: passwordsMatchValidator }
+      { validators: passwordsMatchValidator },
     );
 
     // Clear a control's server-side error the moment the user edits it,
@@ -309,5 +309,8 @@ export class Onboarding {
         this.toastr.error(errorMsg, 'Setup Failed');
       },
     });
+  }
+  backHome() {
+    this.router.navigateByUrl('/');
   }
 }
