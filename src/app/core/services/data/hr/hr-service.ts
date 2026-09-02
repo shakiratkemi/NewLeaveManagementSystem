@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { tap } from 'rxjs/operators';
@@ -21,6 +21,7 @@ const routes = {
   registerOrganization: 'Auth/register-organization',
   organizationSettings: 'Settings/organization',
   assignTeamLead: 'Departments/assign-team-lead',
+  approvedLeaveRequests: 'LeaveRequests/approved',
 };
 
 @Injectable({
@@ -38,6 +39,14 @@ export class HrService {
 
   getAllLeaveRequests(): Observable<any> {
     return this.http.get(`${this.baseUrl}${routes.leaveRequest}`);
+  }
+
+  getApprovedLeaveRequests(startDate?: string, endDate?: string): Observable<any> {
+    let params = new HttpParams();
+    if (startDate) params = params.set('startDate', startDate);
+    if (endDate) params = params.set('endDate', endDate);
+
+    return this.http.get(`${this.baseUrl}${routes.approvedLeaveRequests}`, { params });
   }
 
   getAllEmployees(): Observable<any> {
