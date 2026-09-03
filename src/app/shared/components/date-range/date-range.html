@@ -1,0 +1,122 @@
+<div class="relative w-full">
+  <!-- Input trigger — should match your app's normal input styling -->
+  <button
+    type="button"
+    (click)="toggleOpen()"
+    class="w-full flex items-center justify-between gap-2 rounded-md border px-3 py-2.5 text-sm text-left transition-colors bg-white"
+    [ngClass]="isOpen
+      ? 'border-indigo-500 ring-1 ring-indigo-500'
+      : 'border-gray-300 hover:border-gray-400'"
+  >
+    <span [ngClass]="inputLabel ? 'text-gray-900' : 'text-gray-400'">
+      {{ inputLabel || 'Select dates' }}
+    </span>
+    <span class="flex items-center gap-2 shrink-0">
+      <span
+        *ngIf="startDate"
+        (click)="clearSelection($event)"
+        class="text-gray-400 hover:text-gray-600 cursor-pointer text-base leading-none"
+        title="Clear"
+      >
+        &times;
+      </span>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="h-4 w-4 text-gray-400"
+      >
+        <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+        <line x1="16" y1="2" x2="16" y2="6" />
+        <line x1="8" y1="2" x2="8" y2="6" />
+        <line x1="3" y1="10" x2="21" y2="10" />
+      </svg>
+    </span>
+  </button>
+
+  <!-- Dropdown calendar — solid white surface with its own border/shadow/z-index,
+       so it displays correctly no matter what background it sits over -->
+  <div
+    *ngIf="isOpen"
+    class="absolute left-0 top-full mt-2 z-50 w-80 select-none rounded-lg border border-gray-200 bg-white shadow-lg"
+  >
+    <div class="p-4">
+      <!-- Header -->
+      <div class="flex items-center justify-between mb-4">
+        <button
+          (click)="prevMonth()"
+          class="text-gray-500 hover:text-gray-900 p-1 rounded transition-colors"
+        >
+          ‹
+        </button>
+        <span class="text-gray-900 text-sm font-medium">{{ monthLabel }}</span>
+        <button
+          (click)="nextMonth()"
+          class="text-gray-500 hover:text-gray-900 p-1 rounded transition-colors"
+        >
+          ›
+        </button>
+      </div>
+
+      <!-- Weekday labels -->
+      <div class="grid grid-cols-7 mb-1">
+        <span
+          *ngFor="let d of weekDays"
+          class="text-gray-400 text-xs text-center py-1"
+        >
+          {{ d }}
+        </span>
+      </div>
+
+      <!-- Days grid -->
+      <div class="grid grid-cols-7 gap-y-1">
+       <button
+        *ngFor="let day of days"
+        (click)="selectDate(day)"
+        [disabled]="day.isDisabled"
+        [title]="day.isHoliday ? 'Public holiday' : (day.isPast ? 'Past date' : null)"
+        class="h-8 w-8 mx-auto flex items-center justify-center text-xs rounded-full transition-colors"
+        [ngClass]="{
+        'text-gray-300': !day.inCurrentMonth && !day.isHoliday && !day.isPast,
+        'text-gray-700': day.inCurrentMonth && !day.isHoliday && !day.isPast && !day.isSelected,
+        'bg-gray-100 text-gray-400 line-through cursor-not-allowed': day.isHoliday,
+        'text-gray-300 cursor-not-allowed': day.isPast && !day.isHoliday,
+        'bg-indigo-600 text-white font-semibold': day.isSelected,
+        'bg-indigo-50 text-indigo-600': day.isInRange && !day.isSelected,
+        'hover:bg-gray-100': !day.isDisabled && !day.isSelected
+        }"
+    >
+    {{ day.date.getDate() }}
+  </button>
+      </div>
+
+      <!-- Footer: legend + selected count -->
+      <div class="mt-4 pt-3 border-t border-gray-100 space-y-3">
+        <div class="flex items-center gap-4">
+          <div class="flex items-center gap-1.5">
+            <span class="h-2.5 w-2.5 rounded-full bg-gray-100 border border-gray-300"></span>
+            <span class="text-gray-400 text-xs">Holiday</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <span class="h-2.5 w-2.5 rounded-full bg-indigo-600"></span>
+            <span class="text-gray-400 text-xs">Selected</span>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between">
+          <span class="text-xs text-gray-500">{{ rangeSummary }}</span>
+          <span
+            *ngIf="startDate"
+            class="text-xs font-medium text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full"
+          >
+            {{ selectedDayCount }} {{ selectedDayCount === 1 ? 'day' : 'days' }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
