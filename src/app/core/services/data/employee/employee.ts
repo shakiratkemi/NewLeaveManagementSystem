@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../../evironments/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 
 import { Observable, of } from 'rxjs';
@@ -19,6 +19,7 @@ const routes = {
   leaveRequests: 'LeaveRequests',
   leaveRequestById: 'LeaveRequests/{id}',
   profile: 'Profile',
+  approvedLeaveRequests: 'LeaveRequests/approved',
 };
 
 @Injectable({
@@ -56,6 +57,14 @@ export class Employee {
 
   getLeaveRequests(): Observable<LeaveRequestsResponse> {
     return this.http.get<LeaveRequestsResponse>(`${this.baseUrl}${routes.leaveRequests}`);
+  }
+
+  getApprovedLeaveRequests(startDate?: string, endDate?: string): Observable<any> {
+    let params = new HttpParams();
+    if (startDate) params = params.set('startDate', startDate);
+    if (endDate) params = params.set('endDate', endDate);
+
+    return this.http.get(`${this.baseUrl}${routes.approvedLeaveRequests}`, { params });
   }
 
   getLeaveRequestById(id: string): Observable<LeaveRequestsResponse> {

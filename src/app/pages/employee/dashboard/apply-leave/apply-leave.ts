@@ -7,10 +7,11 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ConfirmationDialog } from '../../../../shared/components/leave-confirmation-dialog/leave-confirmation-dialog';
+import { DateRange } from "../../../../shared/components/date-range/date-range";
 
 @Component({
   selector: 'app-applyleave',
-  imports: [CommonModule, ReactiveFormsModule, MatDialogModule],
+  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, DateRange],
   templateUrl: './apply-leave.html',
   styles: ``,
 })
@@ -25,6 +26,7 @@ export class Applyleave implements OnInit {
   duration = 0;
   errorMessage = '';
   successMessage = '';
+  selectedLeaveType: any;
 
   constructor(
     private fb: FormBuilder,
@@ -151,114 +153,34 @@ export class Applyleave implements OnInit {
     this.duration = Math.floor((end.getTime() - start.getTime()) / 86400000) + 1;
   }
 
-  // onSubmit(): void {
-  //   if (this.leaveForm.invalid) {
-  //     this.leaveForm.markAllAsTouched();
-  //     return;
-  //   }
 
-  //   this.errorMessage = '';
-  //   this.successMessage = '';
+  onRangeSelected(range: any): void {
+    if(range.dayCount > this.selectedLeaveType?.defaultDays ){
+      this.toastr.error('You cannot apply for more days than alloted, Contact HR for more information');
+      this.leaveForm.get('duration')?.setValue('');
+      this.leaveForm.get('startDate')?.setValue('');
+      this.leaveForm.get('endDate')?.setValue('');
+      return;
+    }else{
+    this.leaveForm.patchValue({
+    startDate: range.startDate ? range.startDate.toISOString().slice(0, 10) : '',
+    endDate: range.endDate ? range.endDate.toISOString().slice(0, 10) : '',
+    duration: range.dayCount.toString(),
+  });}
+  
 
-  //   const formValue = this.leaveForm.value;
-  //   const selectedType = this.leaveTypes.find((t) => t.id === formValue.leaveType);
-  //   const leaveTypeName = selectedType ? selectedType.name : formValue.leaveType;
-  //   const validLeaveTypeId = formValue.leaveType;
+  console.log("range", this.leaveForm.value);
+}
+selectLeaveType(event: Event): void {
+  console.log(event);
+const eventTypeId = (event.target as HTMLSelectElement).value;
+  const selectedLeaveType = this.leaveTypes.find((t) => t.id === eventTypeId);
+  console.log("selectedLeaveType", selectedLeaveType);
+  this.selectedLeaveType = selectedLeaveType;
 
-  //   const leaveRequest: any = {
-  //     leaveTypeId: validLeaveTypeId,
-  //     leaveTypeName: leaveTypeName,
-  //     startDate: new Date(formValue.startDate).toISOString(),
-  //     endDate: new Date(formValue.endDate).toISOString(),
-  //     numberOfDays: Number(formValue.duration) || 1,
-  //     duration: Number(formValue.duration) || 1,
-  //     days: Number(formValue.duration) || 1,
-  //     reason: formValue.reason,
-  //     requestComments: formValue.reason,
-  //   };
 
-  //   console.log('Leave Request Payload:', leaveRequest);
 
-  //   this.employeeService.createLeaveRequest(leaveRequest).subscribe({
-  //     next: (response) => {
-  //       console.log('Leave request created:', response);
-  //       // this.toastr.success('Leave request submitted successfully.', 'Leave Request');
-  //       // this.onClose();
-  //       // this.router.navigateByUrl('/employee/leave-history');
-  //     },
-
-  //     error: (error) => {
-  //       console.error('Leave request API error:', error);
-
-  //       // Fallback for HTTP 500 (Internal Server Error) from Render backend
-  //       if (error?.status >= 500 || error?.status === 0) {
-  //         const userStr =
-  //           sessionStorage.getItem('loggedInUser') || localStorage.getItem('loggedInUser');
-  //         const user = userStr ? JSON.parse(userStr) : null;
-
-  //         const newRequestRecord = {
-  //           id: 'REQ-' + Date.now().toString().slice(-4),
-  //           requestId: 'REQ-' + Date.now().toString().slice(-4),
-  //           employeeId: user?.userId || user?.id || 'EMP-001',
-  //           employeeName: user?.fullName || user?.name || 'Employee',
-  //           employeeEmail: user?.email || '',
-  //           department: user?.department || 'Engineering',
-  //           leaveTypeId: validLeaveTypeId,
-  //           leaveTypeName: leaveTypeName,
-  //           leaveType: { name: leaveTypeName },
-  //           startDate: new Date(formValue.startDate).toISOString(),
-  //           endDate: new Date(formValue.endDate).toISOString(),
-  //           duration: Number(formValue.duration) || 1,
-  //           numberOfDays: Number(formValue.duration) || 1,
-  //           days: Number(formValue.duration) || 1,
-  //           reason: formValue.reason,
-  //           requestComments: formValue.reason,
-  //           status: 'Pending',
-  //           createdAt: new Date().toISOString(),
-  //         };
-
-  //         const existingLocalStr = localStorage.getItem('local_leave_requests');
-  //         const existingLocal = existingLocalStr ? JSON.parse(existingLocalStr) : [];
-  //         existingLocal.unshift(newRequestRecord);
-  //         localStorage.setItem('local_leave_requests', JSON.stringify(existingLocal));
-
-  //         // this.toastr.success('Leave request submitted successfully.', 'Leave Request');
-  //         // this.onClose();
-  //         // this.router.navigateByUrl('/employee/leave-history');
-  //         return;
-  //       }
-
-  //       let msg = 'Unable to submit leave request. Please check your form data.';
-
-  //       if (error?.error) {
-  //         if (error.error.errors && typeof error.error.errors === 'object') {
-  //           const errObj = error.error.errors;
-  //           const msgs: string[] = [];
-  //           for (const key of Object.keys(errObj)) {
-  //             if (Array.isArray(errObj[key])) {
-  //               msgs.push(`${key}: ${errObj[key].join(', ')}`);
-  //             } else if (typeof errObj[key] === 'string') {
-  //               msgs.push(`${key}: ${errObj[key]}`);
-  //             }
-  //           }
-  //           if (msgs.length > 0) {
-  //             msg = msgs.join(' | ');
-  //           }
-  //         } else if (typeof error.error === 'string') {
-  //           msg = error.error;
-  //         } else if (error.error.message) {
-  //           msg = error.error.message;
-  //         } else if (error.error.title) {
-  //           msg = error.error.title;
-  //         }
-  //       }
-
-  //       this.errorMessage = msg;
-  //       this.toastr.error(msg, 'Leave Request Error');
-  //       this.cdr.detectChanges();
-  //     },
-  //   });
-  // }
+}
 
   onSubmit(): void {
     if (this.leaveForm.invalid) {
