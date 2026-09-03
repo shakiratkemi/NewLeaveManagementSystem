@@ -8,7 +8,7 @@ import {
   AbstractControl,
   ValidationErrors,
 } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { HrService } from '../../../core/services/data/hr/hr-service';
 
@@ -50,7 +50,7 @@ const SERVER_FIELD_TO_CONTROL: Record<string, string> = {
 @Component({
   selector: 'app-onboarding',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './onboarding.html',
   styleUrl: './onboarding.css',
 })
