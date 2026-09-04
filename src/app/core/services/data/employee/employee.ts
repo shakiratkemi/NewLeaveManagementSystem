@@ -9,6 +9,7 @@ import {
   LeaveRequestHistory,
   LeaveRequestsResponse,
   TeamMember,
+  TeamMembersResponse,
   LeaveTypes,
 } from '../../../interface/employee';
 
@@ -20,6 +21,7 @@ const routes = {
   leaveRequestById: 'LeaveRequests/{id}',
   profile: 'Profile',
   approvedLeaveRequests: 'LeaveRequests/approved',
+  teamMembers: 'Users/department-colleagues',
 };
 
 @Injectable({
@@ -40,14 +42,16 @@ export class Employee {
     return this.http.get<LeaveTypes[]>(`${this.baseUrl}${routes.leaveTypes}`);
   }
 
-  // Temporary mock data until the team-members endpoint is available.
   getTeamMembers(): Observable<TeamMember[]> {
-    return of([
-      { id: 'team-member-001', name: 'Alex Johnson', email: 'alex.johnson@example.com' },
-      { id: 'team-member-002', name: 'Jordan Smith', email: 'jordan.smith@example.com' },
-      { id: 'team-member-003', name: 'Taylor Williams', email: 'taylor.williams@example.com' },
-      { id: 'team-member-004', name: 'Morgan Brown', email: 'morgan.brown@example.com' },
-    ]);
+    return this.http.get<TeamMembersResponse>(`${this.baseUrl}${routes.teamMembers}`).pipe(
+      map((response) =>
+        response.data.map((member) => ({
+          id: member.id,
+          name: member.fullName,
+          email: member.email,
+        })),
+      ),
+    );
   }
 
   // Leave Requests
