@@ -37,6 +37,12 @@ export interface LeaveTypes {
   defaultDays?: number;
 }
 
+export interface TeamMember {
+  id: string;
+  name: string;
+  email?: string;
+}
+
 //  POST LeaveRequests
 
 export interface LeaveRequest {

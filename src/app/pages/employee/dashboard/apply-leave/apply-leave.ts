@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Employee } from '../../../../core/services/data/employee/employee';
-import { LeaveTypes } from '../../../../core/interface/employee';
+import { LeaveTypes, TeamMember } from '../../../../core/interface/employee';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -21,7 +21,9 @@ export class Applyleave implements OnInit {
 
   leaveForm!: FormGroup;
   leaveTypes: LeaveTypes[] = [];
+  teamMembers: TeamMember[] = [];
   minEndDate = '';
+  duration = 0;
   errorMessage = '';
   successMessage = '';
   selectedLeaveType: any;
@@ -40,11 +42,26 @@ export class Applyleave implements OnInit {
       leaveType: ['', Validators.required],
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
-      duration: ['', Validators.required],
       reason: ['', [Validators.required, Validators.minLength(5)]],
+      handover: ['', Validators.required],
     });
 
     this.loadLeaveTypes();
+    this.loadTeamMembers();
+  }
+
+  loadTeamMembers(): void {
+    this.employeeService.getTeamMembers().subscribe({
+      next: (members) => {
+        this.teamMembers = members;
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Team members API error:', error);
+        this.teamMembers = [];
+        this.cdr.detectChanges();
+      },
+    });
   }
 
   loadLeaveTypes(): void {
@@ -118,6 +135,22 @@ export class Applyleave implements OnInit {
     if (endDate && startDate && endDate < startDate) {
       this.leaveForm.get('endDate')?.setValue('');
     }
+
+    this.updateDuration();
+  }
+
+  updateDuration(): void {
+    const startDate = this.leaveForm.get('startDate')?.value;
+    const endDate = this.leaveForm.get('endDate')?.value;
+
+    if (!startDate || !endDate || endDate < startDate) {
+      this.duration = 0;
+      return;
+    }
+
+    const start = new Date(`${startDate}T00:00:00`);
+    const end = new Date(`${endDate}T00:00:00`);
+    this.duration = Math.floor((end.getTime() - start.getTime()) / 86400000) + 1;
   }
 
 
@@ -159,6 +192,7 @@ const eventTypeId = (event.target as HTMLSelectElement).value;
     this.successMessage = '';
 
     const formValue = this.leaveForm.value;
+    const selectedHandover = this.teamMembers.find((member) => member.id === formValue.handover);
 
     const selectedType = this.leaveTypes.find((t) => t.id === formValue.leaveType);
 
@@ -169,11 +203,14 @@ const eventTypeId = (event.target as HTMLSelectElement).value;
       leaveTypeName: leaveTypeName,
       startDate: new Date(formValue.startDate).toISOString(),
       endDate: new Date(formValue.endDate).toISOString(),
-      numberOfDays: Number(formValue.duration) || 1,
-      duration: Number(formValue.duration) || 1,
-      days: Number(formValue.duration) || 1,
+      numberOfDays: this.duration,
+      duration: this.duration,
+      days: this.duration,
       reason: formValue.reason,
       requestComments: formValue.reason,
+      handover: formValue.handover,
+      handoverId: formValue.handover,
+      handoverName: selectedHandover?.name ?? '',
     };
 
     console.log('Leave Request ready for confirmation:', leaveRequest);
