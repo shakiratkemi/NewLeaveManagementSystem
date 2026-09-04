@@ -43,6 +43,16 @@ export interface TeamMember {
   email?: string;
 }
 
+export interface TeamMembersResponse {
+  success: boolean;
+  message: string;
+  data: Array<{
+    id: string;
+    fullName: string;
+    email?: string;
+  }>;
+}
+
 //  POST LeaveRequests
 
 export interface LeaveRequest {

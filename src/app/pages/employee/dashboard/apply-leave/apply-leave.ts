@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ConfirmationDialog } from '../../../../shared/components/leave-confirmation-dialog/leave-confirmation-dialog';
-import { DateRange } from "../../../../shared/components/date-range/date-range";
+import { DateRange } from '../../../../shared/components/date-range/date-range';
 
 @Component({
   selector: 'app-applyleave',
@@ -42,6 +42,7 @@ export class Applyleave implements OnInit {
       leaveType: ['', Validators.required],
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
+      duration: [0, [Validators.required, Validators.min(1)]],
       reason: ['', [Validators.required, Validators.minLength(5)]],
       handover: ['', Validators.required],
     });
@@ -153,34 +154,35 @@ export class Applyleave implements OnInit {
     this.duration = Math.floor((end.getTime() - start.getTime()) / 86400000) + 1;
   }
 
-
   onRangeSelected(range: any): void {
-    if(range.dayCount > this.selectedLeaveType?.defaultDays ){
-      this.toastr.error('You cannot apply for more days than alloted, Contact HR for more information');
-      this.leaveForm.get('duration')?.setValue('');
+    this.duration = range.dayCount;
+
+    if (range.dayCount > this.selectedLeaveType?.defaultDays) {
+      this.toastr.error(
+        'You cannot apply for more days than alloted, Contact HR for more information',
+      );
+      this.duration = 0;
+      this.leaveForm.get('duration')?.setValue(0);
       this.leaveForm.get('startDate')?.setValue('');
       this.leaveForm.get('endDate')?.setValue('');
       return;
-    }else{
-    this.leaveForm.patchValue({
-    startDate: range.startDate ? range.startDate.toISOString().slice(0, 10) : '',
-    endDate: range.endDate ? range.endDate.toISOString().slice(0, 10) : '',
-    duration: range.dayCount.toString(),
-  });}
-  
+    } else {
+      this.leaveForm.patchValue({
+        startDate: range.startDate ? range.startDate.toISOString().slice(0, 10) : '',
+        endDate: range.endDate ? range.endDate.toISOString().slice(0, 10) : '',
+        duration: range.dayCount,
+      });
+    }
 
-  console.log("range", this.leaveForm.value);
-}
-selectLeaveType(event: Event): void {
-  console.log(event);
-const eventTypeId = (event.target as HTMLSelectElement).value;
-  const selectedLeaveType = this.leaveTypes.find((t) => t.id === eventTypeId);
-  console.log("selectedLeaveType", selectedLeaveType);
-  this.selectedLeaveType = selectedLeaveType;
-
-
-
-}
+    console.log('range', this.leaveForm.value);
+  }
+  selectLeaveType(event: Event): void {
+    console.log(event);
+    const eventTypeId = (event.target as HTMLSelectElement).value;
+    const selectedLeaveType = this.leaveTypes.find((t) => t.id === eventTypeId);
+    console.log('selectedLeaveType', selectedLeaveType);
+    this.selectedLeaveType = selectedLeaveType;
+  }
 
   onSubmit(): void {
     if (this.leaveForm.invalid) {
