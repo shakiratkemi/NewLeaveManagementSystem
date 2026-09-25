@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { provideHttpClient } from '@angular/common/http';
+import { ToastrService } from 'ngx-toastr';
 import { AddemployeeConfirmationDialog } from './addemployee-confirmation-dialog';
 
 describe('AddemployeeConfirmationDialog', () => {
@@ -9,6 +10,18 @@ describe('AddemployeeConfirmationDialog', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AddemployeeConfirmationDialog],
+      providers: [
+        provideHttpClient(),
+        {
+          provide: ToastrService,
+          useValue: {
+            warning: () => {},
+            error: () => {},
+            success: () => {},
+            info: () => {},
+          },
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AddemployeeConfirmationDialog);

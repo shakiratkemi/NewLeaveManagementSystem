@@ -6,7 +6,7 @@ import { Loader } from '../../../core/services/loader';
   selector: 'app-spinner',
   imports: [],
   templateUrl: './spinner.html',
-  styles: ``,
+  styleUrls: ['./spinner.scss'],
 })
 export class Spinner {
   protected loaderService = inject(Loader);
