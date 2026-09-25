@@ -13,8 +13,9 @@
 
         <button
           type="button"
-          (click)="csvInput.click()"
-          class="group flex items-center gap-2 rounded-xl border border-blue-200 bg-white px-1.5 py-1.5 sm:px-4 sm:py-2.5 text-xs font-semibold text-blue-700 shadow-sm transition-all duration-200 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-600 hover:shadow-md"
+          (click)="onBulkUploadClick()"
+          class="group flex items-center gap-2 rounded-xl border border-blue-200 bg-white px-2 py-1.5 sm:px-3.5 sm:py-2 text-xs font-semibold text-blue-700 shadow-sm transition-all duration-200 hover:border-blue-300 hover:bg-blue-50 hover:text-blue-800 hover:shadow-md cursor-pointer"
+          title="Switch to Bulk Upload"
         >
           <span
             class="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-50 text-blue-600 transition-colors duration-200 group-hover:bg-blue-600 group-hover:text-white"
@@ -30,14 +31,13 @@
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                d="M12 16.5V3.75m0 0L7.5 8.25M12 3.75l4.5 4.5M4.5 15.75v2.25A2.25 2.25 0 006.75 20.25h10.5a2.25 2.25 0 002.25-2.25v-2.25"
+                d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"
               />
             </svg>
           </span>
 
-          <span class="hidden sm:block">Import CSV</span>
+          <span class="hidden sm:block">Bulk Upload</span>
         </button>
-        <input #csvInput type="file" accept=".csv" class="hidden" (change)="importCSV($event)" />
       </div>
 
       <form [formGroup]="AddEmployeeForm" (ngSubmit)="onSubmit()" class="space-y-4">

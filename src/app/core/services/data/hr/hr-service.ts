@@ -49,8 +49,8 @@ export class HrService {
     return this.http.get(`${this.baseUrl}${routes.approvedLeaveRequests}`, { params });
   }
 
-  getAllEmployees(): Observable<any> {
-    return this.http.get(`${this.baseUrl}${routes.employees}`);
+  getAllEmployees(params:any): Observable<any> {
+    return this.http.get(`${this.baseUrl}${routes.employees}`,{params});
   }
 
   getUsers(): Observable<any> {

@@ -23,6 +23,7 @@ export class AddEmployee {
   @Input() departments: readonly DepartmentOption[] = [];
   @Output() close = new EventEmitter<void>();
   @Output() save = new EventEmitter<EmployeeFormPayload>();
+  @Output() openBulkUpload = new EventEmitter<void>();
 
   AddEmployeeForm!: FormGroup;
 
@@ -40,6 +41,11 @@ export class AddEmployee {
       role: ['Employee', Validators.required],
       clientResetUrl: [`${window.location.origin}/reset-token`, Validators.required],
     });
+  }
+
+  onBulkUploadClick(): void {
+    this.onClose();
+    this.openBulkUpload.emit();
   }
 
   importCSV(event: Event): void {

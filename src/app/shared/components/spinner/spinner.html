@@ -1,10 +1,8 @@
 @if (loaderService.isLoading()) {
-  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs">
-    <div class="relative flex items-center justify-center">
-      <div
-        class="h-28 w-28 animate-spin rounded-full border-4 border-blue-200 border-t-blue-600"
-      ></div>
-      <span class="absolute text-sm font-semibold text-blue-600 tracking-wider"> Loading... </span>
+  <div class="h-screen w-screen loader-bg fixed  top-0 right-0  left-0 flex justify-center items-center  z-999">
+        <div class="wheelUp">
+            <img src="assets/images/loader.svg" class="ml-6" alt="IRIS" />
+            <!-- <p class="text-center text-6xl font-rubik font-bold"> Loading </p> -->
+        </div>
     </div>
-  </div>
 }

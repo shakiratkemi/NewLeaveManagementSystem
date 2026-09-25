@@ -1,0 +1,41 @@
+.loader-bg {
+    background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.5)), to(rgba(125, 125, 125, 0.6)));
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(125, 125, 125, 0.6));
+  }
+  
+  .wheelUp {
+    -webkit-animation: wheelUp 2s;
+            animation: wheelUp 2s;
+    -webkit-animation-iteration-count: infinite;
+            animation-iteration-count: infinite;
+  }
+  
+  @-webkit-keyframes wheelUp {
+    0% {
+      -webkit-transform: translateY(0);
+              transform: translateY(0);
+    }
+    50% {
+      -webkit-transform: translateY(-50px);
+              transform: translateY(-50px);
+    }
+    100% {
+      -webkit-transform: translateY(0);
+              transform: translateY(0);
+    }
+  }
+  
+  @keyframes wheelUp {
+    0% {
+      -webkit-transform: translateY(0);
+              transform: translateY(0);
+    }
+    50% {
+      -webkit-transform: translateY(-50px);
+              transform: translateY(-50px);
+    }
+    100% {
+      -webkit-transform: translateY(0);
+              transform: translateY(0);
+    }
+  }

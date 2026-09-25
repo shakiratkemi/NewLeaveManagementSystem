@@ -21,11 +21,19 @@ import {
 } from '../../../core/interface/hr';
 import { EditEmployee } from './edit-employee/edit-employee';
 import { ToastrService } from 'ngx-toastr';
+import { AddemployeeConfirmationDialog } from '../../../shared/components/addemployee-confirmation-dialog/addemployee-confirmation-dialog';
 
 @Component({
   selector: 'app-employees',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatPaginatorModule, AddEmployee, EditEmployee],
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatPaginatorModule,
+    AddEmployee,
+    EditEmployee,
+    AddemployeeConfirmationDialog,
+  ],
   templateUrl: './employees.html',
   styles: ``,
 })
@@ -41,6 +49,7 @@ export class Employees implements OnInit, AfterViewInit {
   selectedEmployeeForModal: EmployeeRecord | null = null;
   selectedEmployeeForEdit: EditEmployeeProfile | null = null;
   isAddModalOpen: boolean = false;
+  isBulkUploadModalOpen: boolean = false;
   isEditModalOpen: boolean = false;
   isSubmitting: boolean = false;
   newEmployee: Partial<EmployeeFormData> = {
@@ -54,10 +63,11 @@ export class Employees implements OnInit, AfterViewInit {
     status: 'Active',
   };
   pageSize: number = 10;
-  pageIndex: number = 0;
+  pageIndex: number = 1;
   pageSizeOptions: number[] = [5, 10, 20, 30];
 
   readonly statuses: string[] = ['All', 'Active', 'On Leave', 'Inactive'];
+  totalcount: any;
 
   constructor(
     private hrService: HrService,
@@ -67,7 +77,7 @@ export class Employees implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadEmployees();
+    this.loadEmployees(this.pageIndex, this.pageSize);
     this.loadDepartments();
   }
 
@@ -116,10 +126,6 @@ export class Employees implements OnInit, AfterViewInit {
     });
   }
 
-  get pagedEmployees(): EmployeeRecord[] {
-    const startIndex = this.pageIndex * this.pageSize;
-    return this.filteredEmployees.slice(startIndex, startIndex + this.pageSize);
-  }
 
   // Table rows have limited width — show at most the first 2 leave types
   // there; the modal (getAllLeaveBalances) shows every type in full.
@@ -179,6 +185,8 @@ export class Employees implements OnInit, AfterViewInit {
     }
   }
 
+  
+
   clearFilters(): void {
     this.searchQuery = '';
     this.selectedStatus = 'All';
@@ -201,6 +209,15 @@ export class Employees implements OnInit, AfterViewInit {
   closeAddEmployeeModal(): void {
     this.isAddModalOpen = false;
     // this.resetNewEmployeeForm();
+  }
+
+  openBulkUploadModal(): void {
+    this.isAddModalOpen = false;
+    this.isBulkUploadModalOpen = true;
+  }
+
+  closeBulkUploadModal(): void {
+    this.isBulkUploadModalOpen = false;
   }
 
   openEditProfileModal(emp: EmployeeRecord): void {
@@ -226,7 +243,7 @@ export class Employees implements OnInit, AfterViewInit {
         this.toastr.success('Profile updated successfully', 'Success');
         this.isSubmitting = false;
         this.closeEditProfileModal();
-        this.loadEmployees(); // Reload table data
+        this.loadEmployees(this.pageIndex, this.pageSize); // Reload table data
       },
       error: (err) => {
         this.toastr.error('Failed to update profile', 'Error');
@@ -274,7 +291,7 @@ export class Employees implements OnInit, AfterViewInit {
         this.toastr.success('Employee created successfully.', 'Success');
         this.isSubmitting = false;
         this.closeAddEmployeeModal();
-        this.loadEmployees();
+        this.loadEmployees(this.pageIndex, this.pageSize);
       },
       error: (err: any) => {
         const errorMsg = err?.error?.message || 'Failed to create employee.';
@@ -291,7 +308,7 @@ export class Employees implements OnInit, AfterViewInit {
         console.log('Employee created successfully:', res);
         this.isSubmitting = false;
         this.closeAddEmployeeModal();
-        this.loadEmployees(); // Reload list to fetch newly created employee from backend
+        this.loadEmployees(this.pageIndex, this.pageSize); // Reload list to fetch newly created employee from backend
       },
       error: (err: any) => {
         const errorMsg = err?.error?.message || 'Failed to create employee.';
@@ -299,6 +316,10 @@ export class Employees implements OnInit, AfterViewInit {
         this.isSubmitting = false;
       },
     });
+  }
+
+  reload() {
+    this.loadEmployees(this.pageIndex, this.pageSize);
   }
 
   private resetNewEmployeeForm(): void {
@@ -313,9 +334,10 @@ export class Employees implements OnInit, AfterViewInit {
       status: 'Active',
     };
   }
+  
 
-  private loadEmployees(): void {
-    this.hrService.getAllEmployees().subscribe({
+  loadEmployees(pageIndex:number, pageSize:number = 10): void {
+    this.hrService.getAllEmployees({pageNumber: pageIndex, pageSize}).subscribe({
       next: (response: any) => {
         console.log('getAllEmployees response:', response);
         let list: any[] = [];
@@ -343,6 +365,7 @@ export class Employees implements OnInit, AfterViewInit {
         }
         if (!Array.isArray(list)) list = [];
         this.employees = list.map((item: any, index: number) => this.mapEmployee(item, index));
+        this.totalcount = response.totalCount;
         console.log('Employees mapped:', this.employees);
         try {
           this.cdr.detectChanges();
@@ -402,5 +425,12 @@ export class Employees implements OnInit, AfterViewInit {
       case 'Inactive':
         return 'bg-slate-100 text-slate-600 ring-slate-500/20';
     }
+  }
+
+  onPageChange(event: PageEvent): void {
+    console.log(event)
+    this.pageIndex = (event.pageIndex + 1);
+    this.pageSize = event.pageSize;
+    this.loadEmployees(this.pageIndex, this.pageSize);
   }
 }
